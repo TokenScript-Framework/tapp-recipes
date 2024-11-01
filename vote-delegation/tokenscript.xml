@@ -36,7 +36,7 @@
 			<ts:transaction>
 				<ethereum:transaction contract="Token" function="delegate">
 					<ts:data>
-						<ts:address>0x6C30A9544D885F85812e9B92f38EC1dD5f31BB65</ts:address>
+						<ts:address local-ref="toAddress"/>
 					</ts:data>
 				</ethereum:transaction>
 			</ts:transaction>

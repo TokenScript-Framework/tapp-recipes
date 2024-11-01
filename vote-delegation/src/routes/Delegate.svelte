@@ -3,6 +3,9 @@
 	import { getConfig } from '../lib/config';
 
 	const config = getConfig();
+
+	tokenscript.action.setProps({ toAddress: config.walletAddress });
+
 	let walletAddress = config.walletAddress;
 	let description = config.description;
 
