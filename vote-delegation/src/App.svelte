@@ -18,7 +18,7 @@
 		const card = new URLSearchParams(document.location.hash.substring(1)).get('card') ?? '';
 		console.log('card', card);
 
-		page = routingMap[document.location.hash] || NotFound;
+		page = routingMap[card] || NotFound;
 	}
 
 	tokenscript.tokens.dataChanged = async (oldTokens, updatedTokens, cardId) => {
