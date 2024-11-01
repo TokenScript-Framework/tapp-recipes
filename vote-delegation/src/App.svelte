@@ -8,14 +8,15 @@
 	let token;
 
 	const routingMap = {
-		'#info': Info,
-		'#delegate': Delegate
+		Info: Info,
+		Delegate: Delegate
 	};
 
 	let page;
 
 	function routeChange() {
-		console.log('routeChange new version', window.location.hash);
+		const card = new URLSearchParams(document.location.hash.substring(1)).get('card') ?? '';
+
 		page = routingMap[document.location.hash] || NotFound;
 	}
 

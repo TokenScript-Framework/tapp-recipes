@@ -1,8 +1,9 @@
 <script>
 	import ParticleBackground from '../components/ParticleBackground.svelte';
-	import { config } from '../lib/config';
+	import { getConfig } from '../lib/config';
 	import { onMount, onDestroy } from 'svelte';
 
+	const config = getConfig();
 	let walletAddress = config.walletAddress;
 	let description = config.description;
 
