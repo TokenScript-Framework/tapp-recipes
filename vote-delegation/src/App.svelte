@@ -16,6 +16,7 @@
 
 	function routeChange() {
 		const card = new URLSearchParams(document.location.hash.substring(1)).get('card') ?? '';
+		console.log('card', card);
 
 		page = routingMap[document.location.hash] || NotFound;
 	}
