@@ -1,7 +1,6 @@
 <script>
 	import ParticleBackground from '../components/ParticleBackground.svelte';
 	import { config } from '../lib/config';
-	import { onMount, onDestroy } from 'svelte';
 
 	let walletAddress = config.walletAddress;
 	let description = config.description;
@@ -19,8 +18,21 @@
 				class="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full blur-md"
 				style="transition: transform 0.5s linear;"
 			/>
-			<div class="w-40 h-40 border-4 border-white relative shadow-lg rounded-full">
-				<img src={config.avatar} alt="Avatar" class="w-full h-full object-cover rounded-full" />
+			<div class="h-40 relative flex">
+				<div class="w-40 h-40 border-4 border-white shadow-lg rounded-full">
+					<img
+						src={config.contractLogo}
+						alt="contract logo"
+						class="w-full h-full object-cover rounded-full"
+					/>
+				</div>
+				<div class="-ml-10 w-40 h-40 border-4 border-white shadow-lg rounded-full z-50">
+					<img
+						src={config.avatar}
+						alt="Second Avatar"
+						class="w-full h-full object-cover rounded-full"
+					/>
+				</div>
 			</div>
 		</div>
 
