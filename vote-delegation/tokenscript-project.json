@@ -1,0 +1,9 @@
+{
+	"$schema": "https://tokenscript.org/schemas/project/tokenscript-project.schema.json",
+	"environment": {
+		"default": {
+			"CONTRACT_ADDRESS": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+			"CONTRACT_CHAIN": "1"
+		}
+	}
+}
