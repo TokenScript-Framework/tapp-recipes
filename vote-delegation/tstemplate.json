@@ -14,11 +14,7 @@
 			"token": "TOKEN_TYPE",
 			"updatePrefix": "interface=\"",
 			"prompt": "Select the token type",
-			"options": [
-				"erc721",
-				"erc20",
-				"erc1155"
-			],
+			"options": ["erc721", "erc20", "erc1155"],
 			"value": "erc20"
 		},
 		{
@@ -34,7 +30,7 @@
 			"updatePrefix": "network=\"",
 			"prompt": "Enter the ethereum chainID for the TokenScript",
 			"isEnvironment": true,
-			"value": "1"
+			"value": "11155111"
 		},
 		{
 			"name": "Description",

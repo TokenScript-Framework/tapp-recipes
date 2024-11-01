@@ -11,7 +11,7 @@
 		<ts:iconUrl xml:lang="en">https://avatars.githubusercontent.com/u/36115574</ts:iconUrl>
 	</ts:meta>
 	<ts:contract interface="erc20" name="Token">
-		<ts:address network="1">0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984</ts:address>
+		<ts:address network="11155111">0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984</ts:address>
 	</ts:contract>
 	<ts:origins>
 		
