@@ -40,7 +40,7 @@
 					</ts:data>
 				</ethereum:transaction>
 			</ts:transaction>
-			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" urlFragment="delegate">
+			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 				<ts:viewContent name="common"/>
 			</ts:view>
 		</ts:card>
@@ -49,7 +49,7 @@
 			<ts:label>
 				<ts:string xml:lang="en">Info</ts:string>
 			</ts:label>
-			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" urlFragment="info">
+			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 				<ts:viewContent name="common"/>
 			</ts:view>
 		</ts:card>
