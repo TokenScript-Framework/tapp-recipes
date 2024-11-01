@@ -15,7 +15,7 @@
 	let page;
 
 	function routeChange() {
-		console.log('routeChange', window.location.hash);
+		console.log('routeChange new version', window.location.hash);
 		page = routingMap[document.location.hash] || NotFound;
 	}
 
