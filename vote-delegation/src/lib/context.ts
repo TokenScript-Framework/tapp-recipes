@@ -1,7 +1,5 @@
 import { writable } from 'svelte/store';
 
-const messageClient = null;
-
 const data = writable({
 	token: null
 });

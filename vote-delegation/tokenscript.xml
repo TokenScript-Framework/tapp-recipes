@@ -11,15 +11,34 @@
 	</ts:label>
 	<ts:meta>
 		<ts:description xml:lang="en">Vote delegation</ts:description>
-		<ts:aboutUrl xml:lang="en">https://www.google.com/</ts:aboutUrl>
-		<ts:iconUrl xml:lang="en">https://avatars.githubusercontent.com/u/36115574</ts:iconUrl>
+		<ts:aboutUrl xml:lang="en">https://vote-delegation.vercel.app/</ts:aboutUrl>
+		<ts:iconUrl xml:lang="en">https://vote-delegation.vercel.app/logo.png</ts:iconUrl>
 	</ts:meta>
-	<ts:contract interface="erc20" name="Token">
-		<ts:address network="$tst{CONTRACT_CHAIN}">$tst{CONTRACT_ADDRESS}</ts:address>
+
+
+	<ts:contract interface="erc20" name="uniswap">
+		<ts:address network="1">0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984</ts:address>
 	</ts:contract>
+	<ts:contract interface="erc20" name="compound">
+		<ts:address network="1">0xc00e94Cb662C3520282E6f5717214004A7f26888</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="aave">
+		<ts:address network="1">0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="makerdao">
+		<ts:address network="1">0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="uniswap-test">
+		<ts:address network="11155111">0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984</ts:address>
+	</ts:contract>
+
 	<ts:origins>
 		<!-- Define the contract which holds the token that the user will use -->
-		<ts:ethereum contract="Token"/>
+		<ts:ethereum contract="uniswap-test"/>
+		<ts:ethereum contract="uniswap"/>
+		<ts:ethereum contract="compound"/>
+		<ts:ethereum contract="aave"/>
+		<ts:ethereum contract="makerdao"/>
 	</ts:origins>
 
 	<ts:cards>
@@ -34,18 +53,18 @@
 				<ts:string xml:lang="en">Delegate</ts:string>
 			</ts:label>
 			<ts:transaction>
-				<ethereum:transaction contract="Token" function="delegate">
+				<ethereum:transaction contract="uniswap-test" function="delegate">
 					<ts:data>
 						<ts:address local-ref="toAddress"/>
 					</ts:data>
 				</ethereum:transaction>
 			</ts:transaction>
-			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" uiButton="false">
 				<ts:viewContent name="common"/>
 			</ts:view>
 		</ts:card>
 
-		<ts:card type="activity" name="Info" origins="Token">
+		<ts:card type="activity" name="Info" origins="uniswap-test">
 			<ts:label>
 				<ts:string xml:lang="en">Info</ts:string>
 			</ts:label>

@@ -1,10 +1,10 @@
 <script>
+	import context from '../lib/context';
 	import ParticleBackground from '../components/ParticleBackground.svelte';
 	import { getConfig } from '../lib/config';
 
 	const config = getConfig();
-
-	tokenscript.action.setProps({ toAddress: config.walletAddress });
+	let token;
 
 	let walletAddress = config.walletAddress;
 	let description = config.description;
@@ -13,6 +13,12 @@
 		if (!address) return '';
 		return `${address.slice(0, 6)}...${address.slice(-4)}`;
 	}
+
+	context.data.subscribe(async (value) => {
+		if (!value.token) return;
+
+		token = value.token;
+	});
 </script>
 
 <ParticleBackground>
@@ -48,5 +54,19 @@
 		<p class="text-xl font-medium text-indigo-300 italic text-center max-w-sm mt-4">
 			"Delegate your voting power to me"
 		</p>
+
+		<button
+			class="relative z-10 w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 py-4 px-6 rounded-lg text-xl font-semibold shadow-md hover:shadow-lg hover:scale-105"
+			on:click={() => {
+				tokenscript.action.setProps({ toAddress: '0x6C30A9544D885F85812e9B92f38EC1dD5f31BB65' });
+
+				tokenscript.action.executeTransaction({
+					contractAddress: token.contractAddress, // From ITokenContextData
+					chainId: token.chainId
+				});
+			}}
+		>
+			Delegate
+		</button>
 	</div>
 </ParticleBackground>

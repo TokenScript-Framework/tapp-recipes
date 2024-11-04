@@ -7,7 +7,7 @@
 		"build": "tokenscript build",
 		"ts:buildWeb": "vite build",
 		"sign": "tokenscript sign",
-		"start": "tokenscript emulate",
+		"start": "tokenscript emulate -e https://viewer-staging.tokenscript.org/",
 		"emulate": "tokenscript emulate",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
