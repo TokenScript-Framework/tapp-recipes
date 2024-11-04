@@ -76,15 +76,6 @@ button:focus-visible {
     height:100vh;
 }
 
-.button-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100px; 
-}
-
 .claim-container button{
     background-color: #5EFF26;
     color:black;
@@ -119,32 +110,13 @@ button:focus-visible {
     color: white;
 }
 
-.countdown {
+.count-display {
+    width:300px;
+    margin:8px auto;
+    border-radius: 8px;
+    padding:12px 24px;
     text-align: center;
-    margin: 10px 0;
+    margin: 32px auto;
+    color:white;
     font-weight: bold;
-    color:white
-}
-
-
-.countdown-row {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.countdown-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.countdown-number {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.countdown-label {
-    font-size: 14px;
-    margin-top: 4px;
 }

@@ -6,9 +6,24 @@ export const Claim: React.FC = ({ token }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("")
     const [success, setSuccess] = useState(false)
+    const [count, setCount] = useState(0) 
     useEffect(() => {
+        const fetchCount = async () => {
+            const response = await fetch('https://api.smarttokenlabs.com/tlink-rewards/count', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            setCount(data.count); 
+        };
+
         setLoading(false);
+        fetchCount();
     }, []);
+
+
 
     const handleClaimClick = async () => {
 
@@ -78,6 +93,9 @@ export const Claim: React.FC = ({ token }) => {
             {token && (
                 <div className="claim-container">
                     <img src="https://resources.smartlayer.network/images/tlinks-rewards-box.png" />
+                    <div className="count-display">
+                         {10_000-count} / 10,000 Claims Left
+                    </div>
                     <div className="button-container">
                         {!success && <button onClick={handleClaimClick} disabled={loading}>Claim $SLN</button>}
 
@@ -85,7 +103,7 @@ export const Claim: React.FC = ({ token }) => {
                             <div className="error">{error}</div>
                         )}
                         {success && !error && (
-                            <div className="success">Success!!!🎉</div>
+                            <div className="success">Claim Success! 🎉 <br/>Your SLN tokens will hit your wallet in next 48 hours.</div>
                         )}
                     </div>
                 </div>
