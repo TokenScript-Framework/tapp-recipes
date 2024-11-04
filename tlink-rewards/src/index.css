@@ -116,4 +116,35 @@ button:focus-visible {
 
 .success{
     margin-top:8px;
+    color: white;
+}
+
+.countdown {
+    text-align: center;
+    margin: 10px 0;
+    font-weight: bold;
+    color:white
+}
+
+
+.countdown-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.countdown-number {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.countdown-label {
+    font-size: 14px;
+    margin-top: 4px;
 }

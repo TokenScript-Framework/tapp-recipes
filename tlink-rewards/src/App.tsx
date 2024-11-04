@@ -1,6 +1,4 @@
 import React, { useState, useEffect, FC } from "react";
-import { Info } from "./cards/Info";
-import { Mint } from "./cards/Mint";
 import { NotFound } from "./cards/NotFound";
 import {ITokenContextData} from "@tokenscript/card-sdk/dist/types";
 import { Claim } from "./cards/Claim";
@@ -8,23 +6,17 @@ import { Claim } from "./cards/Claim";
 const App: FC = () => {
 	// add TokenScript Card views here
 	enum CardName {
-		Info = "#info",
-		Mint = "#mint",
         Claim = "#claim",
 		NotFound = "#notFound",
 	}
 
 	const [CurrentPageName, setCurrentPageName] = useState<CardName>(
-		CardName.Info
+		CardName.Claim
 	);
 	const [token, setToken] = useState<ITokenContextData>();
 
 	const mapCardName = (card: string | null): CardName => {
 		switch (card) {
-			case CardName.Info:
-				return CardName.Info;
-			case CardName.Mint:
-				return CardName.Mint;
             case CardName.Claim:
                 return CardName.Claim;
 			default:
@@ -33,8 +25,6 @@ const App: FC = () => {
 	};
 
 	const cardComponents: { [key in CardName]: React.FC } = {
-		[CardName.Info]: Info,
-		[CardName.Mint]: Mint,
         [CardName.Claim]: Claim,
 		[CardName.NotFound]: NotFound,
 	};
