@@ -120,3 +120,11 @@ button:focus-visible {
     color:white;
     font-weight: bold;
 }
+
+.link{
+    text-decoration: underline;
+}
+
+.link:hover{
+  border-color: #646cff;
+}

@@ -4,7 +4,7 @@ import Loader from "../components/loader/loader";
 // @ts-ignore
 export const Claim: React.FC = ({ token }) => {
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("")
+    const [error, setError] = useState<string | JSX.Element>("") 
     const [success, setSuccess] = useState(false)
     const [count, setCount] = useState(0) 
     useEffect(() => {
@@ -82,7 +82,7 @@ export const Claim: React.FC = ({ token }) => {
         if (error.includes("rejected")) {
             return "User rejected the transaction."
         } else if (error.includes("Tlink adapter is not available")) {
-            return "Install Tlink and claim rewards from 𝕏"
+            return <>Install <a href="https://chrome.google.com/webstore/detail/tlink/mgjhlnekhekkfoepkfolngkpdcgogoih" target="_blank" rel="noopener noreferrer">Tlink</a> and claim rewards from 𝕏</>
         } else {
             return error
         }
@@ -100,7 +100,9 @@ export const Claim: React.FC = ({ token }) => {
                         {!success && <button onClick={handleClaimClick} disabled={loading}>Claim $SLN</button>}
 
                         {error && (
-                            <div className="error">{error}</div>
+                            <div className="error">
+                            {typeof error === 'string' ? error : error}
+                        </div>
                         )}
                         {success && !error && (
                             <div className="success">Claim Success! 🎉 <br/>Your SLN tokens will hit your wallet in next 48 hours.</div>
