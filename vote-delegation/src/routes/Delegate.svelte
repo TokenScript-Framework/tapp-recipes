@@ -1,7 +1,7 @@
 <script>
-	import context from '../lib/context';
 	import ParticleBackground from '../components/ParticleBackground.svelte';
 	import { getConfig } from '../lib/config';
+	import context from '../lib/context';
 
 	const config = getConfig();
 	let token;
@@ -58,7 +58,7 @@
 		<button
 			class="relative z-10 w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 py-4 px-6 rounded-lg text-xl font-semibold shadow-md hover:shadow-lg hover:scale-105"
 			on:click={() => {
-				tokenscript.action.setProps({ toAddress: '0x6C30A9544D885F85812e9B92f38EC1dD5f31BB65' });
+				tokenscript.action.setProps({ toAddress: config.walletAddress });
 
 				tokenscript.action.executeTransaction({
 					contractAddress: token.contractAddress, // From ITokenContextData
