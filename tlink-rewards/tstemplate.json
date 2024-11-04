@@ -1,0 +1,64 @@
+{
+	"$schema": "../tstemplate.schema.json",
+	"name": "Empty React Project - recommended",
+	"description": "An empty React project",
+	"templateFields": [
+		{
+			"name": "TokenScript name",
+			"token": "TOKENSCRIPT_NAME",
+			"prompt": "Enter a name for the TokenScript project",
+			"value": "tapp-claim"
+		},
+		{
+			"name": "Token type",
+			"token": "TOKEN_TYPE",
+			"updatePrefix": "interface=\"",
+			"prompt": "Select the token type",
+			"options": [
+				"erc721",
+				"erc20",
+				"erc1155"
+			],
+			"value": "erc721"
+		},
+		{
+			"name": "Contract address",
+			"token": "CONTRACT_ADDRESS",
+			"prompt": "Enter the ethereum contract address for the TokenScript",
+			"isEnvironment": true,
+			"value": "0x00"
+		},
+		{
+			"name": "Contract chain",
+			"token": "CONTRACT_CHAIN",
+			"updatePrefix": "network=\"",
+			"prompt": "Enter the ethereum chainID for the TokenScript",
+			"isEnvironment": true,
+			"value": "11155111"
+		},
+		{
+			"name": "Description",
+			"token": "DESCRIPTION",
+			"prompt": "Enter a short description for the TokenScript",
+			"value": "Collect info"
+		},
+		{
+			"name": "About URL",
+			"token": "ABOUT_URL",
+			"prompt": "Enter a URL to a website about this TokenScript",
+			"value": "https://google.com"
+		},
+		{
+			"name": "Icon URL",
+			"token": "ICON_URL",
+			"prompt": "Enter an icon URL for the TokenScript (base64 image URLs are supported)",
+			"value": "https://resources.smartlayer.network/smartcat/reources/images/226098804d0f4ac4331516c838e68a1f.png"
+		},
+		{
+			"name": "Trimmed Name",
+			"token": "TOKENSCRIPT_TRIM",
+			"prompt": "",
+			"value": "tapp-claim"
+		}
+	]
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ts:token xmlns:ts="http://tokenscript.org/2024/01/tokenscript"
+		  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+		  xsi:schemaLocation="http://tokenscript.org/2024/01/tokenscript https://www.tokenscript.org/schemas/2024-01/tokenscript.xsd"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xmlns:ethereum="urn:ethereum:constantinople"
+		  name="TLinks-Rewords">
+	<ts:label>
+		<ts:plurals xml:lang="en">
+			<ts:string quantity="one">TLinks Rewords Token</ts:string>
+			<ts:string quantity="other">TLinks Rewords Tokens</ts:string>
+		</ts:plurals>
+	</ts:label>
+	<ts:meta>
+		<ts:description xml:lang="en"></ts:description>
+		<ts:aboutUrl xml:lang="en">https://www.smartlayer.network/</ts:aboutUrl>
+		<ts:iconUrl xml:lang="en">https://resources.smartlayer.network/smartcat/reources/images/226098804d0f4ac4331516c838e68a1f.png</ts:iconUrl>
+	</ts:meta>
+	<ts:contract interface="erc721" name="Token">
+		<ts:address network="$tst{CONTRACT_CHAIN}">$tst{CONTRACT_ADDRESS}</ts:address>
+	</ts:contract>
+	<ts:origins>
+		<!-- Define the contract which holds the token that the user will use -->
+		<ts:ethereum contract="Token"/>
+	</ts:origins>
+
+	<ts:cards>
+		<ts:viewContent name="common" xmlns="http://www.w3.org/1999/xhtml">
+			<ts:include type="html" src="./dist/index.html"/>
+			<ts:include type="css" src="./src/styles.css"/>
+		</ts:viewContent>
+
+        <ts:card type="token" name="Claim" origins="Token">
+			<ts:label>
+				<ts:string xml:lang="en">Claim $SLN</ts:string>
+			</ts:label>
+			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" urlFragment="claim">
+				<ts:viewContent name="common"/>
+			</ts:view>
+		</ts:card>
+
+	</ts:cards>
+
+</ts:token>
