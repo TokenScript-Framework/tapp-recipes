@@ -4,6 +4,10 @@
 		"default": {
 			"CONTRACT_ADDRESS": "0xa532d3c016aa0b44b7228accd701a5f03112cd22",
 			"CONTRACT_CHAIN": "11155111"
+		},
+        "base": {
+			"CONTRACT_ADDRESS": "0xef0b105b4f2ce61d2a7ae62d03b1f4cb6c4fbeec",
+			"CONTRACT_CHAIN": "8453"
 		}
 	}
 }

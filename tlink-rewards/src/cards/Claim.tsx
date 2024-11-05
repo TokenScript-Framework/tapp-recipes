@@ -4,9 +4,10 @@ import Loader from "../components/loader/loader";
 // @ts-ignore
 export const Claim: React.FC = ({ token }) => {
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | JSX.Element>("") 
+    const [error, setError] = useState<string | JSX.Element>("")
     const [success, setSuccess] = useState(false)
-    const [count, setCount] = useState(0) 
+    const [count, setCount] = useState(0)
+    const BASE_CHAIN = 8453
     useEffect(() => {
         const fetchCount = async () => {
             const response = await fetch('https://api.smarttokenlabs.com/tlink-rewards/count', {
@@ -16,14 +17,39 @@ export const Claim: React.FC = ({ token }) => {
                 },
             });
             const data = await response.json();
-            setCount(data.count); 
+            setCount(data.count);
         };
 
         setLoading(false);
         fetchCount();
     }, []);
 
+    function getProvider() {
+        return new ethers.BrowserProvider(window.ethereum);
+    }
 
+    async function addNetwork(provider: any) {
+        try {
+            await provider.send("wallet_addEthereumChain", [{
+                chainId: "0x" + Number(BASE_CHAIN).toString(16),
+                chainName: "Base",
+                nativeCurrency: {
+                    name: "ETH",
+                    symbol: "ETH",
+                    decimals: 18
+                },
+                rpcUrls: ["https://mainnet.base.org"],
+                blockExplorerUrls: ["https://basescan.org"]
+            }]);
+        } catch (error) {
+            console.log(error)
+            if (String(error).includes("ACTION_REJECTED")) {
+                throw new Error("User rejected the transaction.");
+            } else {
+                throw new Error("Add Base error, please add it by manually.");
+            }
+        }
+    }
 
     const handleClaimClick = async () => {
 
@@ -31,6 +57,16 @@ export const Claim: React.FC = ({ token }) => {
         setLoading(true);
 
         try {
+
+            const provider = getProvider();
+
+            console.log("chainID", chainID, Number(chainID) !== BASE_CHAIN)
+
+            if (Number(chainID) !== BASE_CHAIN) {
+                await addNetwork(provider)
+                await provider.send("wallet_switchEthereumChain", [{ chainId: "0x" + Number(BASE_CHAIN).toString(16) }]);
+            }
+
             const { handle, API_KEY } = await tokenscript.tlink.request({ method: "getTlinkContext", payload: [] })
 
             const signature = await tokenscript.personal.sign({ data: handle });
@@ -94,18 +130,18 @@ export const Claim: React.FC = ({ token }) => {
                 <div className="claim-container">
                     <img src="https://resources.smartlayer.network/images/tlinks-rewards-box.png" />
                     <div className="count-display">
-                         {10_000-count} / 10,000 Claims Left
+                        {10_000 - count} / 10,000 Claims Left
                     </div>
                     <div className="button-container">
                         {!success && <button onClick={handleClaimClick} disabled={loading}>Claim $SLN</button>}
 
                         {error && (
                             <div className="error">
-                            {typeof error === 'string' ? error : error}
-                        </div>
+                                {typeof error === 'string' ? error : error}
+                            </div>
                         )}
                         {success && !error && (
-                            <div className="success">Claim Success! 🎉 <br/>Your SLN tokens will hit your wallet in next 48 hours.</div>
+                            <div className="success">Claim Success! 🎉 <br />Your SLN tokens will hit your wallet in next 48 hours.</div>
                         )}
                     </div>
                 </div>
