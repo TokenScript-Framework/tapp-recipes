@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Loader from "../components/loader/loader";
-
+import { Turnstile, TurnstileInstance } from "@marsidev/react-turnstile"
 // @ts-ignore
 export const Claim: React.FC = ({ token }) => {
     const [loading, setLoading] = useState(true);
@@ -8,6 +8,19 @@ export const Claim: React.FC = ({ token }) => {
     const [success, setSuccess] = useState(false)
     const [count, setCount] = useState(0)
     const BASE_CHAIN = 8453
+    const [captchaLoaded, setCaptchaLoaded] = useState(false);
+
+    const SITE_KEY = '0x4AAAAAAAzVhnfaO3QIRTAw'
+
+    const turnstileInstanceRef = useRef<TurnstileInstance>(null)
+    useEffect(() => {
+        return () => {
+            if (turnstileInstanceRef.current) {
+                turnstileInstanceRef.current.reset();
+            }
+        };
+    }, []);
+
     useEffect(() => {
         const fetchCount = async () => {
             const response = await fetch('https://api.smarttokenlabs.com/tlink-rewards/count', {
@@ -57,6 +70,15 @@ export const Claim: React.FC = ({ token }) => {
         setLoading(true);
 
         try {
+
+            const captchaToken = turnstileInstanceRef.current?.getResponse()
+            console.log('captchaToken--', captchaToken)
+            if (!captchaToken) {
+                setError("Captcha validate failed, please refresh and try again")
+                return
+            }
+
+            turnstileInstanceRef.current?.reset()
 
             const provider = getProvider();
 
@@ -133,7 +155,24 @@ export const Claim: React.FC = ({ token }) => {
                         {10_000 - count} / 10,000 Claims Left
                     </div>
                     <div className="button-container">
-                        {!success && <button onClick={handleClaimClick} disabled={loading}>Claim $SLN</button>}
+                        {!success && (<>
+                            <button onClick={handleClaimClick} disabled={loading}>Claim $SLN</button>
+                            <Turnstile
+                                id="tlink-rewards"
+                                ref={turnstileInstanceRef}
+                                siteKey={SITE_KEY}
+                                onError={(error) => {
+                                    console.error('Turnstile error:', error);
+                                    setCaptchaLoaded(false);
+                                }}
+                                onSuccess={() => setCaptchaLoaded(true)}
+                                onExpire={() => {
+                                    setCaptchaLoaded(false);
+                                    turnstileInstanceRef.current?.reset();
+                                }}
+                            />
+                        </>)
+                        }
 
                         {error && (
                             <div className="error">
