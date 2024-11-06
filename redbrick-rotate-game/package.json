@@ -15,9 +15,11 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
+    "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.454.0",
+    "node-jose": "^2.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
@@ -27,6 +29,7 @@
   "devDependencies": {
     "@tokenscript/card-sdk": "^1.4.0",
     "@types/node": "^22.8.4",
+    "@types/node-jose": "^1.1.13",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.13.1",

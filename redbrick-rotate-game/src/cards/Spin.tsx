@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Loader from '../components/loader/loader';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { getNonce } from '@/lib/redbrickApi';
 
 // @ts-ignore
 export const Spin: React.FC = () => {
@@ -14,7 +15,8 @@ export const Spin: React.FC = () => {
   }, []);
 
   async function spin() {
-    console.log('TODO: Implement spin');
+    const nonce = await getNonce();
+    console.log('nonce', nonce);
   }
 
   return (
