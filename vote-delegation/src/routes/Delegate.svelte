@@ -55,18 +55,27 @@
 			"Delegate your voting power to me"
 		</p>
 
-		<button
-			class="relative z-10 w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 py-4 px-6 rounded-lg text-xl font-semibold shadow-md hover:shadow-lg hover:scale-105"
-			on:click={() => {
-				tokenscript.action.setProps({ toAddress: config.walletAddress });
+		<div class="flex flex-col items-center gap-4 w-full">
+			<button
+				class="relative z-10 w-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 py-4 px-6 rounded-lg text-xl font-semibold shadow-md hover:shadow-lg hover:scale-105"
+				on:click={() => {
+					tokenscript.action.setProps({ toAddress: config.walletAddress });
+					tokenscript.action.executeTransaction({
+						contractAddress: token.contractAddress, // From ITokenContextData
+						chainId: token.chainId
+					});
+				}}
+			>
+				Delegate
+			</button>
+		</div>
 
-				tokenscript.action.executeTransaction({
-					contractAddress: token.contractAddress, // From ITokenContextData
-					chainId: token.chainId
-				});
-			}}
+		<a
+			href="https://vote-delegation.vercel.app/"
+			target="_blank"
+			class="fixed bottom-8 right-8 z-50 text-blue-300 hover:text-blue-400 transition-all duration-200 text-sm font-medium hover:underline"
 		>
-			Delegate
-		</button>
+			Create yours →
+		</a>
 	</div>
 </ParticleBackground>
