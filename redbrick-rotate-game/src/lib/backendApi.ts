@@ -36,6 +36,20 @@ export async function encryptSpinData() {
   return response.data.data;
 }
 
+export async function spin(txHash: string, nonce: string, authToken: string) {
+  const response = await axios.post(
+    `${tokenscript.env.BACKEND_API_BASE_URL}/redbrick/spin`,
+    {
+      txHash,
+      walletAddress,
+      nonce,
+      authToken,
+    }
+  );
+
+  return response.data;
+}
+
 export function getSignMessage(nonce: string) {
   return `
       Welcome to REDBRICK!

@@ -29,22 +29,6 @@ export async function getSpinSignature(data: string, authToken: string) {
   return response.data;
 }
 
-export async function spin(txHash: string, nonce: string, authToken: string) {
-  const response = await axios.post(
-    `${tokenscript.env.REDBRICK_API_BASE_URL}/partner-0xrotate/spin`,
-    {
-      txHash,
-      walletAddress,
-      nonce,
-    },
-    {
-      headers: { Authorization: `Bearer ${authToken}` },
-    }
-  );
-
-  return response.data;
-}
-
 export function getSignMessage(nonce: string) {
   return `
       Welcome to REDBRICK!

@@ -8,9 +8,8 @@ import {
   getSignMessage,
   getSpinSignature,
   join,
-  spin,
 } from '@/lib/redbrickApi';
-import { encryptJoinData, encryptSpinData } from '@/lib/backendApi';
+import { encryptJoinData, encryptSpinData, spin } from '@/lib/backendApi';
 import { publicClient, walletClient } from '@/lib/provider';
 import { opBNBTestnet } from 'viem/chains';
 
@@ -48,6 +47,8 @@ export const Spin: React.FC = () => {
       spinSignatureResponse.data.nonce,
       authToken
     );
+
+    console.log(result);
   }
 
   return (
