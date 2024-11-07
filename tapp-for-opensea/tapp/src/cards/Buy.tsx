@@ -1,118 +1,281 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Loader from "../components/loader/loader";
 import { ethers } from "ethers";
 import axios from "axios";
 import { Seaport } from "@opensea/seaport-js";
 import { OPENSEA_CONDUIT_KEY } from "@opensea/seaport-js/lib/constants";
+import { Chain } from "opensea-js";
+import { createPublicClient, custom } from 'viem'
+import { tokenData } from "@token-kit/onchain";
 
-async function loadListings() {
-  const listings = (
-    await axios.get(
-      `https://testnets-api.opensea.io//api/v2/orders/base_sepolia/seaport/listings?maker=0x8b82b76d16AB17564872486005724a2F40F8a376`
-    )
-  ).data.orders;
+import { base, baseSepolia } from "viem/chains";
 
-  return await Promise.all(
-    listings.map(async (listing: any) => {
-      return {
-        orderHash: listing.order_hash,
-        currentPrice: `${ethers.formatEther(listing.current_price)} eth`,
-        protocolAddress: listing.protocol_address,
-        protocolData: listing.protocol_data,
-        assets: listing.maker_asset_bundle.assets.map((asset: any) => {
-          return {
-            name: asset.name,
-            image: asset.image_url,
-            link: asset.permalink.replace("base_sepolia", "base-sepolia"),
-          };
-        }),
-      };
-    })
-  );
+import opensearSVG from "../assets/opensea.svg"
+import { isTestChain } from "../components/lib/utils";
+
+interface OrderType {
+    orderHash: string;
+    protocolAddress: string;
+    protocolData: any; // 如果可能，这里也应该定义具体类型
 }
 
-async function fulfilLsting(order: any) {
-  const result = (
-    await axios.post(
-      "https://testnets-api.opensea.io/api/v2/listings/fulfillment_data",
-      {
-        listing: {
-          hash: "0x952e0cc9b847849345b3b9de3f796779cd96650d6c7858e17763fec00c57d29a",
-          chain: "base_sepolia",
-          protocol_address: "0x0000000000000068f116a894984e2db1123eb395",
-        },
-        fulfiller: { address: "0x851438Ecb37FAe596DcD49bDe643D170F3aa225B" },
-      }
-    )
-  ).data;
-  const signature = result.fulfillment_data.orders[0].signature;
-  const protocolData = order.protocolData;
-
-  console.log("Input Data", protocolData);
-
-  protocolData.signature = signature;
-  const checksummedProtocolAddress = ethers.getAddress(
-    "0x0000000000000068f116a894984e2db1123eb395"
-  );
-
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  const seaport = new Seaport(await provider.getSigner(), {
-    overrides: {
-      contractAddress: checksummedProtocolAddress,
-      seaportVersion: "1.6",
-      defaultConduitKey: OPENSEA_CONDUIT_KEY,
-    },
-  });
-  const { executeAllActions } = await seaport.fulfillOrder({
-    order: protocolData,
-    accountAddress: await (await provider.getSigner()).getAddress(),
-  });
-  const transaction = await executeAllActions();
+interface Token {
+    image: string;
+    attributes:
+    {
+        "trait_type": string;
+        "value": string | number
+    }[];
+    name: string;
+    description: string;
 }
 
 // @ts-ignore
-export const Buy: React.FC = ({ token }) => {
-  const [loading, setLoading] = useState(true);
-  const [order, setOrder] = useState<any>();
+export const Buy: React.FC = () => {
+    const [orderHash, setOrderHash] = useState<`0x${string}` | null>(null);
+    const [protocolAddress, setProtocolAddress] = useState<`0x${string}` | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [confirming, setConfirming] = useState(false);
+    const [order, setOrder] = useState<any>();
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
+    const [token, setToken] = useState<Token | null>(null)
+    const [transactionHash, setTransactionHash] = useState<string>('');
 
-  // const loadOrder = useCallback(async () => {
-  //   if (token) {
-  //     const openseaSDK = new OpenSeaSDK(
-  //       await new ethers.BrowserProvider(window.ethereum, 84532).getSigner(),
-  //       {
-  //         chain: Chain.BaseSepolia,
-  //         apiKey: "YOUR_API_KEY",
-  //       }
-  //     );
+    const isProd = !isTestChain(chainID)
 
-  //     return await openseaSDK.api.getOrder({
-  //       side: OrderSide.LISTING,
-  //       protocol: "seaport",
-  //       assetContractAddress: token.contractAddress,
-  //       tokenId: token.tokenId,
-  //     });
-  //   }
-  // }, [token]);
+    const SCAN_BASE_URL = isProd ? 'https://basescan.org' : 'https://sepolia.basescan.org';
 
-  useEffect(() => {
-    setLoading(false);
-    loadListings().then((orders) => {
-      setOrder(orders[0]);
-      fulfilLsting(orders[0]);
-    });
-  }, [loadListings]);
+    async function loadOrder(orderHash: `0x${string}`, protocolAddress: `0x${string}`) {
 
-  return (
-    <div>
-      {order && (
-        <div>
-          <h3>Listing</h3>
-          <p>Token: {JSON.stringify(token)}</p>
-          <p>Order: {JSON.stringify(order)}</p>
-          {/* <button onClick={}>Buy</button> */}
+        const orderDetail = (
+            await axios.get(
+                `https://testnets-api.opensea.io/api/v2/orders/chain/${isProd ? Chain.Base : Chain.BaseSepolia}/protocol/${protocolAddress}/${orderHash}`
+            )
+        ).data.order;
+        console.log(orderDetail)
+
+        const considerations = orderDetail.protocol_data.parameters.consideration;
+
+        const taker = considerations.length === 3 ? considerations[2].recipient : null;
+
+        return {
+            orderHash: orderHash,
+            currentPrice: `${ethers.formatEther(orderDetail.price.current.value)} ${orderDetail.price.current.currency}`,
+            protocolAddress: protocolAddress,
+            protocolData: orderDetail.protocol_data,
+            taker: taker,
+            asset: {
+                tokenContract: orderDetail.protocol_data.parameters.offer[0].token,
+                tokenId: orderDetail.protocol_data.parameters.offer[0].identifierOrCriteria
+
+            },
+            startTime: orderDetail.protocol_data.parameters.startTime,
+            endTime: orderDetail.protocol_data.parameters.endTime
+        };
+    }
+
+    async function getMetadata(contract: `0x${string}`, tokenId: string) {
+        try {
+            const walletClient = createPublicClient({
+                chain: isProd ? base : baseSepolia,
+                transport: custom(window.ethereum),
+            });
+
+            const result = await tokenData(
+                walletClient,
+                contract,
+                Number(tokenId), { includeTokenMetadata: true },
+            );
+
+            if ('tokenMetadata' in result) {
+                return result.tokenMetadata;
+            }
+            throw new Error('Token metadata not available');
+        } catch (error) {
+            throw error instanceof Error ? error : new Error('Unknown error occurred');
+
+        }
+    }
+
+    function getParams() {
+        const params = new URLSearchParams(document.location.hash.replace('#', ''));
+        if (params.get('orderHash')) {
+            setOrderHash(params.get('orderHash') as `0x${string}`)
+            setProtocolAddress(params.get('protocolAddress') as `0x${string}`)
+        }
+    }
+
+    async function fulfilLsting(order: OrderType) {
+        try {
+            setConfirming(true);
+            setError('')
+            setSuccess(false);
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const result = (
+                await axios.post(
+                    "https://testnets-api.opensea.io/api/v2/listings/fulfillment_data",
+                    {
+                        listing: {
+                            hash: order.orderHash,
+                            chain: isProd ? Chain.Base : Chain.BaseSepolia,
+                            protocol_address: order.protocolAddress,
+                        },
+                        fulfiller: { address: walletAddress },
+                    }
+                )
+            ).data;
+
+
+            const signature = result.fulfillment_data.orders[0].signature;
+            const protocolData = order.protocolData;
+
+            protocolData.signature = signature;
+            const checksummedProtocolAddress = ethers.getAddress(
+                order.protocolAddress
+            );
+
+            const seaport = new Seaport(await provider.getSigner(), {
+                overrides: {
+                    contractAddress: checksummedProtocolAddress,
+                    seaportVersion: "1.6",
+                    defaultConduitKey: OPENSEA_CONDUIT_KEY,
+                },
+            });
+            const { executeAllActions } = await seaport.fulfillOrder({
+                order: protocolData,
+                accountAddress: walletAddress,
+            });
+            const transaction = await executeAllActions();
+            setTransactionHash(transaction.hash)
+            setSuccess(true);
+
+        } catch (error) {
+            console.log('ERROR', error)
+            setError(parseError(String(error)))
+        } finally {
+            setConfirming(false)
+        }
+    }
+
+    function parseError(error: string) {
+        if (error.includes("ACTION_REJECTED")) {
+            return "User rejected the transaction."
+        } {
+            return error
+        }
+    }
+
+    useEffect(() => {
+        setLoading(true);
+        getParams()
+        if (orderHash && protocolAddress) {
+            try {
+                loadOrder(orderHash, protocolAddress).then(async (order) => {
+                    console.log("orders-----", order)
+                    setOrder(order);
+                    try {
+                        const result = await getMetadata(order.asset.tokenContract, order.asset.tokenId)
+                        console.log("tokenMetadata--", result)
+                        setToken(result as Token)
+                    } catch (error) {
+                        console.log("Error for getMetadata: ", error)
+                        setToken({
+                            image: '',
+                            attributes: [],
+                            name: '',
+                            description: 'unknow'
+                        })
+                    } finally {
+                        setLoading(false);
+                    }
+                });
+            } catch (error) {
+                console.log("Error for loadOrder:", error)
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [orderHash, protocolAddress]);
+
+    if (loading) {
+        return (<div className="h-[100vh] flex items-center justify-center">
+            <Loader show={loading} />
+        </div>)
+    }
+
+    return (
+        <div className="p-0">
+            {order ? (
+                <div className="w-full">
+                    <div className="rounded-[8px] border mb-8 w-full">
+                        <div className="bg-gray-100">
+                            {token?.image ? (
+                                <img
+                                    src={token?.image}
+                                    alt={token?.name} />
+                            ) : (
+                                <div className="relative w-full h-72 bg-gray-100 flex items-center justify-center">
+                                    <div className="relative w-full h-full p-10">
+                                        <img
+                                            src={opensearSVG}
+                                            alt='NFT' className="w-full h-full opacity-10" />
+                                    </div>
+                                </div>
+                            )}
+
+
+                        </div>
+                        <div className="p-3 rounded font-bold text-lg">
+                            <p className="truncate">{token?.name || 'Unknown'}</p>
+                            <p className="uppercase">{order.currentPrice}</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        {order.endTime < (Math.floor(Date.now() / 1000)) && (
+                            <div className="p-4 text-red-500 text-center rounded-lg">
+                                Order expired
+                            </div>
+                        )}
+
+                        {(order.endTime > (Math.floor(Date.now() / 1000)) && (!order.taker || order.taker === walletAddress)) && (
+                            <button
+                                onClick={() => fulfilLsting(order)}
+                                disabled={confirming}
+                                className={`w-full font-bold py-2 px-4 rounded-[8px] ${confirming
+                                    ? 'bg-blue-300 cursor-not-allowed'
+                                    : 'bg-blue-500 hover:bg-blue-700'
+                                    } text-white`}
+                            >
+                                Confirm
+                            </button>
+                        )}
+                        {error && (
+                            <div className="p-4 text-red-500  rounded-lg text-center">
+                                {error}
+                            </div>
+                        )}
+
+                        {success && (
+                            <div className="p-4 text-green-900 ">
+                                Success! 🎉 Please access <a href={`${SCAN_BASE_URL}/tx/${transactionHash}`} target="_blank" rel="noopener noreferrer">Transaction Scan</a> to view the transaction details.
+                            </div>
+                        )}
+
+                    </div>
+                </div>
+            )
+                : (
+                    <div className="h-[100vh] flex items-center justify-center">
+                        <div className="font-bold text-4xl">
+                            No orders!
+                        </div>
+                    </div>
+                )
+            }
+
+            <Loader show={confirming} />
         </div>
-      )}
-      <Loader show={loading} />
-    </div>
-  );
+    );
 };

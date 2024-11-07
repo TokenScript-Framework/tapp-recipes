@@ -15,13 +15,23 @@ const App: FC = () => {
   );
   const [token, setToken] = useState<ITokenContextData>();
 
-  const mapCardName = (card: string | null): CardName => {
+  const mapCardName = (hashString: string | null): CardName => {
+    console.log("hashString--",hashString)
+    if (!hashString) return CardName.NotFound;
+    
+    const params = new URLSearchParams(hashString.replace('#', ''));
+    const card = params.get('card');
+    console.log('card--',card)
+
     switch (card) {
-      case CardName.Buy:
+      case 'Buy':{
         return CardName.Buy;
+      }
       default:
         return CardName.NotFound;
     }
+
+
   };
 
   const cardComponents: { [key in CardName]: React.FC } = {
@@ -33,8 +43,8 @@ const App: FC = () => {
 
   useEffect(() => {
     const routeChange = () => {
-      const card = document.location.hash;
-      const mappedCardName = mapCardName(card);
+      console.log('App',document.location)
+      const mappedCardName = mapCardName(document.location.hash);
       setCurrentPageName(mappedCardName);
     };
 
