@@ -73,7 +73,11 @@ export function MainSection() {
                         <Loading />
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {userListings &&
+                            {userListings && userListings.length === 0 ? (
+                                <p className="text-gray-700 text-lg">
+                                    No listing data. Please access <a href="https://testnets.opensea.io/" target="_blank" className="text-blue-500 cursor underline">Opensea</a> to add.
+                                </p>
+                            ) : (
                                 userListings.map((nft) => {
                                     return (
                                         <Card
@@ -120,7 +124,7 @@ export function MainSection() {
                                             </CardContent>
                                         </Card>
                                     );
-                                })}
+                                }))}
                         </div>
                     )
                 ) : (
