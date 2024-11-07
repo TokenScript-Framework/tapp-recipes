@@ -7,7 +7,7 @@ import {
 } from 'viem';
 import { opBNB, opBNBTestnet } from 'viem/chains';
 
-const chain = extractChain({
+export const chain = extractChain({
   chains: [opBNBTestnet, opBNB],
   id: Number(tokenscript.env.SPIN_CONTRACT_CHAIN) as 5611 | 204,
 });

@@ -3,15 +3,8 @@ import React, { useState, useEffect } from 'react';
 import Loader from '../components/loader/loader';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  getNonce,
-  getSignMessage,
-  getSpinSignature,
-  join,
-} from '@/lib/redbrickApi';
-import { encryptJoinData, encryptSpinData, spin } from '@/lib/backendApi';
-import { publicClient, walletClient } from '@/lib/provider';
-import { opBNBTestnet } from 'viem/chains';
+import { spin } from '@/lib/backendApi';
+import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
 
 // @ts-ignore
 export const Spin: React.FC = () => {
@@ -23,24 +16,12 @@ export const Spin: React.FC = () => {
   }, []);
 
   async function onSpin() {
-    const nonce = await getNonce();
-    const message = getSignMessage(nonce);
-    const sig = await tokenscript.personal.sign({ data: message });
-    const joinData = await encryptJoinData(message, sig as string);
-    const joinResponse = await join(joinData);
+    const joinResponse = await joinGame();
     const authToken = joinResponse.data.authInfo.accessToken;
-    const spinData = await encryptSpinData();
-    const spinSignatureResponse = await getSpinSignature(spinData, authToken);
 
-    await walletClient.switchChain({ id: opBNBTestnet.id });
+    const spinSignatureResponse = await spinSignature(authToken);
 
-    const hash = await walletClient.sendTransaction({
-      to: spinSignatureResponse.data.contractAddress,
-      data: spinSignatureResponse.data.data,
-      value: BigInt(spinSignatureResponse.data.price),
-    });
-
-    await publicClient.waitForTransactionReceipt({ hash });
+    const hash = await buySpin(spinSignatureResponse);
 
     const result = await spin(
       hash,
