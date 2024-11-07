@@ -1,5 +1,7 @@
-import { Beer } from "lucide-react";
+
 import Link from "next/link";
+import Image from "next/image";
+import opensearSVG from "../public/images/opensea.svg"
 
 export function Footer() {
   return (
@@ -8,7 +10,8 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <Link href="/" className="flex items-center space-x-2">
-              <Beer className="h-6 w-6 text-amber-500" />
+              
+            <Image src={opensearSVG} alt="logo" width={32} height={32} />
               <span className="text-lg font-semibold">Tapp For OpenSea</span>
             </Link>
           </div>
@@ -34,7 +37,7 @@ export function Footer() {
           </nav>
         </div>
         <div className="mt-8 text-center text-sm text-gray-500">
-          © 2024 Tapp For OpenSea. All rights reserved.
+          © {new Date().getFullYear()} Tapp For OpenSea. All rights reserved.
         </div>
       </div>
     </footer>
