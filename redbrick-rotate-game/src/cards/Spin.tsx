@@ -110,6 +110,7 @@ export const Spin: React.FC = () => {
 
       setItemIndex(itemIndexByType[result.rbRewardType]);
       setSpinResult(result);
+      await loadGameInfo();
       setIsDialogOpen(true);
     } catch (e: any) {
       setError('Failed to spin, please try again later.');
@@ -149,6 +150,21 @@ export const Spin: React.FC = () => {
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/button-display.png'
           alt='button-display'
         />
+        <div className='absolute bottom-4 flex gap-2 z-20 text-white'>
+          <img
+            className='max-w-4'
+            src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon.png'
+            alt='button-display'
+          />
+          <div>
+            {userInfo
+              ? `${
+                  userInfo.data.inventory.totalSpinDaily -
+                  userInfo.data.inventory.availableSpin
+                }/${userInfo.data.inventory.totalSpinDaily}`
+              : '-/-'}
+          </div>
+        </div>
       </>
     );
   } else {
