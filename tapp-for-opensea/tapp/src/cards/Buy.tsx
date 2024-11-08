@@ -10,13 +10,14 @@ import { tokenData } from "@token-kit/onchain";
 
 import { base, baseSepolia } from "viem/chains";
 
-import opensearSVG from "../assets/opensea.svg"
-import { isTestChain } from "../components/lib/utils";
+import openseaSVG from "../assets/opensea.svg"
+import { addressPipe, isTestChain } from "../components/lib/utils";
+import { CountdownTimer } from "../components/timer";
 
 interface OrderType {
     orderHash: string;
     protocolAddress: string;
-    protocolData: any; // 如果可能，这里也应该定义具体类型
+    protocolData: any; 
 }
 
 interface Token {
@@ -29,7 +30,6 @@ interface Token {
     name: string;
     description: string;
 }
-
 // @ts-ignore
 export const Buy: React.FC = () => {
     const [orderHash, setOrderHash] = useState<`0x${string}` | null>(null);
@@ -41,6 +41,7 @@ export const Buy: React.FC = () => {
     const [success, setSuccess] = useState(false);
     const [token, setToken] = useState<Token | null>(null)
     const [transactionHash, setTransactionHash] = useState<string>('');
+    const [seaport, setSeaport] = useState<any>();
 
     const isProd = !isTestChain(chainID)
 
@@ -59,12 +60,18 @@ export const Buy: React.FC = () => {
 
         const taker = considerations.length === 3 ? considerations[2].recipient : null;
 
+        const seaportInstance = await initSeaport(protocolAddress);
+        const orderStatus = await seaportInstance.getOrderStatus(orderHash);
+        console.log("result---", orderStatus)
+        const isCompleted = orderStatus.totalFilled > 0;
+
         return {
             orderHash: orderHash,
             currentPrice: `${ethers.formatEther(orderDetail.price.current.value)} ${orderDetail.price.current.currency}`,
             protocolAddress: protocolAddress,
             protocolData: orderDetail.protocol_data,
             taker: taker,
+            completed: isCompleted,
             asset: {
                 tokenContract: orderDetail.protocol_data.parameters.offer[0].token,
                 tokenId: orderDetail.protocol_data.parameters.offer[0].identifierOrCriteria
@@ -100,10 +107,25 @@ export const Buy: React.FC = () => {
 
     function getParams() {
         const params = new URLSearchParams(document.location.hash.replace('#', ''));
-        if (params.get('orderHash')) {
+        if (params.get('orderHash') && params.get('protocolAddress')) {
             setOrderHash(params.get('orderHash') as `0x${string}`)
             setProtocolAddress(params.get('protocolAddress') as `0x${string}`)
+
         }
+    }
+
+    async function initSeaport(protocolAddress: string) {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const checksummedProtocolAddress = ethers.getAddress(protocolAddress);
+        const seaportInstance = new Seaport(await provider.getSigner(), {
+            overrides: {
+                contractAddress: checksummedProtocolAddress,
+                seaportVersion: "1.6",
+                defaultConduitKey: OPENSEA_CONDUIT_KEY,
+            },
+        });
+        setSeaport(seaportInstance);
+        return seaportInstance;
     }
 
     async function fulfilLsting(order: OrderType) {
@@ -111,7 +133,7 @@ export const Buy: React.FC = () => {
             setConfirming(true);
             setError('')
             setSuccess(false);
-            const provider = new ethers.BrowserProvider(window.ethereum);
+           
             const result = (
                 await axios.post(
                     "https://testnets-api.opensea.io/api/v2/listings/fulfillment_data",
@@ -131,17 +153,7 @@ export const Buy: React.FC = () => {
             const protocolData = order.protocolData;
 
             protocolData.signature = signature;
-            const checksummedProtocolAddress = ethers.getAddress(
-                order.protocolAddress
-            );
 
-            const seaport = new Seaport(await provider.getSigner(), {
-                overrides: {
-                    contractAddress: checksummedProtocolAddress,
-                    seaportVersion: "1.6",
-                    defaultConduitKey: OPENSEA_CONDUIT_KEY,
-                },
-            });
             const { executeAllActions } = await seaport.fulfillOrder({
                 order: protocolData,
                 accountAddress: walletAddress,
@@ -169,11 +181,13 @@ export const Buy: React.FC = () => {
     useEffect(() => {
         setLoading(true);
         getParams()
+        console.log()
         if (orderHash && protocolAddress) {
             try {
                 loadOrder(orderHash, protocolAddress).then(async (order) => {
                     console.log("orders-----", order)
                     setOrder(order);
+
                     try {
                         const result = await getMetadata(order.asset.tokenContract, order.asset.tokenId)
                         console.log("tokenMetadata--", result)
@@ -192,11 +206,30 @@ export const Buy: React.FC = () => {
                 });
             } catch (error) {
                 console.log("Error for loadOrder:", error)
-            } finally {
                 setLoading(false);
             }
         }
     }, [orderHash, protocolAddress]);
+
+    function getButtonText(order: any) {
+        if (order.completed) {
+            return 'Order Completed';
+        }
+        if (order.endTime < (Math.floor(Date.now() / 1000))) {
+            return 'Order expired';
+        }
+        if (order.taker && order.taker.toLowerCase() !== walletAddress?.toLowerCase()) {
+            return `Reserved for ${addressPipe(order.taker)}`;
+        }
+        return 'Buy';
+    }
+
+    function isButtonDisabled(order: any) {
+        return confirming ||
+            order.completed ||
+            (order.taker && order.taker.toLowerCase() !== walletAddress?.toLowerCase()) ||
+            order.endTime < (Math.floor(Date.now() / 1000));
+    }
 
     if (loading) {
         return (<div className="h-[100vh] flex items-center justify-center">
@@ -213,44 +246,72 @@ export const Buy: React.FC = () => {
                             {token?.image ? (
                                 <img
                                     src={token?.image}
-                                    alt={token?.name} />
+                                    alt={token?.name}
+                                    onError={(e) => {
+                                        e.currentTarget.src = openseaSVG;
+                                        e.currentTarget.className = "w-full h-full opacity-10";
+                                    }} />
                             ) : (
                                 <div className="relative w-full h-72 bg-gray-100 flex items-center justify-center">
                                     <div className="relative w-full h-full p-10">
                                         <img
-                                            src={opensearSVG}
+                                            src={openseaSVG}
                                             alt='NFT' className="w-full h-full opacity-10" />
                                     </div>
                                 </div>
                             )}
-
-
                         </div>
-                        <div className="p-3 rounded font-bold text-lg">
-                            <p className="truncate">{token?.name || 'Unknown'}</p>
-                            <p className="uppercase">{order.currentPrice}</p>
+                        {token?.attributes && token.attributes.length > 0 && (
+                            <div className="mt-4 border-t p-2">
+                                <div className="grid grid-cols-2 gap-2">
+                                    {token.attributes.map((attr, index) => (
+                                        <div key={index} className="bg-gray-50 p-2 rounded">
+                                            <p className="text-sm text-gray-500">{attr.trait_type}</p>
+                                            <p className="text-sm font-medium">{attr.value}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        <div className="p-3 rounded font-bold text-lg text-sm">
+                            <div className="flex justify-between items-center">
+                                <p className="truncate">{token?.name || 'Unknown'}</p>
+                                <p className="uppercase">{order.currentPrice}</p>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Expired at
+                                </p>
+                                <p>
+                                {(() => {
+                                                const now = Math.floor(Date.now() / 1000);
+                                                const timeUntilEnd = order.endTime - now;
+                                                
+                                                if (timeUntilEnd > 0 && timeUntilEnd <= 24 * 3600) {
+                                                    return <CountdownTimer endTime={order.endTime} />;
+                                                }
+                                                
+                                                return new Date(order.endTime * 1000).toLocaleString();
+                                            })()}
+                                </p>
+                            </div>
                         </div>
+
                     </div>
 
                     <div>
-                        {order.endTime < (Math.floor(Date.now() / 1000)) && (
-                            <div className="p-4 text-red-500 text-center rounded-lg">
-                                Order expired
-                            </div>
-                        )}
-
-                        {(order.endTime > (Math.floor(Date.now() / 1000)) && (!order.taker || order.taker === walletAddress)) && (
-                            <button
-                                onClick={() => fulfilLsting(order)}
-                                disabled={confirming}
-                                className={`w-full font-bold py-2 px-4 rounded-[8px] ${confirming
-                                    ? 'bg-blue-300 cursor-not-allowed'
-                                    : 'bg-blue-500 hover:bg-blue-700'
-                                    } text-white`}
-                            >
-                                Confirm
-                            </button>
-                        )}
+                        <button
+                            onClick={() => fulfilLsting(order)}
+                            disabled={
+                                isButtonDisabled(order)
+                            }
+                            className={`w-full font-bold py-2 px-4 rounded-[8px] text-white ${isButtonDisabled(order)
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-blue-500 hover:bg-blue-700'
+                                }`}
+                        >
+                            {getButtonText(order)}
+                        </button>
                         {error && (
                             <div className="p-4 text-red-500  rounded-lg text-center">
                                 {error}
