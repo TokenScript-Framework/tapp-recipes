@@ -12,6 +12,7 @@ import {
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import CountDown from '@/components/count-down';
 
 const itemIndexByType: Record<string, number> = {
   badge: 1,
@@ -249,6 +250,7 @@ export const Spin: React.FC = () => {
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/machine-body.png'
           alt='machine-body'
         />
+        <CountDown />
         {messageOrButton}
         <img
           className='max-w-[19rem] top-44 absolute'
