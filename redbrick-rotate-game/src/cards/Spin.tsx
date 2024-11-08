@@ -5,6 +5,7 @@ import { spin } from '@/lib/backendApi';
 import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
 import Spinner from '@/components/Spinner';
 import { getGameStatus, getRemainingPool } from '@/lib/redbrickApi';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const itemIndexByType: Record<string, number> = {
   badge: 1,
@@ -21,8 +22,9 @@ export const Spin: React.FC = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [buttonImageIndex, setButtonImageIndex] = useState(0); // button up high
   const [authToken, setAuthToken] = useState('');
-  const [message, setMessage] = useState('');
-  const [isDialogOpen, setIsDialogOpen] = useState(true);
+  const [blockingMessage, setBlockingMessage] = useState('');
+  const [error, setError] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     tokenscript.action.setActionButton({ show: false });
@@ -30,9 +32,9 @@ export const Spin: React.FC = () => {
     async function run() {
       const eventStatus = await getGameStatus();
       if (eventStatus.data.isComing) {
-        setMessage(`Coming Soon (${eventStatus.data.open})`);
+        setBlockingMessage(`Coming Soon (${eventStatus.data.open})`);
       } else if (eventStatus.data.isEnd) {
-        setMessage(`Event Ended (${eventStatus.data.close})`);
+        setBlockingMessage(`Event Ended (${eventStatus.data.close})`);
       }
     }
 
@@ -49,7 +51,7 @@ export const Spin: React.FC = () => {
     async function run() {
       const remainingPool = await getRemainingPool(authToken);
       if (remainingPool <= 0) {
-        setMessage(
+        setBlockingMessage(
           'The total global spin pool is reached. Please spin tomorrow!'
         );
       }
@@ -63,24 +65,35 @@ export const Spin: React.FC = () => {
 
     if (!authToken) return;
 
-    setIsSpinning(true);
-    const spinSignatureResponse = await spinSignature(authToken);
-    const hash = await buySpin(spinSignatureResponse);
-    const result = await spin(
-      hash,
-      spinSignatureResponse.data.nonce,
-      authToken
-    );
+    try {
+      setIsSpinning(true);
+      const spinSignatureResponse = await spinSignature(authToken);
+      const hash = await buySpin(spinSignatureResponse);
+      const result = await spin(
+        hash,
+        spinSignatureResponse.data.nonce,
+        authToken
+      );
 
-    setItemIndex(itemIndexByType[result.rbRewardType]);
-    setIsSpinning(false);
+      setItemIndex(itemIndexByType[result.rbRewardType]);
+    } catch (e: any) {
+      setError("Failed to spin, please try again later.");
+      setIsDialogOpen(true)
+    } finally {
+      setIsSpinning(false);
+    }
+  }
+
+  function onDialogClose() {
+    setIsDialogOpen(false);
+    setError('');
   }
 
   let messageOrButton;
-  if (message) {
+  if (blockingMessage) {
     messageOrButton = (
       <div className='absolute max-w-80 text-center text-xl backdrop-blur-xl text-white font-bold bottom-16 border p-4 rounded-xl'>
-        {message}
+        {blockingMessage}
       </div>
     );
   } else if (authToken) {
@@ -111,7 +124,19 @@ export const Spin: React.FC = () => {
   }
 
   return (
-    <div className='w-full h-[100dvh] bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
+    <div className='w-full h-dvh bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
+      <Dialog open={isDialogOpen} onOpenChange={onDialogClose}>
+        <DialogContent className="flex flex-col justify-center w-full h-dvh bg-transparent backdrop-blur-xl border-none">
+          {error ? (
+            <div className='flex flex-col gap-4 text-white'>
+              <h2>Error</h2>
+              <p>{error}</p>
+            </div>
+          ) : (
+            <></>
+          )}
+        </DialogContent>
+      </Dialog>
       <div className='flex flex-col items-center overflow-hidden relative'>
         <img
           className='mt-4 max-w-40'

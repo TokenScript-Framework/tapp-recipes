@@ -1,5 +1,5 @@
 * {
-  font-family: "Rubik", sans-serif;
+  font-family: 'Rubik', sans-serif;
   box-sizing: border-box;
 }
 
@@ -27,7 +27,8 @@ h5 {
 
 button {
   border: none;
-  background-color: white;
+  background-color: transparent;
+  color: white;
 }
 
 p.light {
