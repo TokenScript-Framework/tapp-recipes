@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 interface SpinnerProps {
-  isSpinning?: boolean;
-  itemIndex?: number;
+  isSpinning: boolean;
+  itemIndex: number;
 }
 
 export default function Spinner({
-  isSpinning = false,
-  itemIndex = 0,
+  isSpinning,
+  itemIndex,
 }: SpinnerProps) {
   const [spinState, setSpinState] = useState<
     'idle' | 'easing-in' | 'spinning' | 'easing-out'

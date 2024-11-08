@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Loader from '../components/loader/loader';
 import { spin } from '@/lib/backendApi';
 import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
 import Spinner from '@/components/Spinner';
-import { getGameStatus, getRemainingPool } from '@/lib/redbrickApi';
+import {
+  getGameStatus,
+  getRemainingPool,
+  getUserGameInfo,
+} from '@/lib/redbrickApi';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Info } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const itemIndexByType: Record<string, number> = {
   badge: 1,
@@ -41,6 +46,7 @@ export const Spin: React.FC = () => {
   const [authToken, setAuthToken] = useState('');
   const [blockingMessage, setBlockingMessage] = useState('');
   const [spinResult, setSpinResult] = useState<any>();
+  const [userInfo, setUserInfo] = useState<any>();
   const [error, setError] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -64,24 +70,33 @@ export const Spin: React.FC = () => {
     setAuthToken(joinResponse.data.authInfo.accessToken);
   }
 
-  useEffect(() => {
+  const loadGameInfo = useCallback(async () => {
     if (!authToken) return;
-    async function run() {
-      const remainingPool = await getRemainingPool(authToken);
-      if (remainingPool <= 0) {
-        setBlockingMessage(
-          'The total global spin pool is reached. Please spin tomorrow!'
-        );
-      }
+    const remainingPool = await getRemainingPool(authToken);
+    if (remainingPool <= 0) {
+      setBlockingMessage(
+        'The total global spin pool is reached. Please spin tomorrow!'
+      );
+      return;
     }
-    run();
+    const userInfo = await getUserGameInfo(authToken);
+    setUserInfo(userInfo);
   }, [authToken]);
 
+  useEffect(() => {
+    loadGameInfo();
+  }, [loadGameInfo]);
+
+  const isSpinDisabled =
+    !authToken || // not logged in
+    isSpinning || // current in spinning
+    userInfo?.data?.inventory?.availableSpin <= 0; // user daily cap reached
+
   async function onSpin() {
+    if (isSpinDisabled) return;
+
     setButtonImageIndex(4); // button pressed down
     setTimeout(() => setButtonImageIndex(0), 300);
-
-    if (!authToken) return;
 
     try {
       setIsSpinning(true);
@@ -121,7 +136,10 @@ export const Spin: React.FC = () => {
     messageOrButton = (
       <>
         <img
-          className='-mt-36 max-w-56 cursor-pointer'
+          className={cn(
+            '-mt-36 max-w-56',
+            isSpinDisabled ? 'cursor-not-allowed' : 'cursor-pointer'
+          )}
           onClick={onSpin}
           src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-button_${buttonImageIndex}.png`}
           alt='spin-button'
