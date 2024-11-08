@@ -14,8 +14,6 @@ First, add the following environment variables to your `.env` file:
 
 ```bash
 NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=
-NEXT_PUBLIC_INFURA_API_KEY=
-NEXT_PUBLIC_BACKEND_BASE=
 ```
 
 Second, run the development server:
