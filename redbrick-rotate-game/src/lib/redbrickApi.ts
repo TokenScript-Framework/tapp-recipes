@@ -29,6 +29,13 @@ export async function getSpinSignature(data: string, authToken: string) {
   return response.data;
 }
 
+export async function getGameStatus() {
+  const response = await axios.get(
+    `${tokenscript.env.REDBRICK_API_BASE_URL}/partner-0xrotate/status`
+  );
+  return response.data;
+}
+
 export function getSignMessage(nonce: string) {
   return `
       Welcome to REDBRICK!

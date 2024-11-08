@@ -4,6 +4,7 @@ import Loader from '../components/loader/loader';
 import { spin } from '@/lib/backendApi';
 import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
 import Spinner from '@/components/Spinner';
+import { getGameStatus } from '@/lib/redbrickApi';
 
 const itemIndexByType: Record<string, number> = {
   badge: 1,
@@ -20,11 +21,22 @@ export const Spin: React.FC = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [buttonImageIndex, setButtonImageIndex] = useState(0); // button up high
   const [authToken, setAuthToken] = useState('');
+  const [message, setMessage] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(true);
 
   useEffect(() => {
     tokenscript.action.setActionButton({ show: false });
     setLoading(false);
+    async function run() {
+      const eventStatus = await getGameStatus();
+      if (eventStatus.data.isComing) {
+        setMessage(`Coming Soon (${eventStatus.data.open})`);
+      } else if (eventStatus.data.isEnd) {
+        setMessage(`Event Ended (${eventStatus.data.close})`);
+      }
+    }
+
+    run();
   }, []);
 
   async function onLogin() {
@@ -41,13 +53,51 @@ export const Spin: React.FC = () => {
     setIsSpinning(true);
     const spinSignatureResponse = await spinSignature(authToken);
     const hash = await buySpin(spinSignatureResponse);
-    const result = await spin(hash, spinSignatureResponse.data.nonce, authToken);
+    const result = await spin(
+      hash,
+      spinSignatureResponse.data.nonce,
+      authToken
+    );
 
     setItemIndex(itemIndexByType[result.rbRewardType]);
     setIsSpinning(false);
   }
 
-  console.log('auth', authToken)
+  // box-shadow: 0px 2px 10px 0px rgba(255, 255, 255, 1);
+
+  let messageOrButton;
+  if (message) {
+    messageOrButton = (
+      <div className='absolute text-xl backdrop-blur-xl text-white font-bold bottom-16 border p-4 rounded-xl'>
+        {message}
+      </div>
+    );
+  } else if (authToken) {
+    messageOrButton = (
+      <>
+        <img
+          className='-mt-36 max-w-56 cursor-pointer'
+          onClick={onSpin}
+          src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-button_${buttonImageIndex}.png`}
+          alt='spin-button'
+        />
+        <img
+          className='max-w-24 bottom-4 absolute z-10'
+          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/button-display.png'
+          alt='button-display'
+        />
+      </>
+    );
+  } else {
+    messageOrButton = (
+      <img
+        className='-mt-32 max-w-64 cursor-pointer'
+        onClick={onLogin}
+        src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/login-btn.png'
+        alt='login'
+      />
+    );
+  }
 
   return (
     <div className='w-full h-[100dvh] bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
@@ -62,28 +112,7 @@ export const Spin: React.FC = () => {
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/machine-body.png'
           alt='machine-body'
         />
-        {authToken ? (
-          <>
-            <img
-              className='-mt-36 max-w-56 cursor-pointer'
-              onClick={onSpin}
-              src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-button_${buttonImageIndex}.png`}
-              alt='spin-button'
-            />
-            <img
-              className='max-w-24 bottom-4 absolute z-10'
-              src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/button-display.png'
-              alt='button-display'
-            />
-          </>
-        ) : (
-          <img
-            className='-mt-32 max-w-64 cursor-pointer'
-            onClick={onLogin}
-            src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/login-btn.png'
-            alt='login'
-          />
-        )}
+        {messageOrButton}
         <img
           className='max-w-[19rem] top-44 absolute'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/cover.png'
