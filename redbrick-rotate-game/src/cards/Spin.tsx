@@ -5,10 +5,13 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { spin } from '@/lib/backendApi';
 import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
+import Spinner from '@/components/Spinner';
 
 // @ts-ignore
 export const Spin: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const [itemIndex, setItemIndex] = useState(0);
+  const [isSpinning, setIsSpinning] = useState(false);
 
   useEffect(() => {
     tokenscript.action.setActionButton({ show: false });
@@ -34,9 +37,9 @@ export const Spin: React.FC = () => {
 
   return (
     <div className='w-full h-[100dvh] bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
-      <div className="flex flex-col items-center overflow-hidden relative">
+      <div className='flex flex-col items-center overflow-hidden relative'>
         <img
-          className="mt-4 max-w-40"
+          className='mt-4 max-w-40'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/logo.png'
           alt='logo'
         />
@@ -46,20 +49,19 @@ export const Spin: React.FC = () => {
           alt='machine-body'
         />
         <img
-          className="-mt-36 max-w-56"
+          className='-mt-36 max-w-56'
+          onClick={onSpin}
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-button_0.png'
           alt='spin-button'
         />
         <img
           className='max-w-[19rem] top-44 absolute'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/cover.png'
-          alt='spinner'
+          alt='cover'
         />
-        <img
-          className='max-w-52 top-56 absolute'
-          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spinner.png'
-          alt='spinner'
-        />
+        <div className='max-w-52 top-56 absolute'>
+          <Spinner isSpinning={isSpinning} itemIndex={itemIndex} />
+        </div>
         <img
           className='max-w-16 top-[170px] absolute z-10'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/arrow.png'

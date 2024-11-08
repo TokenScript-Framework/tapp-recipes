@@ -2,6 +2,11 @@
 export default {
   darkMode: ['class'],
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+  safelist: [
+    {
+      pattern: /^animate-spin-\d+$/,
+    },
+  ],
   theme: {
     extend: {
       borderRadius: {
@@ -50,6 +55,41 @@ export default {
           4: 'hsl(var(--chart-4))',
           5: 'hsl(var(--chart-5))',
         },
+      },
+      keyframes: {
+        'spin-full': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+        'spin-72': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(72deg)' },
+        },
+        'spin-144': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(144deg)' },
+        },
+        'spin-216': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(216deg)' },
+        },
+        'spin-288': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(288deg)' },
+        },
+        'spin-360': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+      },
+      animation: {
+        'spin-start': 'spin-full 1s ease-in',
+        'spin-continuous': 'spin-full 0.5s linear infinite',
+        'spin-1': 'spin-72 0.5s ease-out',
+        'spin-2': 'spin-144 1s ease-out',
+        'spin-3': 'spin-216 1.5s ease-out',
+        'spin-4': 'spin-288 2s ease-out',
+        'spin-5': 'spin-360 2.5s ease-out',
       },
     },
   },
