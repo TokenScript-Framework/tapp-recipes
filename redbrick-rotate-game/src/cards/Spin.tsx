@@ -1,43 +1,53 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import Loader from '../components/loader/loader';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { spin } from '@/lib/backendApi';
 import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
 import Spinner from '@/components/Spinner';
+
+const itemIndexByType: Record<string, number> = {
+  badge: 1,
+  p20: 2,
+  p10: 3,
+  p5: 4,
+  bric: 5,
+};
 
 // @ts-ignore
 export const Spin: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [itemIndex, setItemIndex] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [buttonImageIndex, setButtonImageIndex] = useState(0);
+  const [buttonImageIndex, setButtonImageIndex] = useState(0); // button up high
+  const [authToken, setAuthToken] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(true);
 
   useEffect(() => {
     tokenscript.action.setActionButton({ show: false });
     setLoading(false);
   }, []);
 
+  async function onLogin() {
+    const joinResponse = await joinGame();
+    setAuthToken(joinResponse.data.authInfo.accessToken);
+  }
+
   async function onSpin() {
-    setButtonImageIndex(4);
+    setButtonImageIndex(4); // button pressed down
     setTimeout(() => setButtonImageIndex(0), 300);
 
-    const joinResponse = await joinGame();
-    const authToken = joinResponse.data.authInfo.accessToken;
+    if (!authToken) return;
 
+    setIsSpinning(true);
     const spinSignatureResponse = await spinSignature(authToken);
-
     const hash = await buySpin(spinSignatureResponse);
+    const result = await spin(hash, spinSignatureResponse.data.nonce, authToken);
 
-    const result = await spin(
-      hash,
-      spinSignatureResponse.data.nonce,
-      authToken
-    );
-
-    console.log(result);
+    setItemIndex(itemIndexByType[result.rbRewardType]);
+    setIsSpinning(false);
   }
+
+  console.log('auth', authToken)
 
   return (
     <div className='w-full h-[100dvh] bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
@@ -52,12 +62,28 @@ export const Spin: React.FC = () => {
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/machine-body.png'
           alt='machine-body'
         />
-        <img
-          className='-mt-36 max-w-56 cursor-pointer'
-          onClick={onSpin}
-          src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-button_${buttonImageIndex}.png`}
-          alt='spin-button'
-        />
+        {authToken ? (
+          <>
+            <img
+              className='-mt-36 max-w-56 cursor-pointer'
+              onClick={onSpin}
+              src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-button_${buttonImageIndex}.png`}
+              alt='spin-button'
+            />
+            <img
+              className='max-w-24 bottom-4 absolute z-10'
+              src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/button-display.png'
+              alt='button-display'
+            />
+          </>
+        ) : (
+          <img
+            className='-mt-32 max-w-64 cursor-pointer'
+            onClick={onLogin}
+            src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/login-btn.png'
+            alt='login'
+          />
+        )}
         <img
           className='max-w-[19rem] top-44 absolute'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/cover.png'
@@ -75,11 +101,6 @@ export const Spin: React.FC = () => {
           className='max-w-16 top-[296px] absolute z-10'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/pin.png'
           alt='pin'
-        />
-        <img
-          className='max-w-24 bottom-4 absolute z-10'
-          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/button-display.png'
-          alt='button-display'
         />
       </div>
       <Loader show={loading} />

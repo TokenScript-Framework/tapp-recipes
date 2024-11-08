@@ -25,6 +25,11 @@ h5 {
   margin-bottom: 12px;
 }
 
+button {
+  border: none;
+  background-color: white;
+}
+
 p.light {
   color: #545454;
 }
