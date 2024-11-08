@@ -33,10 +33,49 @@ export const Spin: React.FC = () => {
   }
 
   return (
-    <div className='w-full'>
-      <Button onClick={onSpin} className={cn('w-full', 'mt-4')}>
-        Spin
-      </Button>
+    <div className='w-full h-[100dvh] bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
+      <div className="flex flex-col items-center overflow-hidden relative">
+        <img
+          className="mt-4 max-w-40"
+          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/logo.png'
+          alt='logo'
+        />
+        <img
+          className='-mt-8 w-[130%] max-w-none'
+          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/machine-body.png'
+          alt='machine-body'
+        />
+        <img
+          className="-mt-36 max-w-56"
+          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-button_0.png'
+          alt='spin-button'
+        />
+        <img
+          className='max-w-[19rem] top-44 absolute'
+          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/cover.png'
+          alt='spinner'
+        />
+        <img
+          className='max-w-52 top-56 absolute'
+          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spinner.png'
+          alt='spinner'
+        />
+        <img
+          className='max-w-16 top-[170px] absolute z-10'
+          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/arrow.png'
+          alt='arrow'
+        />
+        <img
+          className='max-w-16 top-[296px] absolute z-10'
+          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/pin.png'
+          alt='pin'
+        />
+        <img
+          className='max-w-24 bottom-4 absolute z-10'
+          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/button-display.png'
+          alt='button-display'
+        />
+      </div>
       <Loader show={loading} />
     </div>
   );
