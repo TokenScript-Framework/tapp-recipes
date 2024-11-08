@@ -41,6 +41,7 @@
 		<ts:ethereum contract="uniswap"/>
 		<ts:ethereum contract="compound"/>
 		<ts:ethereum contract="aave"/>
+		<ts:ethereum contract="ens"/>
 		<ts:ethereum contract="makerdao"/>
 	</ts:origins>
 

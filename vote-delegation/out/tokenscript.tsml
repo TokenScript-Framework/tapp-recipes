@@ -37,6 +37,7 @@
 		<ts:ethereum contract="uniswap"/>
 		<ts:ethereum contract="compound"/>
 		<ts:ethereum contract="aave"/>
+		<ts:ethereum contract="ens"/>
 		<ts:ethereum contract="makerdao"/>
 	</ts:origins>
 
@@ -98,4 +99,4 @@ body {
 
 	</ts:cards>
 
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/><ds:Reference><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>Cql6p6vNiOa48L0fJZAHqOV0gFQBxtWzdkR4GFke0ZY=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>Xy9EkzwFrTjwLK5u78W1PHPl7hKLYmX29AjxLi0fsteESbrP+I6EMD73m3zNl8fYQaJFgdS0NqXP+ceenAPc9A==</ds:SignatureValue><ds:KeyInfo><ds:KeyValue><ecdsa:ECDSAKeyValue xmlns:ecdsa="http://www.w3.org/2001/04/xmldsig-more#"><ecdsa:DomainParameters><ecdsa:NamedCurve URI="urn:oid:1.3.132.0.10"/></ecdsa:DomainParameters><ecdsa:PublicKey><ecdsa:X>IjBgvE/HWhimITFhbB8JmXkVdWmsMsBnBigyiAujVew=</ecdsa:X><ecdsa:Y>sTU7GyY1G1JIpeQkmSHDxJhfwHxdhp0vZOxvUsyBRV8=</ecdsa:Y></ecdsa:PublicKey></ecdsa:ECDSAKeyValue></ds:KeyValue></ds:KeyInfo></ds:Signature></ts:token>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/><ds:Reference><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>doou0sp7ea2Pu/j5mlui7vBr8djBDN9QYz7q48+h1JU=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>nRkGhS+k1ww2zqPHxSH4LDvXWa+rM0XT5MjwbyZaHUl7QALwTj2Fe0KL+gR5l3tcSzPLNQiBDHJQKD3ST6B9qQ==</ds:SignatureValue><ds:KeyInfo><ds:KeyValue><ecdsa:ECDSAKeyValue xmlns:ecdsa="http://www.w3.org/2001/04/xmldsig-more#"><ecdsa:DomainParameters><ecdsa:NamedCurve URI="urn:oid:1.3.132.0.10"/></ecdsa:DomainParameters><ecdsa:PublicKey><ecdsa:X>IjBgvE/HWhimITFhbB8JmXkVdWmsMsBnBigyiAujVew=</ecdsa:X><ecdsa:Y>sTU7GyY1G1JIpeQkmSHDxJhfwHxdhp0vZOxvUsyBRV8=</ecdsa:Y></ecdsa:PublicKey></ecdsa:ECDSAKeyValue></ds:KeyValue></ds:KeyInfo></ds:Signature></ts:token>
