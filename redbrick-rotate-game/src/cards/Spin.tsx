@@ -6,6 +6,7 @@ import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
 import Spinner from '@/components/Spinner';
 import { getGameStatus, getRemainingPool } from '@/lib/redbrickApi';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Info } from 'lucide-react';
 
 const itemIndexByType: Record<string, number> = {
   badge: 1,
@@ -15,14 +16,31 @@ const itemIndexByType: Record<string, number> = {
   bric: 5,
 };
 
+const itemIcons: Record<string, string> = {
+  badge: 'badge',
+  p20: 'points',
+  p10: 'points',
+  p5: 'points',
+  bric: 'brick',
+};
+
+const itemDesc: Record<string, string> = {
+  badge: 'BADGES',
+  p20: 'POINTS',
+  p10: 'POINTS',
+  p5: 'POINTS',
+  bric: 'BRIC ROLE',
+};
+
 // @ts-ignore
 export const Spin: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [itemIndex, setItemIndex] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [buttonImageIndex, setButtonImageIndex] = useState(0); // button up high
+  const [buttonImageIndex, setButtonImageIndex] = useState(0);
   const [authToken, setAuthToken] = useState('');
   const [blockingMessage, setBlockingMessage] = useState('');
+  const [spinResult, setSpinResult] = useState<any>();
   const [error, setError] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -76,9 +94,11 @@ export const Spin: React.FC = () => {
       );
 
       setItemIndex(itemIndexByType[result.rbRewardType]);
+      setSpinResult(result);
+      setIsDialogOpen(true);
     } catch (e: any) {
-      setError("Failed to spin, please try again later.");
-      setIsDialogOpen(true)
+      setError('Failed to spin, please try again later.');
+      setIsDialogOpen(true);
     } finally {
       setIsSpinning(false);
     }
@@ -87,6 +107,7 @@ export const Spin: React.FC = () => {
   function onDialogClose() {
     setIsDialogOpen(false);
     setError('');
+    setSpinResult(undefined);
   }
 
   let messageOrButton;
@@ -126,14 +147,60 @@ export const Spin: React.FC = () => {
   return (
     <div className='w-full h-dvh bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
       <Dialog open={isDialogOpen} onOpenChange={onDialogClose}>
-        <DialogContent className="flex flex-col justify-center w-full h-dvh bg-transparent backdrop-blur-xl border-none">
-          {error ? (
+        <DialogContent className='flex flex-col justify-center w-full h-dvh bg-transparent backdrop-blur-xl border-none'>
+          {error && (
             <div className='flex flex-col gap-4 text-white'>
               <h2>Error</h2>
               <p>{error}</p>
             </div>
-          ) : (
-            <></>
+          )}
+          {spinResult && (
+            <div className='flex flex-col text-center items-center text-white'>
+              <div className='text-xl font-bold tracking-[1.5rem] ml-6'>
+                CONGRATS
+              </div>
+              <div className='text-5xl font-bold mt-2'>YOU WON</div>
+              <div className='bg-gray-400 p-1 rounded-xl'>
+                <img
+                  className='max-w-36'
+                  src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/${
+                    itemIcons[spinResult.rbRewardType]
+                  }-icon.png`}
+                  alt='item-icon'
+                />
+                <div className='text-2xl font-bold'>
+                  {spinResult.rbRewardAmount}
+                </div>
+                <div className='text-md font-bold'>
+                  {itemDesc[spinResult.rbRewardType]}
+                </div>
+              </div>
+              <img
+                className='max-w-80 mt-[-90px]'
+                src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/reward-base.png`}
+                alt='reward-base'
+              />
+              <div className='flex flex-col items-center -mt-24'>
+                {spinResult.rbRewardType === 'bric' && (
+                  <div className='flex max-w-80'>
+                    <Info />
+                    BRIC Role reward can only be distributed with
+                    immigration-completed accounts.
+                  </div>
+                )}
+                <img
+                  className='max-w-64 cursor-pointer'
+                  onClick={onDialogClose}
+                  src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/confirm-btn.png`}
+                  alt='confirm'
+                />
+              </div>
+              <img
+                className='max-w-40'
+                src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/logo.png'
+                alt='logo'
+              />
+            </div>
           )}
         </DialogContent>
       </Dialog>
