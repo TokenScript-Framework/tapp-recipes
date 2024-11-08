@@ -16,7 +16,7 @@ export const VIEWER_URL = isProd
     ? "https://viewer.tokenscript.org/"
     : "https://viewer-staging.tokenscript.org/";
 
-export const OPENSEA_BASE = isProd ? "https://opensea.io/" : "https://testnets.opensea.io/"
+export const OPENSEA_BASE = isProd ? "https://opensea.io" : "https://testnets.opensea.io"
 export const OPENSEA_API = isProd ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
 
 export const CONFIG={

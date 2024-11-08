@@ -1,6 +1,6 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { base, baseSepolia } from "wagmi/chains";
-import { isProd } from "./lib/utils";
+import { isProd } from "./lib/constant";
 
 export const config = getDefaultConfig({
   appName: "TApp for OpenSea",

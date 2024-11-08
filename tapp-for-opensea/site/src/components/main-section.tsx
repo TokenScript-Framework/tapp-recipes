@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loading } from "./loading";
 import { Chain } from "opensea-js";
-import { addressPipe, loadListings } from "@/lib/utils";
+import { addressPipe, getChainName, loadListings } from "@/lib/utils";
 import Image from "next/image";
 import openseaSVG from "../public/images/opensea.svg"
 import { getChainConfig, OPENSEA_BASE, VIEWER_URL } from "@/lib/constant";
 import { CountdownTimer } from "./timer";
+import { useChainId } from 'wagmi'; 
 
 
 export type Listing = {
@@ -33,6 +34,8 @@ export type Listing = {
         description: string;
         image: string;
         name: string;
+        tokenContract: `0x${string}`;
+        tokenId:string    
     }[]
 };
 
@@ -40,15 +43,17 @@ export function MainSection() {
     const [isLoadingListings, setIsLoadingListings] = useState(false);
     const [userListings, setUserListings] = useState<Listing[]>([]);
 
-    const { address, isConnected, chain } = useAccount();
+    const { address, isConnected } = useAccount();
+    
+    const chainId  = useChainId();
 
-    const CONTRACT_ADDRESS = chain ? getChainConfig(chain.id).CONTRACT_ADDRESS : '';
-    const SCRIT_ID = chain ? getChainConfig(chain.id).SCRIT_ID : '';
+    const CONTRACT_ADDRESS =  getChainConfig(chainId).CONTRACT_ADDRESS ;
+    const SCRIT_ID = getChainConfig(chainId).SCRIT_ID;
 
 
 
     const loadUserListings = useCallback(async () => {
-        if (address && chain) {
+        if (address && chainId) {
 
             setIsLoadingListings(true);
 
@@ -57,15 +62,18 @@ export function MainSection() {
             setUserListings(listings);
             setIsLoadingListings(false);
         }
-    }, [address, chain]);
+    }, [address, chainId]);
 
     useEffect(() => {
         loadUserListings();
     }, [loadUserListings]);
 
     const handleShareOnTwitter = (orderHash: string, protocolAddress: string) => {
+        if(!chainId){
+            return
+        }
 
-        const tlink = `${VIEWER_URL}?chain=84532&contract=${CONTRACT_ADDRESS}&tokenId=1&scriptId=${SCRIT_ID}#card=Buy&originId=Token&tokenId=0&orderHash=${orderHash}&protocolAddress=${protocolAddress}`;
+        const tlink = `${VIEWER_URL}?chain=${chainId}&contract=${CONTRACT_ADDRESS}&tokenId=1&scriptId=${SCRIT_ID}#card=Buy&originId=Token&tokenId=0&orderHash=${orderHash}&protocolAddress=${protocolAddress}`;
         console.log(tlink);
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tlink)}`;
         window.open(twitterUrl, "_blank");
@@ -149,7 +157,7 @@ export function MainSection() {
                                                 <CardTitle className="text-sm mb-2 flex items-center justify-between">
                                                     <div className="flex items-center space-x-2">
                                                         <Image src={openseaSVG} alt="logo" width={32} height={32} />
-                                                        <a href={nft.assets[0].link} target="blank">
+                                                        <a href={`${OPENSEA_BASE}/assets/${getChainName(chainId)}/${nft.assets[0].tokenContract}/${nft.assets[0].tokenId}`} target="blank" className="cursor hover:underline">
                                                             {nft.assets[0].name}
                                                         </a>
                                                     </div>

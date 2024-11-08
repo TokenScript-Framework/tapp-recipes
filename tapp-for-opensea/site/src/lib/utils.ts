@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import axios from "axios";
 import { ethers } from "ethers";
-import { base, baseSepolia, sepolia } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 import { tokenData } from "@token-kit/onchain";
 import { createPublicClient, http, PublicClient } from "viem";
 import { isProd, OPENSEA_API } from "./constant";
@@ -29,6 +29,59 @@ interface Token {
     description: string;
 }
 
+interface OpenSeaListing {
+    created_date: string;
+    expiration_time: number;
+    order_hash: string;
+    protocol_data: {
+        parameters: {
+            offerer: string;
+            offer: Array<{
+                itemType: number;
+                token: string;
+                identifierOrCriteria: string;
+                startAmount: string;
+                endAmount: string;
+            }>;
+            consideration: Array<{
+                itemType: number;
+                token: string;
+                identifierOrCriteria: string;
+                startAmount: string;
+                endAmount: string;
+                recipient: string;
+            }>;
+        };
+        signature: null;
+    };
+    protocol_address: string;
+    current_price: string;
+    maker: {
+        user: number;
+        profile_img_url: string;
+        address: string;
+        config: string;
+    };
+    maker_asset_bundle: {
+        assets: Array<{
+            id: number;
+            token_id: string;
+            image_url: string | null;
+            name: string | null;
+            asset_contract: {
+                address: string;
+                name: string;
+                schema_name: string;
+                symbol: string;
+            };
+        }>;
+    };
+    taker: null;
+    cancelled: boolean;
+    finalized: boolean;
+    marked_invalid: boolean;
+}
+
 
 export async function loadListings(chain: string, maker: string) {
     const headers = isProd
@@ -41,7 +94,7 @@ export async function loadListings(chain: string, maker: string) {
     ).data.orders;
 
     return await Promise.all(
-        listings.map(async (listing: any) => {
+        listings.map(async (listing: OpenSeaListing) => {
             let token: Token = {
                 image: '',
                 attributes: [],
@@ -51,10 +104,10 @@ export async function loadListings(chain: string, maker: string) {
             try {
                 const result = await tokenData(
                     client as PublicClient,
-                    listing.protocol_data.parameters.offer[0].token,
+                    listing.protocol_data.parameters.offer[0].token as `0x${string}`,
                     Number(listing.protocol_data.parameters.offer[0].identifierOrCriteria), { includeTokenMetadata: true },
                 );
-                
+
                 if ('tokenMetadata' in result) {
                     token = result.tokenMetadata as Token;
                 }
@@ -69,9 +122,14 @@ export async function loadListings(chain: string, maker: string) {
                 currentPrice: `${ethers.formatEther(listing.current_price)} eth`,
                 protocolAddress: listing.protocol_address,
                 expireTime: listing.expiration_time,
-                taker:listing.taker,
+                taker: listing.taker,
                 assets: listing.maker_asset_bundle.assets.map(() => {
-                    return { ...token };
+                    return {
+                        ...token, ...{
+                            tokenContract: listing.protocol_data.parameters.offer[0].token,
+                            tokenId: listing.protocol_data.parameters.offer[0].identifierOrCriteria
+                        }
+                    };
                 }),
             };
         })
@@ -79,6 +137,17 @@ export async function loadListings(chain: string, maker: string) {
     );
 }
 
-export function  addressPipe(address:string){
+export function addressPipe(address: string) {
     return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
+
+export const getChainName = (chainId: number) => {
+    switch (chainId) {
+        case 8453:
+            return 'base';
+        case 84532:
+            return 'base-sepolia';
+        default:
+            return 'ethereum';
+    }
+};
