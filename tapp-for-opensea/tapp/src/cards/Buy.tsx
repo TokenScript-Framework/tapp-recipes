@@ -42,10 +42,39 @@ export const Buy: React.FC = () => {
     const [token, setToken] = useState<Token | null>(null)
     const [transactionHash, setTransactionHash] = useState<string>('');
     const [seaport, setSeaport] = useState<any>();
+    const [isExpired, setIsExpired] = useState(false);
+   
 
     const isProd = !isTestChain(chainID)
 
     const SCAN_BASE_URL = isProd ? 'https://basescan.org' : 'https://sepolia.basescan.org';
+
+    //detect expired
+    useEffect(() => {
+        if (!order) return;
+        
+        let interval: NodeJS.Timeout | null = null;
+    
+        const checkExpiration = () => {
+            const now = Math.floor(Date.now() / 1000);
+            const expired = order.endTime < now;
+            setIsExpired(expired);
+            if (expired && interval) {
+                clearInterval(interval);
+            }
+        };
+        
+        checkExpiration();
+        if (!isExpired) {
+            interval = setInterval(checkExpiration, 1000);
+        }
+        
+        return () => {
+            if (interval) {
+                clearInterval(interval);
+            }
+        };
+    }, [isExpired, order]);
 
     async function loadOrder(orderHash: `0x${string}`, protocolAddress: `0x${string}`) {
 
@@ -212,10 +241,10 @@ export const Buy: React.FC = () => {
     }, [orderHash, protocolAddress]);
 
     function getButtonText(order: any) {
-        if (order.completed) {
+        if (order.completed || success) {
             return 'Order Completed';
         }
-        if (order.endTime < (Math.floor(Date.now() / 1000))) {
+        if (isExpired) {
             return 'Order expired';
         }
         if (order.taker && order.taker.toLowerCase() !== walletAddress?.toLowerCase()) {
@@ -225,10 +254,11 @@ export const Buy: React.FC = () => {
     }
 
     function isButtonDisabled(order: any) {
-        return confirming ||
+        return confirming || 
+            success ||
             order.completed ||
             (order.taker && order.taker.toLowerCase() !== walletAddress?.toLowerCase()) ||
-            order.endTime < (Math.floor(Date.now() / 1000));
+            isExpired;
     }
 
     if (loading) {
