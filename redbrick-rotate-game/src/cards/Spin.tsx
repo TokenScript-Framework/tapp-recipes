@@ -12,6 +12,7 @@ export const Spin: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [itemIndex, setItemIndex] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [buttonImageIndex, setButtonImageIndex] = useState(0);
 
   useEffect(() => {
     tokenscript.action.setActionButton({ show: false });
@@ -19,6 +20,9 @@ export const Spin: React.FC = () => {
   }, []);
 
   async function onSpin() {
+    setButtonImageIndex(4);
+    setTimeout(() => setButtonImageIndex(0), 300);
+
     const joinResponse = await joinGame();
     const authToken = joinResponse.data.authInfo.accessToken;
 
@@ -49,9 +53,9 @@ export const Spin: React.FC = () => {
           alt='machine-body'
         />
         <img
-          className='-mt-36 max-w-56'
+          className='-mt-36 max-w-56 cursor-pointer'
           onClick={onSpin}
-          src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-button_0.png'
+          src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-button_${buttonImageIndex}.png`}
           alt='spin-button'
         />
         <img
@@ -79,6 +83,11 @@ export const Spin: React.FC = () => {
         />
       </div>
       <Loader show={loading} />
+      <img
+        className='hidden'
+        src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-button_4.png`}
+        alt='spin-button-eager-load'
+      />
     </div>
   );
 };
