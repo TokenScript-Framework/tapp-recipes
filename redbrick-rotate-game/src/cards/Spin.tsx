@@ -4,7 +4,7 @@ import Loader from '../components/loader/loader';
 import { spin } from '@/lib/backendApi';
 import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
 import Spinner from '@/components/Spinner';
-import { getGameStatus } from '@/lib/redbrickApi';
+import { getGameStatus, getRemainingPool } from '@/lib/redbrickApi';
 
 const itemIndexByType: Record<string, number> = {
   badge: 1,
@@ -44,6 +44,19 @@ export const Spin: React.FC = () => {
     setAuthToken(joinResponse.data.authInfo.accessToken);
   }
 
+  useEffect(() => {
+    if (!authToken) return;
+    async function run() {
+      const remainingPool = await getRemainingPool(authToken);
+      if (remainingPool <= 0) {
+        setMessage(
+          'The total global spin pool is reached. Please spin tomorrow!'
+        );
+      }
+    }
+    run();
+  }, [authToken]);
+
   async function onSpin() {
     setButtonImageIndex(4); // button pressed down
     setTimeout(() => setButtonImageIndex(0), 300);
@@ -63,12 +76,10 @@ export const Spin: React.FC = () => {
     setIsSpinning(false);
   }
 
-  // box-shadow: 0px 2px 10px 0px rgba(255, 255, 255, 1);
-
   let messageOrButton;
   if (message) {
     messageOrButton = (
-      <div className='absolute text-xl backdrop-blur-xl text-white font-bold bottom-16 border p-4 rounded-xl'>
+      <div className='absolute max-w-80 text-center text-xl backdrop-blur-xl text-white font-bold bottom-16 border p-4 rounded-xl'>
         {message}
       </div>
     );

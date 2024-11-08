@@ -36,6 +36,18 @@ export async function getGameStatus() {
   return response.data;
 }
 
+export async function getRemainingPool(authToken: string) {
+  const response = await axios.get(
+    `${tokenscript.env.REDBRICK_API_BASE_URL}/partner-0xrotate/remaining-pool`,
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
+  return response.data.data.spin;
+}
+
 export function getSignMessage(nonce: string) {
   return `
       Welcome to REDBRICK!
