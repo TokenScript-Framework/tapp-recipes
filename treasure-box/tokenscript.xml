@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ts:token xmlns:ts="http://tokenscript.org/2024/01/tokenscript"
+		  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+		  xsi:schemaLocation="http://tokenscript.org/2024/01/tokenscript https://www.tokenscript.org/schemas/2024-01/tokenscript.xsd"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xmlns:ethereum="urn:ethereum:constantinople"
+		  name="TreasureBox">
+	<ts:label>
+		<ts:plurals xml:lang="en">
+			<ts:string quantity="one">Memecoin Treasure Box</ts:string>
+			<ts:string quantity="other">Memecoin Treasure Box</ts:string>
+		</ts:plurals>
+	</ts:label>
+	<ts:meta>
+		<ts:description xml:lang="en">Memecoin Treasure Box TLink/Tapp</ts:description>
+		<ts:aboutUrl xml:lang="en">Get a chance to win up to $50 in tokens</ts:aboutUrl>
+		<ts:iconUrl xml:lang="en">https://tokens.antopolbus.rv.ua/images/memebox.png</ts:iconUrl>
+	</ts:meta>
+	<ts:contract interface="erc721" name="Token">
+		<ts:address network="$tst{CONTRACT_CHAIN}">$tst{CONTRACT_ADDRESS}</ts:address>
+	</ts:contract>
+	<ts:origins>
+		<!-- Define the contract which holds the token that the user will use -->
+		<ts:ethereum contract="Token"/>
+	</ts:origins>
+
+	<ts:cards>
+		<ts:viewContent name="common" xmlns="http://www.w3.org/1999/xhtml">
+			<ts:include type="html" src="./dist/index.html"/>
+			<ts:include type="css" src="./src/styles.css"/>
+		</ts:viewContent>
+		<!-- <ts:card type="onboarding" name="MakeABeerTapp" exclude="ownsToken"> -->
+		<ts:card type="onboarding" name="OpenTreasureBox">
+			<ts:label>
+				<ts:string xml:lang="en">Open Treasure Boxes</ts:string>
+			</ts:label>
+			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" uiButton="false">
+				<ts:viewContent name="common"/>
+			</ts:view>
+		</ts:card>
+
+	</ts:cards>
+
+</ts:token>
