@@ -25,6 +25,7 @@ export async function spinSignature(authToken: string) {
 export async function buySpin(spinSignatureResponse: {
   data: { contractAddress: `0x${string}`; data: `0x${string}`; price: string };
 }) {
+  await walletClient.addChain({ chain });
   await walletClient.switchChain({ id: chain.id });
   const hash = await walletClient.sendTransaction({
     to: spinSignatureResponse.data.contractAddress,
