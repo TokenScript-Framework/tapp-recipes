@@ -18,7 +18,7 @@
     "@radix-ui/react-scroll-area": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
-    "@rainbow-me/rainbowkit": "^2.1.6",
+    "@rainbow-me/rainbowkit": "^2.2.0",
     "@tanstack/react-query": "^5.51.11",
     "@token-kit/onchain": "^0.0.2",
     "axios": "^1.7.7",

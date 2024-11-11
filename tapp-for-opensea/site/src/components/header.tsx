@@ -27,7 +27,7 @@ export function Header() {
             </Link> */}
           </nav>
           <div className="hidden md:flex space-x-4">
-            <ConnectButton showBalance={false} />
+            <ConnectButton  chainStatus="full" showBalance={false} />
           </div>
           <button
             className="md:hidden"
@@ -56,7 +56,7 @@ export function Header() {
             >
               About
             </Link> */}
-            <ConnectButton showBalance={false} />
+            <ConnectButton  chainStatus="icon" showBalance={false} />
           </nav>
         </motion.div>
       )}

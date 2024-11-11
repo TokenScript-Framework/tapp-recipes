@@ -5,11 +5,10 @@ import { useAccount } from "wagmi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loading } from "./loading";
-import { Chain } from "opensea-js";
 import { addressPipe, getChainName, loadListings } from "@/lib/utils";
 import Image from "next/image";
 import openseaSVG from "../public/images/opensea.svg"
-import { getChainConfig, OPENSEA_BASE, VIEWER_URL } from "@/lib/constant";
+import { getChainConfig,detectMainnet } from "@/lib/constant";
 import { CountdownTimer } from "./timer";
 import { useChainId } from 'wagmi'; 
 
@@ -49,15 +48,23 @@ export function MainSection() {
 
     const CONTRACT_ADDRESS =  getChainConfig(chainId).CONTRACT_ADDRESS ;
     const SCRIT_ID = getChainConfig(chainId).SCRIT_ID;
+    const CHAIN_ID = getChainConfig(chainId).CHAIN_ID;
 
+    const isMainnet=detectMainnet(chainId)
 
+    const VIEWER_URL = isMainnet
+    ? "https://viewer.tokenscript.org/"
+    : "https://viewer-staging.tokenscript.org/";
+
+      const OPENSEA_BASE = isMainnet ? "https://opensea.io" : "https://testnets.opensea.io"
+    const OPENSEA_API = isMainnet ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
 
     const loadUserListings = useCallback(async () => {
         if (address && chainId) {
 
             setIsLoadingListings(true);
 
-            const listings = await loadListings(Chain.BaseSepolia, address);
+            const listings = await loadListings(OPENSEA_API,chainId, address);
             console.log("###", listings)
             setUserListings(listings);
             setIsLoadingListings(false);
@@ -73,7 +80,7 @@ export function MainSection() {
             return
         }
 
-        const tlink = `${VIEWER_URL}?chain=${chainId}&contract=${CONTRACT_ADDRESS}&tokenId=1&scriptId=${SCRIT_ID}#card=Buy&originId=Token&tokenId=0&orderHash=${orderHash}&protocolAddress=${protocolAddress}`;
+        const tlink = `${VIEWER_URL}?chain=${CHAIN_ID}&contract=${CONTRACT_ADDRESS}&tokenId=1&scriptId=${SCRIT_ID}#card=Buy&originId=Token&tokenId=0&orderHash=${orderHash}&protocolAddress=${protocolAddress}&targetChain=${chainId}`;
         console.log(tlink);
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tlink)}`;
         window.open(twitterUrl, "_blank");

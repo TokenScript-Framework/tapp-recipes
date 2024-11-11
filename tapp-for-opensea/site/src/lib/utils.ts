@@ -2,21 +2,15 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import axios from "axios";
 import { ethers } from "ethers";
-import { base, baseSepolia } from "viem/chains";
+import { base, baseSepolia, mainnet, polygon, sepolia } from "viem/chains";
 import { tokenData } from "@token-kit/onchain";
 import { createPublicClient, http, PublicClient } from "viem";
-import { isProd, OPENSEA_API } from "./constant";
+import { Chain } from "opensea-js";
+import { detectMainnet } from "./constant";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
-
-
-const client = createPublicClient({
-    chain: isProd ? base : baseSepolia,
-    transport: http()
-});
-
 
 interface Token {
     image: string;
@@ -83,15 +77,17 @@ interface OpenSeaListing {
 }
 
 
-export async function loadListings(chain: string, maker: string) {
-    const headers = isProd
+export async function loadListings(apiRoot:string,chainId: number, maker: string) {
+    const chainName = getChainName(chainId)
+    const headers = detectMainnet(chainId)
         ? { 'X-API-KEY': process.env.NEXT_PUBLIC_OPENSEA_API_KEY }
         : {};
     const listings = (
         await axios.get(
-            `${OPENSEA_API}/api/v2/orders/${chain}/seaport/listings?maker=${maker}`, { headers }
+            `${apiRoot}/api/v2/orders/${chainName}/seaport/listings?maker=${maker}`, { headers }
         )
     ).data.orders;
+    const client = await getViemClient(chainId)
 
     return await Promise.all(
         listings.map(async (listing: OpenSeaListing) => {
@@ -143,11 +139,40 @@ export function addressPipe(address: string) {
 
 export const getChainName = (chainId: number) => {
     switch (chainId) {
+        case 137:
+            return Chain.Polygon;
+        case 11155111:
+            return Chain.Sepolia;
         case 8453:
-            return 'base';
+            return Chain.Base;
         case 84532:
-            return 'base-sepolia';
+            return Chain.BaseSepolia;
         default:
-            return 'ethereum';
+            return Chain.Mainnet;
     }
 };
+
+
+function getViemClient(chainId: number) {
+    const chain = (() => {
+        switch (chainId) {
+            case 1:
+                return mainnet;
+            case 8453:
+                return base;
+            case 137:
+                return polygon;
+            case 11155111:
+                return sepolia;
+            case 84532:
+                return baseSepolia;
+            default:
+                throw new Error(`Unsupported chain ID: ${chainId}`);
+        }
+    })();
+
+    return createPublicClient({
+        chain,
+        transport: http()
+    });
+}
