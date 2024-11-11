@@ -265,7 +265,7 @@ export const Spin: React.FC = () => {
       </Dialog>
       <div className='flex flex-col items-center overflow-hidden relative'>
         <img
-          className='mt-4 max-w-40'
+          className='mt-4 max-w-32'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/logo.png'
           alt='logo'
         />
@@ -274,14 +274,16 @@ export const Spin: React.FC = () => {
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/machine-body.png'
           alt='machine-body'
         />
-        <CountDown />
+        <div className='top-[456px] absolute'>
+          <CountDown />
+        </div>
         {messageOrButton}
         <img
-          className='max-w-[19rem] top-44 absolute'
+          className='max-w-[19rem] top-[158px] absolute'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/cover.png'
           alt='cover'
         />
-        <div className='max-w-52 top-56 absolute'>
+        <div className='max-w-52 top-[206px] absolute'>
           <Spinner
             isSpinning={isSpinning}
             itemIndex={itemIndex}
@@ -289,12 +291,12 @@ export const Spin: React.FC = () => {
           />
         </div>
         <img
-          className='max-w-16 top-[170px] absolute z-10'
+          className='max-w-16 top-[154px] absolute z-10'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/arrow.png'
           alt='arrow'
         />
         <img
-          className='max-w-16 top-[296px] absolute z-10'
+          className='max-w-16 top-[278px] absolute z-10'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/pin.png'
           alt='pin'
         />
