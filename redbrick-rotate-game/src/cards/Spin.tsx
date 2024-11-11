@@ -164,10 +164,7 @@ export const Spin: React.FC = () => {
           />
           <div>
             {userInfo
-              ? `${
-                  userInfo.data.inventory.totalSpinDaily -
-                  userInfo.data.inventory.availableSpin
-                }/${userInfo.data.inventory.totalSpinDaily}`
+              ? `${userInfo.data.inventory.availableSpin}/${userInfo.data.inventory.totalSpinDaily}`
               : '-/-'}
           </div>
         </div>
