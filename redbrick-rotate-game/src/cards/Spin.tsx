@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useCallback } from 'react';
 import Loader from '../components/loader/loader';
-import { getStlGameInfo, getStlGameInfo, spin } from '@/lib/backendApi';
+import { getStlGameInfo, spin } from '@/lib/backendApi';
 import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
 import Spinner from '@/components/spinner';
 import {
@@ -200,21 +200,39 @@ export const Spin: React.FC = () => {
               <div className='text-xl font-bold tracking-[1.5rem] ml-6'>
                 CONGRATS
               </div>
-              <div className='text-5xl font-bold mt-2'>YOU WON</div>
-              <div className='bg-gray-400 p-1 rounded-xl'>
-                <img
-                  className='max-w-36'
-                  src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/${
-                    itemIcons[spinResult.rbRewardType]
-                  }-icon.png`}
-                  alt='item-icon'
-                />
-                <div className='text-2xl font-bold'>
-                  {spinResult.rbRewardAmount}
+              <div className='text-5xl font-bold my-2'>YOU WON</div>
+              <div className='flex gap-4 items-center'>
+                <div className='bg-gray-400 p-1 rounded-xl'>
+                  <img
+                    className='w-36 h-36'
+                    src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/${
+                      itemIcons[spinResult.rbRewardType]
+                    }-icon.png`}
+                    alt='item-icon'
+                  />
+                  <div className='text-2xl font-bold'>
+                    {spinResult.rbRewardAmount}
+                  </div>
+                  <div className='text-md font-bold'>
+                    {itemDesc[spinResult.rbRewardType]}
+                  </div>
                 </div>
-                <div className='text-md font-bold'>
-                  {itemDesc[spinResult.rbRewardType]}
-                </div>
+                {spinResult.stlRewardAmount && (
+                  <>
+                    <div className='text-2xl font-bold text-white'>+</div>
+                    <div className='bg-gray-400 p-1 rounded-xl'>
+                      <img
+                        className='w-36 h-36'
+                        src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/sln-token.png'
+                        alt='sln-token'
+                      />
+                      <div className='text-2xl font-bold'>
+                        {spinResult.stlRewardAmount}
+                      </div>
+                      <div className='text-md font-bold'>$SLN</div>
+                    </div>
+                  </>
+                )}
               </div>
               <img
                 className='max-w-80 mt-[-90px]'
