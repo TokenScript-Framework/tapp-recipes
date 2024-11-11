@@ -53,7 +53,6 @@ export const Spin: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    tokenscript.action.setActionButton({ show: false });
     setLoading(false);
     async function run() {
       const eventStatus = await getGameStatus();

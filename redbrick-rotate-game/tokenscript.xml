@@ -34,7 +34,7 @@
 			<ts:include type="css" src="./src/styles.css"/>
 		</ts:viewContent>
 
-		<ts:card type="action" name="Spin">
+		<ts:card type="token" name="Spin">
 			<ts:label>
 				<ts:string xml:lang="en">Spin</ts:string>
 			</ts:label>
