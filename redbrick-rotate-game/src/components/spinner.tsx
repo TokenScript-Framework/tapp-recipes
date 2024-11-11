@@ -6,19 +6,19 @@ import { cn } from '@/lib/utils';
 interface SpinnerProps {
   isSpinning: boolean;
   itemIndex: number;
+  onSpinEnd: () => void;
 }
 
 export default function Spinner({
   isSpinning,
   itemIndex,
+  onSpinEnd,
 }: SpinnerProps) {
   const [spinState, setSpinState] = useState<
     'idle' | 'easing-in' | 'spinning' | 'easing-out'
   >('idle');
 
   useEffect(() => {
-    console.log(isSpinning, itemIndex, spinState);
-
     if (isSpinning && spinState === 'idle') {
       setSpinState('easing-in');
       setTimeout(() => {
@@ -29,9 +29,12 @@ export default function Spinner({
       (spinState === 'spinning' || spinState === 'easing-in')
     ) {
       setSpinState('easing-out');
-      setTimeout(() => setSpinState('idle'), itemIndex * 500);
+      setTimeout(() => {
+        setSpinState('idle');
+        onSpinEnd();
+      }, itemIndex * 500);
     }
-  }, [isSpinning, itemIndex, spinState]);
+  }, [isSpinning, itemIndex, onSpinEnd, spinState]);
 
   return (
     <div>

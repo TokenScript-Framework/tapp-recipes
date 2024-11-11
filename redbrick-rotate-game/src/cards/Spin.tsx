@@ -3,13 +3,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Loader from '../components/loader/loader';
 import { spin } from '@/lib/backendApi';
 import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
-import Spinner from '@/components/Spinner';
+import Spinner from '@/components/spinner';
 import {
   getGameStatus,
   getRemainingPool,
   getUserGameInfo,
 } from '@/lib/redbrickApi';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CountDown from '@/components/count-down';
@@ -112,7 +112,6 @@ export const Spin: React.FC = () => {
       setItemIndex(itemIndexByType[result.rbRewardType]);
       setSpinResult(result);
       await loadGameInfo();
-      setIsDialogOpen(true);
     } catch (e: any) {
       setError('Failed to spin, please try again later.');
       setIsDialogOpen(true);
@@ -125,6 +124,12 @@ export const Spin: React.FC = () => {
     setIsDialogOpen(false);
     setError('');
     setSpinResult(undefined);
+  }
+
+  function onSpinEnd() {
+    if (spinResult) {
+      setIsDialogOpen(true);
+    }
   }
 
   let messageOrButton;
@@ -183,6 +188,7 @@ export const Spin: React.FC = () => {
     <div className='w-full h-dvh bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
       <Dialog open={isDialogOpen} onOpenChange={onDialogClose}>
         <DialogContent className='flex flex-col justify-center w-full h-dvh bg-transparent backdrop-blur-xl border-none'>
+          <DialogTitle></DialogTitle>
           {error && (
             <div className='flex flex-col gap-4 text-white'>
               <h2>Error</h2>
@@ -258,7 +264,11 @@ export const Spin: React.FC = () => {
           alt='cover'
         />
         <div className='max-w-52 top-56 absolute'>
-          <Spinner isSpinning={isSpinning} itemIndex={itemIndex} />
+          <Spinner
+            isSpinning={isSpinning}
+            itemIndex={itemIndex}
+            onSpinEnd={onSpinEnd}
+          />
         </div>
         <img
           className='max-w-16 top-[170px] absolute z-10'
