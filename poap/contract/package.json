@@ -1,0 +1,50 @@
+{
+  "name": "hardhat-project",
+  "scripts": {
+    "test:gas": "UPDATE_SNAPSHOT=1 yarn test --grep gas",
+    "compile": "hardhat compile",
+    "coverage": "env COVERAGE=true hardhat coverage",
+    "lint-off": "npm run lint:js && npm run lint:sol",
+    "lint:fix": "npm run lint:js:fix && npm run lint:sol:fix",
+    "lint:js": "prettier --log-level warn --ignore-path .gitignore '**/*.{js,ts}' --check && eslint --ignore-path .gitignore .",
+    "lint:js:fix": "prettier --loglevel warn --ignore-path .gitignore '**/*.{js,ts}' --write && eslint --ignore-path .gitignore . --fix",
+    "lint:sol": "prettier --log-level warn --ignore-path .gitignore '{contracts,test}/**/*.sol' --check && solhint '{contracts,test}/**/*.sol'",
+    "lint:sol:fix": "prettier --loglevel warn --ignore-path .gitignore '{contracts,test}/**/*.sol' --write",
+    "clean-off": "hardhat clean && rimraf build contracts/build && rm -rf ./artifacts ./cache ./typechain",
+    "test": "hardhat test",
+    "gas-report": "env ENABLE_GAS_REPORT=true npm run test",
+    "slither": "npm run clean && slither .",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint",
+    "sign-whitelist": "ts-node scripts/signWalletList.ts"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
+    "@openzeppelin/hardhat-upgrades": "^3.2.0",
+    "@types/node": "20.8.2",
+    "gts": "^5.2.0",
+    "hardhat-contract-sizer": "^2.10.0",
+    "hardhat-gas-reporter": "^1.0.9",
+    "node-fetch": "^3.3.2",
+    "prettier": "^3.1.0",
+    "prettier-plugin-solidity": "^1.2.0",
+    "typescript": "~5.2.0"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@openzeppelin/contracts-upgradeable": "^5.0.0",
+    "axios": "^1.6.8",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.8",
+    "pako": "^2.1.0",
+    "stl-contracts": "^2.5.0"
+  },
+  "engines": {
+    "node": ">=10.4.0"
+  }
+}
