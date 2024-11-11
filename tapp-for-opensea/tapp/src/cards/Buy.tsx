@@ -4,20 +4,16 @@ import { ethers } from "ethers";
 import axios from "axios";
 import { Seaport } from "@opensea/seaport-js";
 import { OPENSEA_CONDUIT_KEY } from "@opensea/seaport-js/lib/constants";
-import { Chain } from "opensea-js";
-import { createPublicClient, custom } from 'viem'
 import { tokenData } from "@token-kit/onchain";
 
-import { base, baseSepolia } from "viem/chains";
-
 import openseaSVG from "../assets/opensea.svg"
-import { addressPipe, isTestChain } from "../components/lib/utils";
+import { addressPipe, getChainConfig, isTestChain, walletClient } from "../components/lib/utils";
 import { CountdownTimer } from "../components/timer";
 
 interface OrderType {
     orderHash: string;
     protocolAddress: string;
-    protocolData: any; 
+    protocolData: any;
 }
 
 interface Token {
@@ -30,10 +26,12 @@ interface Token {
     name: string;
     description: string;
 }
+
 // @ts-ignore
 export const Buy: React.FC = () => {
     const [orderHash, setOrderHash] = useState<`0x${string}` | null>(null);
     const [protocolAddress, setProtocolAddress] = useState<`0x${string}` | null>(null);
+    const [targetChain, setTargetChain] = useState(0);
     const [loading, setLoading] = useState(true);
     const [confirming, setConfirming] = useState(false);
     const [order, setOrder] = useState<any>();
@@ -43,18 +41,20 @@ export const Buy: React.FC = () => {
     const [transactionHash, setTransactionHash] = useState<string>('');
     const [seaport, setSeaport] = useState<any>();
     const [isExpired, setIsExpired] = useState(false);
-   
+    const isMainnet = !isTestChain(targetChain)
 
-    const isProd = !isTestChain(chainID)
-
-    const SCAN_BASE_URL = isProd ? 'https://basescan.org' : 'https://sepolia.basescan.org';
+    const headers = isMainnet
+        ? { 'X-API-KEY': 'f49e9c8319c344d4b287b0061f5716be' }
+        : {};
+    const OPENSEA_API = isMainnet ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
+    const { chainName, publicClient, displayName, scanUrl, openseaUrl } = getChainConfig(targetChain)
 
     //detect expired
     useEffect(() => {
         if (!order) return;
-        
+
         let interval: NodeJS.Timeout | null = null;
-    
+
         const checkExpiration = () => {
             const now = Math.floor(Date.now() / 1000);
             const expired = order.endTime < now;
@@ -63,12 +63,12 @@ export const Buy: React.FC = () => {
                 clearInterval(interval);
             }
         };
-        
+
         checkExpiration();
         if (!isExpired) {
             interval = setInterval(checkExpiration, 1000);
         }
-        
+
         return () => {
             if (interval) {
                 clearInterval(interval);
@@ -78,67 +78,86 @@ export const Buy: React.FC = () => {
 
     async function loadOrder(orderHash: `0x${string}`, protocolAddress: `0x${string}`) {
 
-        const orderDetail = (
-            await axios.get(
-                `https://testnets-api.opensea.io/api/v2/orders/chain/${isProd ? Chain.Base : Chain.BaseSepolia}/protocol/${protocolAddress}/${orderHash}`
-            )
-        ).data.order;
-        console.log(orderDetail)
+        try {
+            const { data: { order: orderDetail } } = await axios.get(
+                `${OPENSEA_API}/api/v2/orders/chain/${chainName}/protocol/${protocolAddress}/${orderHash}`,
+                { headers }
+            );
 
-        const considerations = orderDetail.protocol_data.parameters.consideration;
+            const {
+                protocol_data: {
+                    parameters: {
+                        offer: [{ token: tokenContract, identifierOrCriteria: tokenId }],
+                        offerer: maker,
+                        startTime,
+                        endTime
+                    }
+                },
+                price: { current: { value: priceValue, currency } }
+            } = orderDetail;
 
-        const taker = considerations.length === 3 ? considerations[2].recipient : null;
+            const { data: { orders: listinsData } } = await axios.get(
+                `${OPENSEA_API}/api/v2/orders/${chainName}/seaport/listings`,
+                {
+                    headers,
+                    params: {
+                        asset_contract_address: tokenContract,
+                        maker,
+                        token_ids: tokenId
+                    }
+                }
+            );
 
-        const seaportInstance = await initSeaport(protocolAddress);
-        const orderStatus = await seaportInstance.getOrderStatus(orderHash);
-        console.log("result---", orderStatus)
-        const isCompleted = orderStatus.totalFilled > 0;
+            const matchedOrder = listinsData.find(order => order.order_hash === orderHash);
+            const taker = matchedOrder?.taker?.address ?? null;
 
-        return {
-            orderHash: orderHash,
-            currentPrice: `${ethers.formatEther(orderDetail.price.current.value)} ${orderDetail.price.current.currency}`,
-            protocolAddress: protocolAddress,
-            protocolData: orderDetail.protocol_data,
-            taker: taker,
-            completed: isCompleted,
-            asset: {
-                tokenContract: orderDetail.protocol_data.parameters.offer[0].token,
-                tokenId: orderDetail.protocol_data.parameters.offer[0].identifierOrCriteria
+            const seaportInstance = await initSeaport(protocolAddress);
+            const { totalFilled } = await seaportInstance.getOrderStatus(orderHash);
 
-            },
-            startTime: orderDetail.protocol_data.parameters.startTime,
-            endTime: orderDetail.protocol_data.parameters.endTime
-        };
+            return {
+                orderHash,
+                currentPrice: `${ethers.formatEther(priceValue)} ${currency}`,
+                protocolAddress,
+                protocolData: orderDetail.protocol_data,
+                taker: taker,
+                completed: totalFilled > 0,
+                asset: { tokenContract, tokenId },
+                startTime,
+                endTime,
+                maker
+            };
+        } catch (error) {
+            console.error('Error loading order:', error);
+            throw error;
+        }
     }
 
     async function getMetadata(contract: `0x${string}`, tokenId: string) {
         try {
-            const walletClient = createPublicClient({
-                chain: isProd ? base : baseSepolia,
-                transport: custom(window.ethereum),
-            });
 
             const result = await tokenData(
-                walletClient,
+                publicClient,
                 contract,
                 Number(tokenId), { includeTokenMetadata: true },
             );
 
-            if ('tokenMetadata' in result) {
-                return result.tokenMetadata;
+            if (!('tokenMetadata' in result)) {
+                throw new Error('Token metadata not available');
             }
-            throw new Error('Token metadata not available');
+
+            return result.tokenMetadata;
         } catch (error) {
             throw error instanceof Error ? error : new Error('Unknown error occurred');
 
         }
     }
 
-    function getParams() {
+    async function getParams() {
         const params = new URLSearchParams(document.location.hash.replace('#', ''));
-        if (params.get('orderHash') && params.get('protocolAddress')) {
+        if (params.get('orderHash') && params.get('protocolAddress') && params.get('targetChain')) {
             setOrderHash(params.get('orderHash') as `0x${string}`)
             setProtocolAddress(params.get('protocolAddress') as `0x${string}`)
+            setTargetChain(Number(params.get('targetChain')))
 
         }
     }
@@ -162,14 +181,14 @@ export const Buy: React.FC = () => {
             setConfirming(true);
             setError('')
             setSuccess(false);
-           
+
             const result = (
                 await axios.post(
                     "https://testnets-api.opensea.io/api/v2/listings/fulfillment_data",
                     {
                         listing: {
                             hash: order.orderHash,
-                            chain: isProd ? Chain.Base : Chain.BaseSepolia,
+                            chain: chainName,
                             protocol_address: order.protocolAddress,
                         },
                         fulfiller: { address: walletAddress },
@@ -206,6 +225,13 @@ export const Buy: React.FC = () => {
             return error
         }
     }
+
+    useEffect(() => {
+        if (targetChain) {
+            walletClient(targetChain).switchChain({ id: targetChain })
+                .catch(error => console.error('Failed to switch chain:', error));
+        }
+    }, [targetChain]);
 
     useEffect(() => {
         setLoading(true);
@@ -254,7 +280,7 @@ export const Buy: React.FC = () => {
     }
 
     function isButtonDisabled(order: any) {
-        return confirming || 
+        return confirming ||
             success ||
             order.completed ||
             (order.taker && order.taker.toLowerCase() !== walletAddress?.toLowerCase()) ||
@@ -292,8 +318,8 @@ export const Buy: React.FC = () => {
                             )}
                         </div>
                         {token?.attributes && token.attributes.length > 0 && (
-                            <div className="mt-4 border-t p-2">
-                                <div className="grid grid-cols-2 gap-2">
+                            <div className="border-t p-2">
+                                <div className="grid grid-cols-3 gap-2">
                                     {token.attributes.map((attr, index) => (
                                         <div key={index} className="bg-gray-50 p-2 rounded">
                                             <p className="text-sm text-gray-500">{attr.trait_type}</p>
@@ -305,24 +331,51 @@ export const Buy: React.FC = () => {
                         )}
                         <div className="p-3 rounded font-bold text-lg text-sm">
                             <div className="flex justify-between items-center">
-                                <p className="truncate">{token?.name || 'Unknown'}</p>
+                                 <a 
+                                    href={`${openseaUrl}/assets/${chainName.replace("_","-")}/${order.asset.tokenContract}/${order.asset.tokenId}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500 hover:text-blue-700"
+                                >
+                                    {token?.name || 'Unknown'}
+                                </a>
                                 <p className="uppercase">{order.currentPrice}</p>
                             </div>
                             <div className="flex justify-between items-center">
-                                <p className="text-sm text-gray-500 mt-1">
+                                <p className="text-sm mt-1">
+                                    Chain
+                                </p>
+                                <p>{displayName}</p>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-sm mt-1">
+                                    Seller
+                                </p>
+                                <p><a 
+                                        href={`${openseaUrl}/${order.maker}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 hover:text-blue-700"
+                                    >
+                                        {addressPipe(order.maker)}
+                                    </a>
+                                </p>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="text-sm mt-1">
                                     Expired at
                                 </p>
                                 <p>
-                                {(() => {
-                                                const now = Math.floor(Date.now() / 1000);
-                                                const timeUntilEnd = order.endTime - now;
-                                                
-                                                if (timeUntilEnd > 0 && timeUntilEnd <= 24 * 3600) {
-                                                    return <CountdownTimer endTime={order.endTime} />;
-                                                }
-                                                
-                                                return new Date(order.endTime * 1000).toLocaleString();
-                                            })()}
+                                    {(() => {
+                                        const now = Math.floor(Date.now() / 1000);
+                                        const timeUntilEnd = order.endTime - now;
+
+                                        if (timeUntilEnd > 0 && timeUntilEnd <= 24 * 3600) {
+                                            return <CountdownTimer endTime={order.endTime} />;
+                                        }
+
+                                        return new Date(order.endTime * 1000).toLocaleString();
+                                    })()}
                                 </p>
                             </div>
                         </div>
@@ -350,7 +403,7 @@ export const Buy: React.FC = () => {
 
                         {success && (
                             <div className="p-4 text-green-900 ">
-                                Success! 🎉 Please access <a href={`${SCAN_BASE_URL}/tx/${transactionHash}`} target="_blank" rel="noopener noreferrer">Transaction Scan</a> to view the transaction details.
+                                Success! 🎉 Please access <a href={`${scanUrl}/tx/${transactionHash}`} target="_blank" rel="noopener noreferrer">Transaction Scan</a> to view the transaction details.
                             </div>
                         )}
 
