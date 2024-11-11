@@ -147,7 +147,7 @@ export const Spin: React.FC = () => {
       <>
         <img
           className={cn(
-            '-mt-36 max-w-56',
+            '-mt-36 max-w-48',
             isSpinDisabled ? 'cursor-not-allowed' : 'cursor-pointer'
           )}
           onClick={onSpin}
