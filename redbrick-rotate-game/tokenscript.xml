@@ -14,7 +14,7 @@
 	<ts:meta>
 		<ts:description xml:lang="en">Redbrick Engine: Unifying Creators, Developers, and Players.</ts:description>
 		<ts:aboutUrl xml:lang="en">https://html5-game.redbrick.land/0xRotate-platform/</ts:aboutUrl>
-		<ts:iconUrl xml:lang="en">https://i.ibb.co/7Qx4bpC/Thumb-meta-data-2.png</ts:iconUrl>
+		<ts:iconUrl xml:lang="en">https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/ts-icon.png</ts:iconUrl>
 		<ts:env name="BACKEND_API_BASE_URL">$tst{BACKEND_API_BASE_URL}</ts:env>
 		<ts:env name="REDBRICK_API_BASE_URL">$tst{REDBRICK_API_BASE_URL}</ts:env>
 		<ts:env name="REDBRICK_GAME_ID">$tst{REDBRICK_GAME_ID}</ts:env>
