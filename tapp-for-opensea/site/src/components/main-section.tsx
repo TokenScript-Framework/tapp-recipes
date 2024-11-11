@@ -164,7 +164,7 @@ export function MainSection() {
                                                 <CardTitle className="text-sm mb-2 flex items-center justify-between">
                                                     <div className="flex items-center space-x-2">
                                                         <Image src={openseaSVG} alt="logo" width={32} height={32} />
-                                                        <a href={`${OPENSEA_BASE}/assets/${getChainName(chainId)}/${nft.assets[0].tokenContract}/${nft.assets[0].tokenId}`} target="blank" className="cursor hover:underline">
+                                                        <a href={`${OPENSEA_BASE}/assets/${getChainName(chainId).replace("_","-")}/${nft.assets[0].tokenContract}/${nft.assets[0].tokenId}`} target="blank" className="cursor hover:underline">
                                                             {nft.assets[0].name}
                                                         </a>
                                                     </div>
