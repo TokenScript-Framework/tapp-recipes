@@ -50,6 +50,19 @@ export async function spin(txHash: string, nonce: string, authToken: string) {
   return response.data;
 }
 
+export async function getStlGameInfo() {
+  const response = await axios.get(
+    `${tokenscript.env.BACKEND_API_BASE_URL}/redbrick/spin-game-info`,
+    {
+      params: {
+        wallet: walletAddress,
+      },
+    }
+  );
+
+  return response.data;
+}
+
 export function getSignMessage(nonce: string) {
   return `
       Welcome to REDBRICK!
