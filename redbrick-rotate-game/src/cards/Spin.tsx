@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useCallback } from 'react';
 import Loader from '../components/loader/loader';
-import { getStlGameInfo, spin } from '@/lib/backendApi';
+import { getStlGameInfo, getStlGameInfo, spin } from '@/lib/backendApi';
 import { buySpin, joinGame, spinSignature } from '@/lib/spinService';
 import Spinner from '@/components/spinner';
 import {
@@ -281,23 +281,25 @@ export const Spin: React.FC = () => {
           alt='pin'
         />
       </div>
-      <div className='absolute w-full bottom-0 rounded-b-md bg-[#0E1D3D] flex justify-between items-center gap-4 text-white px-2'>
-        <div>$SLN Rewards</div>
-        <div>
-          Pool:{' '}
-          <span>
-            {stlGameInfo
-              ? `${stlGameInfo.availableSLNRewards}/${stlGameInfo.totalSLNRewards}`
-              : '-/-'}
-          </span>
+      {authToken && (
+        <div className='absolute text-sm w-full bottom-0 rounded-b-md bg-[#0E1D3D] flex justify-between items-center gap-4 text-white px-2'>
+          <div>$SLN Rewards</div>
+          <div>
+            Pool:{' '}
+            <span className='font-semibold text-base'>
+              {stlGameInfo
+                ? `${stlGameInfo.availableSLNRewards}/${stlGameInfo.totalSLNRewards}`
+                : '-/-'}
+            </span>
+          </div>
+          <div>
+            Next Reward:{' '}
+            <span className='font-semibold text-base'>
+              {stlGameInfo ? `${stlGameInfo.unrewardedSpinCount}/10` : '-/10'}
+            </span>
+          </div>
         </div>
-        <div>
-          Next Reward:{' '}
-          <span>
-            {stlGameInfo ? `${stlGameInfo.unrewardedSpinCount}/10` : '-/10'}
-          </span>
-        </div>
-      </div>
+      )}
       <Loader show={loading} />
       <img
         className='hidden'
