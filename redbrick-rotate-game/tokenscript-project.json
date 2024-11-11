@@ -8,6 +8,14 @@
       "BACKEND_API_BASE_URL": "https://store-backend-stage.smartlayer.network",
       "REDBRICK_API_BASE_URL": "https://api-dev.redbrick.land/v1",
       "REDBRICK_GAME_ID": "b1e66f01-9a68-4847-be5a-d2df1ed8bb8c"
+    },
+    "local": {
+      "CONTRACT_ADDRESS": "0xf925027b8C521939f25CE633FEFd7777a1660D86",
+      "CONTRACT_CHAIN": "137",
+      "SPIN_CONTRACT_CHAIN": "5611",
+      "BACKEND_API_BASE_URL": "http://localhost:3006",
+      "REDBRICK_API_BASE_URL": "https://api-dev.redbrick.land/v1",
+      "REDBRICK_GAME_ID": "b1e66f01-9a68-4847-be5a-d2df1ed8bb8c"
     }
   }
 }

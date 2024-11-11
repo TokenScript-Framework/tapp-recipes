@@ -270,7 +270,7 @@ export const Spin: React.FC = () => {
           alt='logo'
         />
         <img
-          className='-mt-8 w-[130%] max-w-none'
+          className='-mt-8 min-w-[650px]'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/machine-body.png'
           alt='machine-body'
         />
