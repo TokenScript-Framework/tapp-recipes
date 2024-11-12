@@ -40,6 +40,7 @@ export const Buy: React.FC = () => {
     const [token, setToken] = useState<Token | null>(null)
     const [transactionHash, setTransactionHash] = useState<string>('');
     const [seaport, setSeaport] = useState<any>();
+    const [canceled, setCanceled] = useState(false);
     const [isExpired, setIsExpired] = useState(false);
     const isMainnet = !isTestChain(targetChain)
 
@@ -107,6 +108,10 @@ export const Buy: React.FC = () => {
                     }
                 }
             );
+
+            if(listinsData.length === 0){
+                setCanceled(true)
+            }
 
             const matchedOrder = listinsData.find(order => order.order_hash === orderHash);
             const taker = matchedOrder?.taker?.address ?? null;
@@ -273,6 +278,11 @@ export const Buy: React.FC = () => {
         if (isExpired) {
             return 'Order expired';
         }
+
+        if (canceled) {
+            return 'Order Canceled';
+        }
+
         if (order.taker && order.taker.toLowerCase() !== walletAddress?.toLowerCase()) {
             return `Reserved for ${addressPipe(order.taker)}`;
         }
@@ -283,6 +293,7 @@ export const Buy: React.FC = () => {
         return confirming ||
             success ||
             order.completed ||
+            canceled ||
             (order.taker && order.taker.toLowerCase() !== walletAddress?.toLowerCase()) ||
             isExpired;
     }
