@@ -103,6 +103,25 @@ export async function getERC20Contract(contractAddr: string): ethers.Contract {
 			],
 			"stateMutability": "view",
 			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "address",
+					"type": "address"
+				}
+			],
+			"name": "balanceOf",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
 		}
 	], RPC_PROVIDER);
 }
