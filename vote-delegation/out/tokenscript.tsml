@@ -1,4 +1,4 @@
-<ts:token xmlns:ethereum="urn:ethereum:constantinople" xmlns:ts="http://tokenscript.org/2024/01/tokenscript" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="vote-delegate" xsi:schemaLocation="http://tokenscript.org/2024/01/tokenscript https://www.tokenscript.org/schemas/2024-01/tokenscript.xsd">
+<ts:token xmlns:ethereum="urn:ethereum:constantinople" xmlns:ts="http://tokenscript.org/2024/01/tokenscript" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="VoteDelegate" xsi:schemaLocation="http://tokenscript.org/2024/01/tokenscript https://www.tokenscript.org/schemas/2024-01/tokenscript.xsd">
 	<ts:label>
 		<ts:plurals xml:lang="en">
 			<ts:string quantity="one">vote-delegate Token</ts:string>
@@ -6,7 +6,7 @@
 		</ts:plurals>
 	</ts:label>
 	<ts:meta>
-		<ts:description xml:lang="en">Vote delegation</ts:description>
+		<ts:description xml:lang="en">Let your followers to delegate their votes to you on twitter</ts:description>
 		<ts:aboutUrl xml:lang="en">https://vote-delegation.vercel.app/</ts:aboutUrl>
 		<ts:iconUrl xml:lang="en">https://vote-delegation.vercel.app/logo.png</ts:iconUrl>
 	</ts:meta>
@@ -99,4 +99,4 @@ body {
 
 	</ts:cards>
 
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/><ds:Reference><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>doou0sp7ea2Pu/j5mlui7vBr8djBDN9QYz7q48+h1JU=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>nRkGhS+k1ww2zqPHxSH4LDvXWa+rM0XT5MjwbyZaHUl7QALwTj2Fe0KL+gR5l3tcSzPLNQiBDHJQKD3ST6B9qQ==</ds:SignatureValue><ds:KeyInfo><ds:KeyValue><ecdsa:ECDSAKeyValue xmlns:ecdsa="http://www.w3.org/2001/04/xmldsig-more#"><ecdsa:DomainParameters><ecdsa:NamedCurve URI="urn:oid:1.3.132.0.10"/></ecdsa:DomainParameters><ecdsa:PublicKey><ecdsa:X>IjBgvE/HWhimITFhbB8JmXkVdWmsMsBnBigyiAujVew=</ecdsa:X><ecdsa:Y>sTU7GyY1G1JIpeQkmSHDxJhfwHxdhp0vZOxvUsyBRV8=</ecdsa:Y></ecdsa:PublicKey></ecdsa:ECDSAKeyValue></ds:KeyValue></ds:KeyInfo></ds:Signature></ts:token>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/><ds:Reference><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>WZEURqYOn4UTQHrPoFd1cUX20Rdlxk/UuJpmPq5YaWQ=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>CY2KWKo+z3wWqVvpw4yvOOnV7rDDboYv5CYcWqNS9q/mGlLr6QZnh1iC/pF52R60Z1FsJGxRKhY7P5GciiRP4w==</ds:SignatureValue><ds:KeyInfo><ds:KeyValue><ecdsa:ECDSAKeyValue xmlns:ecdsa="http://www.w3.org/2001/04/xmldsig-more#"><ecdsa:DomainParameters><ecdsa:NamedCurve URI="urn:oid:1.3.132.0.10"/></ecdsa:DomainParameters><ecdsa:PublicKey><ecdsa:X>IjBgvE/HWhimITFhbB8JmXkVdWmsMsBnBigyiAujVew=</ecdsa:X><ecdsa:Y>sTU7GyY1G1JIpeQkmSHDxJhfwHxdhp0vZOxvUsyBRV8=</ecdsa:Y></ecdsa:PublicKey></ecdsa:ECDSAKeyValue></ds:KeyValue></ds:KeyInfo></ds:Signature></ts:token>
