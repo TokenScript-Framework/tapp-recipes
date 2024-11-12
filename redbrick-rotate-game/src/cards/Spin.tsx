@@ -300,23 +300,28 @@ export const Spin: React.FC = () => {
           alt='pin'
         />
       </div>
-      {authToken && (
-        <div className='absolute text-sm w-full bottom-0 rounded-b-md bg-[#0E1D3D] flex justify-between items-center gap-4 text-white px-2'>
-          <div>$SLN Rewards</div>
-          <div>
-            Pool:{' '}
-            <span className='font-semibold text-base'>
-              {stlGameInfo
-                ? `${stlGameInfo.availableSLNRewards}/${stlGameInfo.totalSLNRewards}`
-                : '-/-'}
-            </span>
-          </div>
-          <div>
-            Next Reward:{' '}
-            <span className='font-semibold text-base'>
-              {stlGameInfo ? `${stlGameInfo.unrewardedSpinCount}/10` : '-/10'}
-            </span>
-          </div>
+      {authToken && stlGameInfo && (
+        <div className='absolute text-sm w-full bottom-0 rounded-b-md bg-[#0E1D3D] flex justify-around items-center gap-4 text-white px-2'>
+          {stlGameInfo.availableSLNRewards > 0 ? (
+            <>
+              <div>$SLN Rewards</div>
+              <div>
+                Pool:{' '}
+                <span className='font-semibold text-base'>
+                  {stlGameInfo.availableSLNRewards}/
+                  {stlGameInfo.totalSLNRewards}
+                </span>
+              </div>
+              <div>
+                Next Reward:{' '}
+                <span className='font-semibold text-base'>
+                  {stlGameInfo.unrewardedSpinCount}/10
+                </span>
+              </div>
+            </>
+          ) : (
+            <div>All $SLN Rewards have been claimed</div>
+          )}
         </div>
       )}
       <Loader show={loading} />
