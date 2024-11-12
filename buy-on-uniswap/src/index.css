@@ -12,9 +12,10 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  /*color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);*/
   background-color: #242424;
+  color: #fff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -52,18 +53,23 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
+  color: #fff;
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+button:hover:not(:disabled) {
   border-color: #646cff;
+}
+button:disabled {
+  color: rgba(255, 255, 255, 0.85);
+  cursor: not-allowed;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
+/*@media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
@@ -74,4 +80,4 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+}*/
