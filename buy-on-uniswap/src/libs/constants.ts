@@ -1,3 +1,4 @@
+import {FeeAmount} from "@uniswap/v3-sdk";
 
 export const POOL_FACTORY_CONTRACT_ADDRESS =
 	'0x33128a8fC17869897dcE68Ed026d694621f6FDfD'
@@ -23,13 +24,15 @@ export const SWAP_TOKEN_LIST: TokenDetails[] = [
 		decimals: 18,
 		chainId: CHAIN_ID,
 		address: '0x0000000000000000000000000000000000000000',
+		feeTier: FeeAmount.MEDIUM
 	},
 	{
 		name: 'Tether USD',
 		symbol: 'USDT',
 		decimals: 6,
 		chainId: CHAIN_ID,
-		address: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2'
+		address: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2',
+		feeTier: 2500
 	},
 	/*{
 		name: 'Wrapped Matic',

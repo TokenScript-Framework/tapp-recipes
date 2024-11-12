@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
-import { ITokenContextData } from "@tokenscript/card-sdk/dist/types";
+import {ITokenContextData} from "@tokenscript/card-sdk/dist/types";
 import {Ether, Token} from '@uniswap/sdk-core';
 import {ADDRESS_ZERO, FeeAmount} from '@uniswap/v3-sdk';
 import {quote, UniswapConfig} from "../libs/quote.ts";
-import {fromReadableAmount, toReadableAmount} from "../libs/conversion.ts";
+import {fromReadableAmount} from "../libs/conversion.ts";
 import {RPC_PROVIDER, SWAP_TOKEN_LIST, TokenDetails} from "../libs/constants.ts";
 import {getERC20Contract, swap} from "../libs/swap.ts";
 import Loader from "../components/loader/loader.tsx";
@@ -22,6 +22,7 @@ export const Buy: React.FC<BuyProps> = ({ token, referralCode }) => {
 	const [currentQuote, setCurrentQuote] = useState<{amountOut: bigint}|null>(null);
 	const [currentBalance, setCurrentBalance] = useState<bigint|null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [poolFee, setPoolFee] = useState<FeeAmount>(FeeAmount.MEDIUM);
 
 	useEffect(() => {
 
@@ -78,7 +79,7 @@ export const Buy: React.FC<BuyProps> = ({ token, referralCode }) => {
 					in: inToken.wrapped,
 					amountIn,
 					out: outToken.wrapped,
-					poolFee: FeeAmount.LOW,
+					poolFee,
 				}
 			}
 
@@ -86,10 +87,12 @@ export const Buy: React.FC<BuyProps> = ({ token, referralCode }) => {
 				setCurrentQuote(newQuote);
 				console.log("New quote: ", newQuote);
 				setIsLoading(false);
+			}).catch((e: any) => {
+				tokenscript.action.showMessageToast("error", "Failed to load quote", e.message);
+				setIsLoading(false);
 			});
 
 		} else {
-			setCurrentQuote(null);
 			setIsLoading(false);
 		}
 
@@ -100,6 +103,9 @@ export const Buy: React.FC<BuyProps> = ({ token, referralCode }) => {
 	};
 
 	function setInCurrency(tokenDetails: TokenDetails){
+		setCurrentQuote(null);
+		setCurrentBalance(null);
+		setPoolFee(tokenDetails.feeTier ?? FeeAmount.MEDIUM);
 		setInToken(
 			tokenDetails.address === ADDRESS_ZERO ?
 				new Ether(chainId) :
@@ -123,7 +129,7 @@ export const Buy: React.FC<BuyProps> = ({ token, referralCode }) => {
 				in: inToken!,
 				amountIn,
 				out: outToken!,
-				poolFee: FeeAmount.LOW,
+				poolFee,
 			}
 		}
 
@@ -156,7 +162,7 @@ export const Buy: React.FC<BuyProps> = ({ token, referralCode }) => {
 					src={token.image_preview_url}
 					alt="Token Logo"
 				/>
-				<h3 style={{marginTop: '20px'}}>
+				<h3 style={{margin: '10px 0'}}>
 					<h3>Buy {token.name} on Uniswap</h3>
 				</h3>
 
