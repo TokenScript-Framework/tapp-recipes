@@ -184,7 +184,7 @@ export const Spin: React.FC = () => {
   }
 
   return (
-    <div className='w-full h-dvh bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
+    <div className='w-full h-dvh bg-center min-h-[639px] bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
       <Dialog open={isDialogOpen} onOpenChange={onDialogClose}>
         <DialogContent className='flex flex-col justify-center w-full h-dvh bg-transparent backdrop-blur-xl border-none'>
           <DialogTitle></DialogTitle>
