@@ -3,6 +3,7 @@
 	"environment": {
 		"default": {
 			"CONTRACT_ADDRESS": "0x532f27101965dd16442e59d40670faf5ebb142e4",
+			"SWAP_ROUTER_ADDRESS": "0x2626664c2603336E57B271c5C0b26F421741e481",
 			"CONTRACT_CHAIN": "8453"
 		},
 		"base-degen": {
