@@ -5,14 +5,11 @@ import { ITokenContextData } from "@tokenscript/card-sdk/dist/types";
 
 const App: FC = () => {
 	enum CardName {
-		Info = "Info",
 		Buy = "Buy",
-		Price = "Price",
-		ShareToEarn = "ShareToEarn",
 		NotFound = "NotFound",
 	}
 
-	const [CurrentPage, setCurrentPage] = useState<React.FC>(() => Info);
+	const [CurrentPage, setCurrentPage] = useState<React.FC>(() => Buy);
 	const [token, setToken] = useState<ITokenContextData>();
 	const [referralCode, setReferralCode] = useState<string | null>(null);
 
