@@ -27,12 +27,12 @@ export const SWAP_TOKEN_LIST: TokenDetails[] = [
 		feeTier: FeeAmount.MEDIUM
 	},
 	{
-		name: 'Tether USD',
-		symbol: 'USDT',
+		name: 'USDC',
+		symbol: 'USDC',
 		decimals: 6,
 		chainId: CHAIN_ID,
-		address: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2',
-		feeTier: 2500
+		address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+		feeTier: FeeAmount.HIGH
 	},
 	/*{
 		name: 'Wrapped Matic',
