@@ -53,6 +53,7 @@ p.light {
   padding: 15px;
   min-height: 100vh;
   background-color: #131313;
+  color: #fff !important;
 }
 
 .swap-panel {
@@ -95,6 +96,7 @@ p.light {
   text-align: center;
   font-weight: bold;
   background: rgba(25, 25, 25, 1);
+  color: #fff;
   font-size: 32px;
   border: none !important;
   outline: none;

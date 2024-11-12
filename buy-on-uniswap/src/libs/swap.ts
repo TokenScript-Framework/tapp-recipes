@@ -78,7 +78,7 @@ async function getApprovalValue(walletAddr: string, contractAddr: string){
 	return await contract.getFunction("allowance").staticCall(walletAddr, swapRouterAddress);
 }
 
-export async function getERC20Contract(contractAddr: string): ethers.Contract {
+export function getERC20Contract(contractAddr: string): ethers.Contract {
 	return new ethers.Contract(contractAddr, [
 		{
 			"inputs": [
