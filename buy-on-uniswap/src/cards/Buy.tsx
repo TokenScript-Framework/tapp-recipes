@@ -62,7 +62,7 @@ export const Buy: React.FC<BuyProps> = ({ token, referralCode }) => {
 				});
 			} else {
 				const contract = getERC20Contract(inToken.wrapped.address);
-				contract.getFunction("allowance").staticCall(walletAddress).then((balance) => {
+				contract.getFunction("balanceOf").staticCall(walletAddress).then((balance) => {
 					setCurrentBalance(balance);
 				})
 			}
@@ -138,7 +138,7 @@ export const Buy: React.FC<BuyProps> = ({ token, referralCode }) => {
 		if (!currentQuote)
 			return "Failed to load quote";
 
-		if (currentBalance && currentBalance < fromReadableAmount(amountIn, inToken!.decimals))
+		if (currentBalance != null && currentBalance < fromReadableAmount(amountIn, inToken!.decimals))
 			return "Insufficient balance";
 
 		return "Swap"
@@ -181,7 +181,7 @@ export const Buy: React.FC<BuyProps> = ({ token, referralCode }) => {
 						setAmountIn(newAmount);
 					}}/>
 					{
-						currentBalance && (
+						currentBalance !== null && (
 							<div className="field">
 								<strong>Balance: </strong>
 								<span>{formatAmount(currentBalance, inToken?.decimals)} {inToken?.name}</span>
