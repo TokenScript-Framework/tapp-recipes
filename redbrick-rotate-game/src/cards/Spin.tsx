@@ -146,7 +146,7 @@ export const Spin: React.FC = () => {
       <>
         <img
           className={cn(
-            '-mt-36 max-w-48',
+            'mt-[-124px] max-w-44',
             isSpinDisabled ? 'cursor-not-allowed' : 'cursor-pointer'
           )}
           onClick={onSpin}
@@ -154,11 +154,11 @@ export const Spin: React.FC = () => {
           alt='spin-button'
         />
         <img
-          className='max-w-24 bottom-4 absolute z-10'
+          className='max-w-[76px] bottom-[14px] absolute z-10'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/button-display.png'
           alt='button-display'
         />
-        <div className='absolute bottom-4 flex gap-2 z-20 text-white'>
+        <div className='absolute bottom-[12px] flex gap-1 z-20 text-white'>
           <img
             className='max-w-4'
             src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon.png'
@@ -175,7 +175,7 @@ export const Spin: React.FC = () => {
   } else {
     messageOrButton = (
       <img
-        className='-mt-32 max-w-64 cursor-pointer'
+        className='-mt-24 max-w-56 cursor-pointer'
         onClick={onLogin}
         src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/login-btn.png'
         alt='login'
@@ -278,25 +278,25 @@ export const Spin: React.FC = () => {
       </Dialog>
       <div className='flex flex-col items-center overflow-hidden relative'>
         <img
-          className='mt-4 max-w-32'
+          className='mt-2 max-w-28'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/logo.png'
           alt='logo'
         />
         <img
-          className='-mt-8 min-w-[650px]'
+          className='-mt-8 min-w-[560px]'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/machine-body.png'
           alt='machine-body'
         />
-        <div className='top-[456px] absolute'>
+        <div className='top-[382px] absolute'>
           <CountDown />
         </div>
         {messageOrButton}
         <img
-          className='max-w-[19rem] top-[158px] absolute'
+          className='max-w-[272px] top-[118px] absolute'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/cover.png'
           alt='cover'
         />
-        <div className='max-w-52 top-[206px] absolute'>
+        <div className='max-w-[200px] top-[154px] absolute'>
           <Spinner
             isSpinning={isSpinning}
             itemIndex={itemIndex}
@@ -304,40 +304,60 @@ export const Spin: React.FC = () => {
           />
         </div>
         <img
-          className='max-w-16 top-[154px] absolute z-10'
+          className='max-w-[52px] top-[118px] absolute z-10'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/arrow.png'
           alt='arrow'
         />
         <img
-          className='max-w-16 top-[278px] absolute z-10'
+          className='max-w-12 top-[230px] absolute z-10'
           src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/pin.png'
           alt='pin'
         />
       </div>
-      {authToken && stlGameInfo && (
-        <div className='absolute text-sm w-full bottom-0 rounded-b-md bg-[#0E1D3D] flex justify-around items-center gap-4 text-white px-2'>
-          {stlGameInfo.availableSLNRewards > 0 ? (
-            <>
-              <div>$SLN Rewards</div>
-              <div>
-                Pool:{' '}
-                <span className='font-semibold text-base'>
-                  {stlGameInfo.availableSLNRewards}/
-                  {stlGameInfo.totalSLNRewards}
-                </span>
-              </div>
-              <div>
-                Next Reward:{' '}
-                <span className='font-semibold text-base'>
-                  {stlGameInfo.unrewardedSpinCount}/10
-                </span>
-              </div>
-            </>
-          ) : (
-            <div>All $SLN Rewards have been claimed</div>
-          )}
+      <div className='flex flex-col absolute bottom-0 w-full'>
+        <div className='h-20 flex items-center justify-evenly w-full bg-contain bg-no-repeat bg-center bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/btn-bg.png")]'>
+          <div className='flex flex-col items-center cursor-pointer mt-2 px-10'>
+            <img
+              className='max-w-11'
+              src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon.png'
+              alt='spin-icon'
+            />
+            <div className='text-white text-xs font-semibold'>EXTRA SPIN</div>
+          </div>
+          <div className='flex flex-col items-center cursor-pointer mt-2 px-10'>
+            <img
+              className='max-w-12'
+              src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/logout.png'
+              alt='logout'
+            />
+            <div className='text-white text-xs font-semibold'>LOGOUT</div>
+          </div>
         </div>
-      )}
+        {authToken && stlGameInfo && (
+          <div className='text-sm w-full rounded-b-md bg-[#0E1D3D] flex justify-around items-center gap-4 text-white px-2'>
+            {stlGameInfo.availableSLNRewards > 0 ? (
+              <>
+                <div>$SLN Rewards</div>
+                <div>
+                  Pool:{' '}
+                  <span className='font-semibold text-base'>
+                    {stlGameInfo.availableSLNRewards}/
+                    {stlGameInfo.totalSLNRewards}
+                  </span>
+                </div>
+                <div>
+                  Next Reward:{' '}
+                  <span className='font-semibold text-base'>
+                    {stlGameInfo.unrewardedSpinCount}/10
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div>All $SLN Rewards have been claimed</div>
+            )}
+          </div>
+        )}
+      </div>
       <Loader show={loading} />
       <img
         className='hidden'
