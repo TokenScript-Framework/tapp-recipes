@@ -374,7 +374,7 @@ export const Buy: React.FC = () => {
                             </div>
                             <div className="flex justify-between items-center">
                                 <p className="text-sm mt-1">
-                                    Expired at
+                                    Sale ends
                                 </p>
                                 <p>
                                     {(() => {

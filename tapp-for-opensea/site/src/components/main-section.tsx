@@ -180,7 +180,7 @@ export function MainSection() {
 
                                                 <CardTitle className="text-sm mb-2 flex items-center justify-between">
                                                     <div className="flex items-center space-x-2">
-                                                        Expired at
+                                                        Sale ends
                                                     </div>
 
                                                     {(() => {
