@@ -12,6 +12,7 @@ import {
 import { cn } from '@/lib/utils';
 import CountDown from '@/components/count-down';
 import InfoDialog from '@/components/info-dialog';
+import ExtraDialog from '@/components/extra-dialog';
 
 const itemIndexByType: Record<string, number> = {
   badge: 1,
@@ -34,6 +35,8 @@ export const Spin: React.FC = () => {
   const [stlGameInfo, setStlGameInfo] = useState<any>();
   const [error, setError] = useState('');
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
+
+  const [isExtraDialogOpen, setIsExtraDialogOpen] = useState(true);
 
   useEffect(() => {
     setLoading(false);
@@ -109,10 +112,14 @@ export const Spin: React.FC = () => {
     setAuthToken('');
   }
 
-  function onDialogClose() {
+  function onInfoDialogClose() {
     setIsInfoDialogOpen(false);
     setError('');
     setSpinResult(undefined);
+  }
+
+  function onExtraDialogClose() {
+    setIsExtraDialogOpen(false);
   }
 
   function onSpinEnd() {
@@ -174,9 +181,14 @@ export const Spin: React.FC = () => {
     <div className='w-full h-dvh bg-center min-h-[639px] bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")]'>
       <InfoDialog
         isOpen={isInfoDialogOpen}
-        onDialogClose={onDialogClose}
+        onDialogClose={onInfoDialogClose}
         error={error}
         spinResult={spinResult}
+      />
+      <ExtraDialog
+        isOpen={isExtraDialogOpen}
+        onDialogClose={onExtraDialogClose}
+        authToken={authToken}
       />
       <div className='flex flex-col items-center overflow-hidden relative'>
         <img

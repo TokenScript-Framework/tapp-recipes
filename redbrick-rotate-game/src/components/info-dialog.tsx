@@ -1,6 +1,6 @@
 'use client';
 
-import {Info} from 'lucide-react';
+import { Info } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 
 const itemIcons: Record<string, string> = {
@@ -34,7 +34,7 @@ export default function InfoDialog({
   isOpen,
   onDialogClose,
   error,
-  spinResult
+  spinResult,
 }: InfoDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onDialogClose}>
