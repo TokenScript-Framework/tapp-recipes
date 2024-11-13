@@ -5,10 +5,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { createMission, getMissionStatus } from '@/lib/redbrickApi';
 import { cn } from '@/lib/utils';
-import { Info } from 'lucide-react';
+// import { Info } from 'lucide-react';
 
-const DISCORD_OAUTH_URL =
-  'https://discord.com/oauth2/authorize?client_id=1113401590188085351&redirect_uri=https%3A%2F%2Fhtml5-game.redbrick.land%2F0xRotate-platform-dev%2F%3Ftype%3DDISCORD&type=DISCORD&response_type=code&scope=email+identify&prompt=consent';
+// const DISCORD_OAUTH_URL =
+//   'https://discord.com/oauth2/authorize?client_id=1113401590188085351&redirect_uri=https%3A%2F%2Fhtml5-game.redbrick.land%2F0xRotate-platform-dev%2F%3Ftype%3DDISCORD&type=DISCORD&response_type=code&scope=email+identify&prompt=consent';
 
 interface ExtraDialogProps {
   isOpen: boolean;
@@ -22,7 +22,7 @@ export default function ExtraDialog({
   authToken,
 }: ExtraDialogProps) {
   const [missionStatus, setMissionStatus] = useState<any>();
-  const [isDiscordClicked, setIsDiscordClicked] = useState(false);
+  // const [isDiscordClicked, setIsDiscordClicked] = useState(false);
 
   const loadMissionStatus = useCallback(async () => {
     const result = await getMissionStatus(authToken);
@@ -40,10 +40,10 @@ export default function ExtraDialog({
     };
   }
 
-  function onDiscordJoin() {
-    setIsDiscordClicked(true);
-    window.open(DISCORD_OAUTH_URL, '_blank');
-  }
+  // function onDiscordJoin() {
+  //   setIsDiscordClicked(true);
+  //   window.open(DISCORD_OAUTH_URL, '_blank');
+  // }
 
   return (
     <Dialog open={isOpen} onOpenChange={onDialogClose}>
@@ -59,7 +59,7 @@ export default function ExtraDialog({
             />
             <div className='font-bold text-2xl tracking-[1rem]'>EXTRA</div>
           </div>
-          <div className='flex flex-col items-center w-full pt-8 h-[560px] bg-center bg-[length:90%_100%] bg-no-repeat bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/dialog-bg.png")]'>
+          <div className='flex flex-col items-center w-full pt-8 h-[520px] bg-center bg-[length:90%_100%] bg-no-repeat bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/dialog-bg.png")]'>
             <img
               className='max-w-32'
               src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon.png'
@@ -88,7 +88,7 @@ export default function ExtraDialog({
                   />
                 </div>
               </div>
-              <div
+              {/* <div
                 className={cn(
                   'flex justify-between relative items-center p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat',
                   missionStatus?.data?.joinDiscord
@@ -116,7 +116,7 @@ export default function ExtraDialog({
                   </div>
                   <div>Please reload once you joined on discord.</div>
                 </div>
-              )}
+              )} */}
               <div
                 className={cn(
                   'flex justify-between relative items-center p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat',
