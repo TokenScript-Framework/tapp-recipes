@@ -216,12 +216,12 @@ export const Spin: React.FC = () => {
                     {itemDesc[spinResult.rbRewardType]}
                   </div>
                 </div>
-                {spinResult.stlRewardAmount && (
+                {!!spinResult.stlRewardAmount && (
                   <>
                     <div className='text-2xl font-bold text-white'>+</div>
-                    <div className='bg-gray-400 p-1 rounded-xl'>
+                    <div className='bg-gray-400 px-[14px] pt-[14px] pb-1 rounded-xl'>
                       <img
-                        className='w-36 h-36'
+                        className='w-32 h-32 mb-[6px]'
                         src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/sln-token.png'
                         alt='sln-token'
                       />
@@ -240,10 +240,24 @@ export const Spin: React.FC = () => {
               />
               <div className='flex flex-col items-center -mt-24'>
                 {spinResult.rbRewardType === 'bric' && (
-                  <div className='flex max-w-80'>
-                    <Info />
-                    BRIC Role reward can only be distributed with
-                    immigration-completed accounts.
+                  <div className='flex gap-2 max-w-80 text-left'>
+                    <span>
+                      <Info width={16} />
+                    </span>
+                    <span>
+                      BRIC Role reward can only be distributed with
+                      immigration-completed accounts.
+                    </span>
+                  </div>
+                )}
+                {spinResult.stlRewardAmount > 0 && (
+                  <div className='flex gap-2 max-w-80 text-left'>
+                    <span>
+                      <Info width={16} />
+                    </span>
+                    <span>
+                      Transfer of $SLN is processing and will arrive shortly.
+                    </span>
                   </div>
                 )}
                 <img
@@ -254,7 +268,7 @@ export const Spin: React.FC = () => {
                 />
               </div>
               <img
-                className='max-w-40'
+                className='max-w-36'
                 src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/logo.png'
                 alt='logo'
               />
