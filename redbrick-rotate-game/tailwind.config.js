@@ -83,8 +83,8 @@ export default {
         },
       },
       animation: {
-        'spin-start': 'spin-full 1s ease-in',
-        'spin-continuous': 'spin-full 0.5s linear infinite',
+        'spin-start': 'spin-full 0.5s ease-in',
+        'spin-continuous': 'spin-full 0.25s linear infinite',
         'spin-1': 'spin-72 0.5s ease-out',
         'spin-2': 'spin-144 1s ease-out',
         'spin-3': 'spin-216 1.5s ease-out',

@@ -23,7 +23,7 @@ export default function Spinner({
       setSpinState('easing-in');
       setTimeout(() => {
         setSpinState('spinning');
-      }, 1000);
+      }, 500);
     } else if (
       !isSpinning &&
       (spinState === 'spinning' || spinState === 'easing-in')
