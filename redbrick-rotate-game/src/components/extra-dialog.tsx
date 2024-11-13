@@ -5,6 +5,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { createMission, getMissionStatus } from '@/lib/redbrickApi';
 import { cn } from '@/lib/utils';
+import { Info } from 'lucide-react';
+
+const DISCORD_OAUTH_URL =
+  'https://discord.com/oauth2/authorize?client_id=1113401590188085351&redirect_uri=https%3A%2F%2Fhtml5-game.redbrick.land%2F0xRotate-platform-dev%2F%3Ftype%3DDISCORD&type=DISCORD&response_type=code&scope=email+identify&prompt=consent';
 
 interface ExtraDialogProps {
   isOpen: boolean;
@@ -18,6 +22,7 @@ export default function ExtraDialog({
   authToken,
 }: ExtraDialogProps) {
   const [missionStatus, setMissionStatus] = useState<any>();
+  const [isDiscordClicked, setIsDiscordClicked] = useState(false);
 
   const loadMissionStatus = useCallback(async () => {
     const result = await getMissionStatus(authToken);
@@ -33,6 +38,11 @@ export default function ExtraDialog({
       await createMission(authToken, type);
       loadMissionStatus();
     };
+  }
+
+  function onDiscordJoin() {
+    setIsDiscordClicked(true);
+    window.open(DISCORD_OAUTH_URL, '_blank');
   }
 
   return (
@@ -85,6 +95,7 @@ export default function ExtraDialog({
                     ? 'cursor-not-allowed text-gray-500 bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg-completed.png")]'
                     : 'cursor-pointer bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'
                 )}
+                onClick={onDiscordJoin}
               >
                 <div>Join Discord</div>
                 <div className='flex items-center'>
@@ -98,6 +109,14 @@ export default function ExtraDialog({
                   />
                 </div>
               </div>
+              {isDiscordClicked && (
+                <div className='flex gap-1 items-center max-w-80 text-sm font-normal'>
+                  <div>
+                    <Info width={12} />
+                  </div>
+                  <div>Please reload once you joined on discord.</div>
+                </div>
+              )}
               <div
                 className={cn(
                   'flex justify-between relative items-center p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat',
