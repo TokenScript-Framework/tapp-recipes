@@ -122,6 +122,10 @@ export const Spin: React.FC = () => {
     }
   }
 
+  function onLogout() {
+    setAuthToken('');
+  }
+
   function onDialogClose() {
     setIsDialogOpen(false);
     setError('');
@@ -175,7 +179,7 @@ export const Spin: React.FC = () => {
   } else {
     messageOrButton = (
       <img
-        className='-mt-24 max-w-56 cursor-pointer'
+        className='-mt-16 max-w-56 cursor-pointer'
         onClick={onLogin}
         src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/login-btn.png'
         alt='login'
@@ -314,50 +318,53 @@ export const Spin: React.FC = () => {
           alt='pin'
         />
       </div>
-      <div className='flex flex-col absolute bottom-0 w-full'>
-        <div className='h-20 flex items-center justify-evenly w-full bg-contain bg-no-repeat bg-center bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/btn-bg.png")]'>
-          <div className='flex flex-col items-center cursor-pointer mt-2 px-10'>
-            <img
-              className='max-w-11'
-              src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon.png'
-              alt='spin-icon'
-            />
-            <div className='text-white text-xs font-semibold'>EXTRA SPIN</div>
+      {authToken && (
+        <div className='flex flex-col absolute bottom-0 w-full'>
+          <div className='h-20 flex items-center justify-evenly w-full bg-contain bg-no-repeat bg-center bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/btn-bg.png")]'>
+            <div className='flex flex-col items-center cursor-pointer mt-2 px-10'>
+              <img
+                className='max-w-11'
+                src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon.png'
+                alt='spin-icon'
+              />
+              <div className='text-white text-xs font-semibold'>EXTRA SPIN</div>
+            </div>
+            <div className='flex flex-col items-center cursor-pointer mt-2 px-10'>
+              <img
+                className='max-w-12'
+                onClick={onLogout}
+                src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/logout.png'
+                alt='logout'
+              />
+              <div className='text-white text-xs font-semibold'>LOGOUT</div>
+            </div>
           </div>
-          <div className='flex flex-col items-center cursor-pointer mt-2 px-10'>
-            <img
-              className='max-w-12'
-              src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/logout.png'
-              alt='logout'
-            />
-            <div className='text-white text-xs font-semibold'>LOGOUT</div>
-          </div>
+          {stlGameInfo && (
+            <div className='text-sm w-full rounded-b-md bg-[#0E1D3D] flex justify-around items-center gap-4 text-white px-2'>
+              {stlGameInfo.availableSLNRewards > 0 ? (
+                <>
+                  <div>$SLN Rewards</div>
+                  <div>
+                    Pool:{' '}
+                    <span className='font-semibold text-base'>
+                      {stlGameInfo.availableSLNRewards}/
+                      {stlGameInfo.totalSLNRewards}
+                    </span>
+                  </div>
+                  <div>
+                    Next Reward:{' '}
+                    <span className='font-semibold text-base'>
+                      {stlGameInfo.unrewardedSpinCount}/10
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div>All $SLN Rewards have been claimed</div>
+              )}
+            </div>
+          )}
         </div>
-        {authToken && stlGameInfo && (
-          <div className='text-sm w-full rounded-b-md bg-[#0E1D3D] flex justify-around items-center gap-4 text-white px-2'>
-            {stlGameInfo.availableSLNRewards > 0 ? (
-              <>
-                <div>$SLN Rewards</div>
-                <div>
-                  Pool:{' '}
-                  <span className='font-semibold text-base'>
-                    {stlGameInfo.availableSLNRewards}/
-                    {stlGameInfo.totalSLNRewards}
-                  </span>
-                </div>
-                <div>
-                  Next Reward:{' '}
-                  <span className='font-semibold text-base'>
-                    {stlGameInfo.unrewardedSpinCount}/10
-                  </span>
-                </div>
-              </>
-            ) : (
-              <div>All $SLN Rewards have been claimed</div>
-            )}
-          </div>
-        )}
-      </div>
+      )}
       <Loader show={loading} />
       <img
         className='hidden'
