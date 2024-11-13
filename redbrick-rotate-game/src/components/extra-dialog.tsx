@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
+import { useCallback, useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
+import { createMission, getMissionStatus } from '@/lib/redbrickApi';
+import { cn } from '@/lib/utils';
 
 interface ExtraDialogProps {
   isOpen: boolean;
@@ -13,6 +17,24 @@ export default function ExtraDialog({
   onDialogClose,
   authToken,
 }: ExtraDialogProps) {
+  const [missionStatus, setMissionStatus] = useState<any>();
+
+  const loadMissionStatus = useCallback(async () => {
+    const result = await getMissionStatus(authToken);
+    setMissionStatus(result);
+  }, [authToken]);
+
+  useEffect(() => {
+    loadMissionStatus();
+  }, [loadMissionStatus]);
+
+  function createMissionHandler(type: string) {
+    return async () => {
+      await createMission(authToken, type);
+      loadMissionStatus();
+    };
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onDialogClose}>
       <DialogContent className='flex flex-col gap-0 justify-start text-white py-0 px-2 w-full h-dvh bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")] border-none'>
@@ -35,35 +57,64 @@ export default function ExtraDialog({
             />
             <div>Mission to get more spins</div>
             <div className='flex flex-col gap-4 mt-4 text-xl font-bold'>
-              <div className='flex justify-between items-center cursor-pointer p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'>
+              <div
+                className={cn(
+                  'flex justify-between relative items-center p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat',
+                  missionStatus?.data?.flowTwitter
+                    ? 'cursor-not-allowed text-gray-500 bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg-completed.png")]'
+                    : 'cursor-pointer bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'
+                )}
+                onClick={createMissionHandler('flowTwitter')}
+              >
                 <div>Follow X</div>
                 <div className='flex items-center'>
                   <div>+1</div>
                   <img
                     className='max-w-12'
-                    src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon.png'
+                    src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon${
+                      missionStatus?.data?.flowTwitter ? '-completed' : ''
+                    }.png`}
                     alt='spin-icon'
                   />
                 </div>
               </div>
-              <div className='flex justify-between items-center cursor-pointer p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'>
+              <div
+                className={cn(
+                  'flex justify-between relative items-center p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat',
+                  missionStatus?.data?.joinDiscord
+                    ? 'cursor-not-allowed text-gray-500 bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg-completed.png")]'
+                    : 'cursor-pointer bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'
+                )}
+              >
                 <div>Join Discord</div>
                 <div className='flex items-center'>
                   <div>+1</div>
                   <img
                     className='max-w-12'
-                    src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon.png'
+                    src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon${
+                      missionStatus?.data?.joinDiscord ? '-completed' : ''
+                    }.png`}
                     alt='spin-icon'
                   />
                 </div>
               </div>
-              <div className='flex justify-between items-center cursor-pointer p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'>
+              <div
+                className={cn(
+                  'flex justify-between relative items-center p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat',
+                  missionStatus?.data?.joinPanda
+                    ? 'cursor-not-allowed text-gray-500 bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg-completed.png")]'
+                    : 'cursor-pointer bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'
+                )}
+                onClick={createMissionHandler('joinPanda')}
+              >
                 <div>Join Panda Game</div>
                 <div className='flex items-center'>
                   <div>+1</div>
                   <img
                     className='max-w-12'
-                    src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon.png'
+                    src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon${
+                      missionStatus?.data?.joinPanda ? '-completed' : ''
+                    }.png`}
                     alt='spin-icon'
                   />
                 </div>

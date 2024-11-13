@@ -36,7 +36,7 @@ export const Spin: React.FC = () => {
   const [error, setError] = useState('');
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
 
-  const [isExtraDialogOpen, setIsExtraDialogOpen] = useState(true);
+  const [isExtraDialogOpen, setIsExtraDialogOpen] = useState(false);
 
   useEffect(() => {
     setLoading(false);
@@ -118,7 +118,12 @@ export const Spin: React.FC = () => {
     setSpinResult(undefined);
   }
 
+  function onExtraClicked() {
+    setIsExtraDialogOpen(true);
+  }
+
   function onExtraDialogClose() {
+    loadGameInfo();
     setIsExtraDialogOpen(false);
   }
 
@@ -185,11 +190,13 @@ export const Spin: React.FC = () => {
         error={error}
         spinResult={spinResult}
       />
-      <ExtraDialog
-        isOpen={isExtraDialogOpen}
-        onDialogClose={onExtraDialogClose}
-        authToken={authToken}
-      />
+      {authToken && (
+        <ExtraDialog
+          isOpen={isExtraDialogOpen}
+          onDialogClose={onExtraDialogClose}
+          authToken={authToken}
+        />
+      )}
       <div className='flex flex-col items-center overflow-hidden relative'>
         <img
           className='mt-2 max-w-28'
@@ -234,6 +241,7 @@ export const Spin: React.FC = () => {
             <div className='flex flex-col items-center cursor-pointer mt-2 px-10'>
               <img
                 className='max-w-11'
+                onClick={onExtraClicked}
                 src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/spin-icon.png'
                 alt='spin-icon'
               />

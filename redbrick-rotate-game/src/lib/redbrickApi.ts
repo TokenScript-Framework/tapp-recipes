@@ -60,6 +60,32 @@ export async function getUserGameInfo(authToken: string) {
   return response.data;
 }
 
+export async function getMissionStatus(authToken: string) {
+  const response = await axios.get(
+    `${tokenscript.env.REDBRICK_API_BASE_URL}/partner-0xrotate/missions/status`,
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
+  return response.data;
+}
+
+export async function createMission(authToken: string, type: string) {
+  const response = await axios.post(
+    `${tokenscript.env.REDBRICK_API_BASE_URL}/partner-0xrotate/missions`,
+    { type },
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
+
+  return response.data;
+}
+
 export function getSignMessage(nonce: string) {
   return `
       Welcome to REDBRICK!
