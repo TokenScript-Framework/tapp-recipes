@@ -2,8 +2,9 @@
 	"$schema": "https://tokenscript.org/schemas/project/tokenscript-project.schema.json",
 	"environment": {
 		"default": {
-			"CONTRACT_ADDRESS": "0x675FCB1707fda7F60891f0709152942F5676222C",
-			"CONTRACT_CHAIN": "11155111"
+			"CONTRACT_ADDRESS": "0xcddcdc3231d062de953c94f59a335b1a4911ffdc",
+			"CONTRACT_CHAIN": "11155111",
+			"API_BASE_URL": "https://store-backend-stage.smartlayer.network/poap"
 		}
 	}
 }

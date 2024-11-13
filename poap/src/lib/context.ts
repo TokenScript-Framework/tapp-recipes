@@ -1,11 +1,13 @@
 
 import {writable} from 'svelte/store';
 
-const data = writable({
+console.log("define data... as writeable")
+export const data = writable({
 	token: null
 });
 
 function setToken(token){
+	console.log("setToken done for: ", JSON.stringify(token))
 	data.set({
 		...data,
 		token
