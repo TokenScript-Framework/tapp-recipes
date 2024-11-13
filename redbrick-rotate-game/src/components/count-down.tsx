@@ -36,9 +36,9 @@ export default function CountDown() {
   }, [targetTime]);
 
   return (
-    <div className='flex gap-4 items-center'>
-      <div className="text-gray-200 text-md">Game reset:</div>
-      <div className="text-white text-lg font-semibold">{timeLeft}</div>
+    <div className='flex gap-2 items-center'>
+      <div className="text-gray-200 text-sm">Game reset:</div>
+      <div className="text-white text-base font-semibold">{timeLeft}</div>
     </div>
   );
 }
