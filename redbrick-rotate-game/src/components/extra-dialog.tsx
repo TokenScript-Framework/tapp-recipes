@@ -35,8 +35,8 @@ export default function ExtraDialog({
   }, [authToken]);
 
   useEffect(() => {
-    loadMissionStatus();
-  }, [loadMissionStatus]);
+    if (isOpen) loadMissionStatus();
+  }, [loadMissionStatus, isOpen]);
 
   function createMissionHandler(type: string) {
     return async () => {
@@ -96,7 +96,11 @@ export default function ExtraDialog({
                     ? 'cursor-not-allowed text-gray-500 bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg-completed.png")]'
                     : 'cursor-pointer bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'
                 )}
-                onClick={createMissionHandler('flowTwitter')}
+                onClick={
+                  missionStatus?.data?.flowTwitter
+                    ? () => {}
+                    : createMissionHandler('flowTwitter')
+                }
               >
                 <div>Follow X</div>
                 <div className='flex items-center'>
@@ -117,7 +121,9 @@ export default function ExtraDialog({
                     ? 'cursor-not-allowed text-gray-500 bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg-completed.png")]'
                     : 'cursor-pointer bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'
                 )}
-                onClick={onDiscordJoin}
+                onClick={
+                  missionStatus?.data?.joinDiscord ? () => {} : onDiscordJoin
+                }
               >
                 <div>Join Discord</div>
                 <div className='flex items-center'>
@@ -138,7 +144,11 @@ export default function ExtraDialog({
                     ? 'cursor-not-allowed text-gray-500 bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg-completed.png")]'
                     : 'cursor-pointer bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'
                 )}
-                onClick={createMissionHandler('joinPanda')}
+                onClick={
+                  missionStatus?.data?.joinPanda
+                    ? () => {}
+                    : createMissionHandler('joinPanda')
+                }
               >
                 <div>Join Panda Game</div>
                 <div className='flex items-center'>
