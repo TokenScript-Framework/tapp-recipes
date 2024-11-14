@@ -31,7 +31,7 @@ export async function buySpin(spinSignatureResponse: {
     to: spinSignatureResponse.data.contractAddress,
     data: spinSignatureResponse.data.data,
     value: BigInt(spinSignatureResponse.data.price),
-    gas: BigInt(100_000),
+    gas: BigInt(500_000),
   });
   await publicClient.waitForTransactionReceipt({ hash });
 
