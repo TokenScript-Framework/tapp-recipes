@@ -29,6 +29,7 @@ export const Spin: React.FC = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [buttonImageIndex, setButtonImageIndex] = useState(0);
   const [authToken, setAuthToken] = useState('');
+  const [secondAuthToken, setSecondAuthToken] = useState('');
   const [blockingMessage, setBlockingMessage] = useState('');
   const [spinResult, setSpinResult] = useState<any>();
   const [userInfo, setUserInfo] = useState<any>();
@@ -55,6 +56,7 @@ export const Spin: React.FC = () => {
   async function onLogin() {
     const joinResponse = await joinGame();
     setAuthToken(joinResponse.data.authInfo.accessToken);
+    setSecondAuthToken(joinResponse.data.secondAuth.accessToken);
   }
 
   const loadGameInfo = useCallback(async () => {
@@ -110,6 +112,7 @@ export const Spin: React.FC = () => {
 
   function onLogout() {
     setAuthToken('');
+    setSecondAuthToken('');
   }
 
   function onInfoDialogClose() {
@@ -195,6 +198,7 @@ export const Spin: React.FC = () => {
           isOpen={isExtraDialogOpen}
           onDialogClose={onExtraDialogClose}
           authToken={authToken}
+          secondAuthToken={secondAuthToken}
         />
       )}
       <div className='flex flex-col items-center overflow-hidden relative'>

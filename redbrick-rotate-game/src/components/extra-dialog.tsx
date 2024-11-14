@@ -3,26 +3,31 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
-import { createMission, getMissionStatus } from '@/lib/redbrickApi';
+import {
+  createMission,
+  getDiscordStatus,
+  getMissionStatus,
+  joinDiscord,
+} from '@/lib/redbrickApi';
 import { cn } from '@/lib/utils';
-// import { Info } from 'lucide-react';
 
-// const DISCORD_OAUTH_URL =
-//   'https://discord.com/oauth2/authorize?client_id=1113401590188085351&redirect_uri=https%3A%2F%2Fhtml5-game.redbrick.land%2F0xRotate-platform-dev%2F%3Ftype%3DDISCORD&type=DISCORD&response_type=code&scope=email+identify&prompt=consent';
+const DISCORD_OAUTH_URL = `${tokenscript.env.BACKEND_API_BASE_URL}/redbrick/discord-authorize`;
+const DISCORD_INVITE_LINK = 'https://discord.gg/redbrickio';
 
 interface ExtraDialogProps {
   isOpen: boolean;
   onDialogClose: () => void;
   authToken: string;
+  secondAuthToken: string;
 }
 
 export default function ExtraDialog({
   isOpen,
   onDialogClose,
   authToken,
+  secondAuthToken,
 }: ExtraDialogProps) {
   const [missionStatus, setMissionStatus] = useState<any>();
-  // const [isDiscordClicked, setIsDiscordClicked] = useState(false);
 
   const loadMissionStatus = useCallback(async () => {
     const result = await getMissionStatus(authToken);
@@ -40,10 +45,27 @@ export default function ExtraDialog({
     };
   }
 
-  // function onDiscordJoin() {
-  //   setIsDiscordClicked(true);
-  //   window.open(DISCORD_OAUTH_URL, '_blank');
-  // }
+  async function onDiscordJoin() {
+    const discordStatus = (await getDiscordStatus(authToken)).data;
+    if (!discordStatus.discordId) {
+      window.open(
+        `${DISCORD_OAUTH_URL}?secondAuthToken=${secondAuthToken}`,
+        '_blank'
+      );
+    } else if (!discordStatus.discordLandJoinedAt) {
+      const joinResult = await joinDiscord(authToken);
+
+      if (joinResult.data.discordLandJoinedAt) {
+        await createMission(authToken, 'joinDiscord');
+        loadMissionStatus();
+      } else {
+        window.open(DISCORD_INVITE_LINK, '_blank');
+      }
+    } else {
+      await createMission(authToken, 'joinDiscord');
+      loadMissionStatus();
+    }
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onDialogClose}>
@@ -88,7 +110,7 @@ export default function ExtraDialog({
                   />
                 </div>
               </div>
-              {/* <div
+              <div
                 className={cn(
                   'flex justify-between relative items-center p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat',
                   missionStatus?.data?.joinDiscord
@@ -109,14 +131,6 @@ export default function ExtraDialog({
                   />
                 </div>
               </div>
-              {isDiscordClicked && (
-                <div className='flex gap-1 items-center max-w-80 text-sm font-normal'>
-                  <div>
-                    <Info width={12} />
-                  </div>
-                  <div>Please reload once you joined on discord.</div>
-                </div>
-              )} */}
               <div
                 className={cn(
                   'flex justify-between relative items-center p-5 h-[70px] w-80 bg-center bg-[length:100%_100%] bg-no-repeat',

@@ -86,6 +86,32 @@ export async function createMission(authToken: string, type: string) {
   return response.data;
 }
 
+export async function getDiscordStatus(authToken: string) {
+  const response = await axios.get(
+    `${tokenscript.env.REDBRICK_API_BASE_URL}/partner-0xrotate/discord/status`,
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
+  return response.data;
+}
+
+export async function joinDiscord(authToken: string) {
+  const response = await axios.post(
+    `${tokenscript.env.REDBRICK_API_BASE_URL}/partner-0xrotate/discord/join`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
+
+  return response.data;
+}
+
 export function getSignMessage(nonce: string) {
   return `
       Welcome to REDBRICK!
