@@ -21,7 +21,18 @@ export interface UniswapConfig {
 	}
 }
 
-export async function quote(config: UniswapConfig): Promise<{amountOut: bigint}> {
+export interface QuoteResult {
+	token0: string
+	token1: string
+	fee: bigint,
+	liquidity: bigint,
+	sqrtPriceX96: bigint,
+	tick: bigint,
+	amountOut: bigint,
+	sqrtPriceX96After: bigint
+}
+
+export async function quote(config: UniswapConfig): Promise<QuoteResult> {
 	const quoterContract = new ethers.Contract(
 		QUOTER_CONTRACT_ADDRESS,
 		QuoterV2.abi,
@@ -42,14 +53,19 @@ export async function quote(config: UniswapConfig): Promise<{amountOut: bigint}>
 		sqrtPriceLimitX96: 0
 	});
 
-	return quoteResult;
+	return {
+		token0: poolConstants.token0!,
+		token1: poolConstants.token1!,
+		fee: poolConstants.fee!,
+		liquidity: poolConstants.liquidity!,
+		sqrtPriceX96: poolConstants.sqrtPriceX96!,
+		tick: poolConstants.tick!,
+		amountOut: quoteResult.amountOut,
+		sqrtPriceX96After: quoteResult.sqrtPriceX96After
+	};
 }
 
-async function getPoolConstants(config: UniswapConfig): Promise<{
-	token0: string
-	token1: string
-	fee: number
-}> {
+async function getPoolConstants(config: UniswapConfig): Promise<Partial<QuoteResult>> {
 	const currentPoolAddress = computePoolAddress({
 		factoryAddress: POOL_FACTORY_CONTRACT_ADDRESS,
 		tokenA: config.tokens.in.wrapped,
@@ -67,15 +83,21 @@ async function getPoolConstants(config: UniswapConfig): Promise<{
 		IUniswapV3PoolABI.abi,
 		tokenscript.eth.getRpcProvider(parseInt(chainID))
 	)
-	const [token0, token1, fee] = await Promise.all([
+
+	const [token0, token1, fee, liquidity, slot0] = await Promise.all([
 		poolContract.token0(),
 		poolContract.token1(),
 		poolContract.fee(),
-	])
+		poolContract.liquidity(),
+		poolContract.slot0(),
+	]);
 
 	return {
 		token0,
 		token1,
 		fee,
+		liquidity,
+		sqrtPriceX96: slot0[0],
+		tick: slot0[1],
 	}
 }
