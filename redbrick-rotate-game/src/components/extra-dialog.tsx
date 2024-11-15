@@ -38,11 +38,16 @@ export default function ExtraDialog({
     if (isOpen) loadMissionStatus();
   }, [loadMissionStatus, isOpen]);
 
-  function createMissionHandler(type: string) {
-    return async () => {
-      await createMission(authToken, type);
-      loadMissionStatus();
-    };
+  async function onTwitterFollow() {
+    window.open('https://x.com/RedbrickLand', '_blank');
+    await createMission(authToken, 'flowTwitter');
+    loadMissionStatus();
+  }
+
+  async function onPandaGameJoin() {
+    window.open('https://t.me/rb_panda_bot', '_blank');
+    await createMission(authToken, 'joinPanda');
+    loadMissionStatus();
   }
 
   async function onDiscordJoin() {
@@ -97,9 +102,7 @@ export default function ExtraDialog({
                     : 'cursor-pointer bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'
                 )}
                 onClick={
-                  missionStatus?.data?.flowTwitter
-                    ? () => {}
-                    : createMissionHandler('flowTwitter')
+                  missionStatus?.data?.flowTwitter ? () => {} : onTwitterFollow
                 }
               >
                 <div>Follow X</div>
@@ -145,9 +148,7 @@ export default function ExtraDialog({
                     : 'cursor-pointer bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/mission-bg.png")]'
                 )}
                 onClick={
-                  missionStatus?.data?.joinPanda
-                    ? () => {}
-                    : createMissionHandler('joinPanda')
+                  missionStatus?.data?.joinPanda ? () => {} : onPandaGameJoin
                 }
               >
                 <div>Join Panda Game</div>

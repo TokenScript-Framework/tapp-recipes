@@ -62,22 +62,3 @@ export async function getStlGameInfo() {
 
   return response.data;
 }
-
-export function getSignMessage(nonce: string) {
-  return `
-      Welcome to REDBRICK!
-    
-      Signing is the only way we can truly know
-      that you are the owner of the wallet
-      you are connecting.
-      Signing is a safe, gas-less transaction
-      that does not in any way
-      give REDBRICK permission to perform
-      any transactions with your wallet.
-    
-      Wallet address:\n${walletAddress}
-      
-      Chain ID:\n${chainID}
-      Name:\nMetaMask
-      Nonce:\n${nonce}`;
-}
