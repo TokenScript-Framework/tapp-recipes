@@ -1,8 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { useAccount, usePublicClient } from 'wagmi';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -12,10 +10,19 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { myNfts, MyNftToken } from '@token-kit/onchain';
-import { PublicClient } from 'viem';
 import { MORCHI_NFT_CONTRACT } from '@/lib/constant';
+import { myNfts, MyNftToken } from '@token-kit/onchain';
+import { useCallback, useEffect, useState } from 'react';
+import { PublicClient } from 'viem';
+import { useAccount, usePublicClient } from 'wagmi';
 import { Loading } from './loading';
+
+type MorchiMetadata = {
+  name: string;
+  description: string;
+  image: string;
+  attributes: { trait_type: string; value: number | string }[];
+};
 
 export function MainSection() {
   const { address, isConnected } = useAccount();
@@ -69,50 +76,52 @@ export function MainSection() {
           isLoadingNFTs ? (
             <Loading />
           ) : (
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
-              {nfts.map((nft) => {
-                const metadata: {
-                  name: string;
-                  description: string;
-                  image: string;
-                  attributes: { trait_type: string; value: number | string }[];
-                } = nft.tokenMetadata!;
+            <>
+              {nfts.length <= 0 && (
+                <p className='text-gray-700 text-lg text-center'>
+                  No Morchi NFT detected for the connected wallet
+                </p>
+              )}
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
+                {nfts.map((nft) => {
+                  const metadata = nft.tokenMetadata! as MorchiMetadata;
 
-                return (
-                  <Card
-                    key={nft.tokenId}
-                    className='bg-[#2A2A2A] border-[#3A3A3A] overflow-hidden'
-                  >
-                    <CardHeader className='pb-2'>
-                      <CardTitle className='text-[rgb(255,127,81)]'>
-                        {metadata.name}
-                      </CardTitle>
-                      <CardDescription className='text-gray-400'>
-                        {metadata.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <img
-                        src={metadata.image}
-                        alt={metadata.name}
-                        className='w-full h-48 object-cover rounded-md'
-                      />
-                    </CardContent>
-                    <CardFooter>
-                      <Button
-                        onClick={() => createAuction(nft.tokenId)}
-                        className='w-full bg-[rgb(255,127,81)] text-white hover:bg-[rgb(255,150,110)] transition-colors'
-                      >
-                        Create Auction
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                );
-              })}
-            </div>
+                  return (
+                    <Card
+                      key={nft.tokenId}
+                      className='bg-[#2A2A2A] border-[#3A3A3A] overflow-hidden'
+                    >
+                      <CardHeader className='pb-2'>
+                        <CardTitle className='text-[rgb(255,127,81)]'>
+                          {metadata.name}
+                        </CardTitle>
+                        <CardDescription className='text-gray-400'>
+                          {metadata.description}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <img
+                          src={metadata.image}
+                          alt={metadata.name}
+                          className='w-full h-48 object-cover rounded-md'
+                        />
+                      </CardContent>
+                      <CardFooter>
+                        <Button
+                          onClick={() => createAuction(nft.tokenId)}
+                          className='w-full bg-[rgb(255,127,81)] text-white hover:bg-[rgb(255,150,110)] transition-colors'
+                        >
+                          Create Auction
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  );
+                })}
+              </div>
+            </>
           )
         ) : (
-          <p className='text-gray-700 text-lg'>
+          <p className='text-gray-700 text-lg text-center'>
             Connect your wallet to view your Morchi NFTs
           </p>
         )}
