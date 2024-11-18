@@ -37,7 +37,7 @@ const config: HardhatUserConfig = {
     //   "https://ethereum-sepolia-rpc.publicnode.com",
     //   "wss://ethereum-sepolia-rpc.publicnode.com"]
     sepolia: {
-      url: `https://rpc2.sepolia.org`,
+      url: `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
     },
     base: {
       url: `https://base-rpc.publicnode.com`,

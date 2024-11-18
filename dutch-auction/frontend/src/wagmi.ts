@@ -8,5 +8,3 @@ export const config = getDefaultConfig({
   chains: [isProd ? polygon : sepolia],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });
-
-export const CHAIN_ID = isProd ? 137 : 11155111;

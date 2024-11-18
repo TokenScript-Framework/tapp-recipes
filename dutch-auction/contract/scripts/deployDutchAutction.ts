@@ -2,7 +2,7 @@ import { ethers, upgrades } from 'hardhat';
 const hre = require('hardhat');
 require('dotenv/config');
 
-const deployedAddress = null;
+const deployedAddress = '0xc4d2F43F9743fF3625E1E2e200E181c2b7F23f2b';
 
 async function main() {
   let chainId = await hre.network.provider.send('eth_chainId');
