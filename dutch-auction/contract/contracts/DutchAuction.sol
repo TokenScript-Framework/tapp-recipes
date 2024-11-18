@@ -24,6 +24,7 @@ contract DutchAuction is
         uint256 reservePrice;
         uint256 startTime;
         uint256 dropRatePerHour;
+        uint256 soldPrice;
     }
 
     mapping(address => mapping(uint256 => Auction)) public auctions;
@@ -63,8 +64,7 @@ contract DutchAuction is
 
         ERC721Upgradeable nft = ERC721Upgradeable(nftContract);
         require(nft.ownerOf(nftId) == msg.sender, "Caller is not the owner of the NFT");
-
-        // check approval status
+        require(nft.getApproved(nftId) == address(this), "DVP is not an approved operator for the token");
 
         Auction memory auction = Auction({
             nftId: nftId,
@@ -73,7 +73,8 @@ contract DutchAuction is
             startingPrice: startingPrice,
             reservePrice: reservePrice,
             startTime: startTime,
-            dropRatePerHour: dropRatePerHour
+            dropRatePerHour: dropRatePerHour,
+            soldPrice: 0
         });
 
         auctions[nftContract][nftId] = auction;
@@ -83,36 +84,38 @@ contract DutchAuction is
 
     function currentPrice(address nftContract, uint256 nftId) public view returns (uint256) {
         Auction storage auction = auctions[nftContract][nftId];
-        require(auction.startTime > 0, "Auction does not exist");
+        require(auction.startTime > 0 && auction.soldPrice == 0, "Auction does not exist");
 
-        // TODO: calculate price per hourly drop rate
-        // uint256 elapsed = block.timestamp - auction.startTime;
-        // if (elapsed >= auction.duration) {
-        //     return auction.reservePrice;
-        // }
+        if (block.timestamp < auction.startTime) {
+            return auction.startingPrice;
+        }
+        uint256 elapsed = block.timestamp - auction.startTime;
+        uint256 droppedPrice = auction.startingPrice - (elapsed / 3600) * auction.dropRatePerHour;
+        if (droppedPrice < auction.reservePrice) {
+            return auction.reservePrice;
+        }
 
-        // uint256 priceDrop = ((auction.startingPrice - auction.reservePrice) * elapsed) / auction.duration;
-        // return auction.startingPrice - priceDrop;
+        return droppedPrice;
     }
 
     function buyNFT(address nftContract, uint256 nftId) external payable nonReentrant {
         Auction storage auction = auctions[nftContract][nftId];
-        require(auction.startTime > 0, "Auction does not exist");
+        require(auction.startTime > 0 && auction.soldPrice == 0, "Auction does not exist");
         require(block.timestamp >= auction.startTime, "Auction not started");
 
         uint256 price = currentPrice(nftContract, nftId);
         require(msg.value >= price, "Insufficient funds");
 
-        ERC721Upgradeable(auction.nftContract).safeTransferFrom(auction.seller, msg.sender, nftId);
-        payable(auction.seller).transfer(price);
+        auctions[nftContract][nftId].soldPrice = price;
 
+        ERC721Upgradeable(auction.nftContract).safeTransferFrom(auction.seller, msg.sender, nftId);
+
+        payable(auction.seller).transfer(price);
         if (msg.value > price) {
             payable(msg.sender).transfer(msg.value - price);
         }
 
         emit NFTSold(nftContract, nftId, msg.sender, price);
-
-        delete auctions[nftContract][nftId];
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC5169) returns (bool) {
