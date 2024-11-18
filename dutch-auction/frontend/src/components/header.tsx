@@ -1,6 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import { motion } from 'framer-motion';
-import { Beer, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -13,8 +14,12 @@ export function Header() {
       <header className='sticky top-0 z-50 backdrop-blur-lg bg-white/75 border-b border-gray-200'>
         <div className='container mx-auto px-4 py-4 flex items-center justify-between'>
           <Link href='/' className='flex items-center space-x-2'>
-            <Beer className='h-8 w-8 text-amber-500' />
-            <span className='text-xl font-semibold'>Dutch Auction</span>
+            <img
+              className='h-8 w-8'
+              src='https://resources.smartlayer.network/smart-token-store/images/morchi/landingpage/mooar_logo.svg'
+              alt='logo'
+            />
+            <span className='text-xl font-semibold'>Morchi Auction</span>
           </Link>
           <nav className='hidden md:flex space-x-8'>
             {/* <Link

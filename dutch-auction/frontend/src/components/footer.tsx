@@ -1,4 +1,4 @@
-import { Beer } from 'lucide-react';
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 
 export function Footer() {
@@ -8,8 +8,12 @@ export function Footer() {
         <div className='flex flex-col md:flex-row justify-between items-center'>
           <div className='mb-4 md:mb-0'>
             <Link href='/' className='flex items-center space-x-2'>
-              <Beer className='h-6 w-6 text-amber-500' />
-              <span className='text-lg font-semibold'>Dutch Auction</span>
+              <img
+                className='h-8 w-8'
+                src='https://resources.smartlayer.network/smart-token-store/images/morchi/landingpage/mooar_logo.svg'
+                alt='logo'
+              />
+              <span className='text-lg font-semibold'>Morchi Auction</span>
             </Link>
           </div>
           <nav className='flex flex-wrap justify-center md:justify-end space-x-6'>
@@ -34,7 +38,7 @@ export function Footer() {
           </nav>
         </div>
         <div className='mt-8 text-center text-sm text-gray-500'>
-          © 2024 Dutch Auction. All rights reserved.
+          © 2024 Morchi Auction. All rights reserved.
         </div>
       </div>
     </footer>

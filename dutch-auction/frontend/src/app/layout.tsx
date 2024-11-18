@@ -5,8 +5,8 @@ import { Toaster } from 'react-hot-toast'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Dutch Auction',
-  description: 'Dutch Auction',
+  title: 'Morchi Auction',
+  description: 'Morchi Auction',
 }
 
 export default function RootLayout({
