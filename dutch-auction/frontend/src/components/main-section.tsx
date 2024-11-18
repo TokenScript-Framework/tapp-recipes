@@ -16,8 +16,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { PublicClient } from 'viem';
 import { useAccount, usePublicClient } from 'wagmi';
 import { Loading } from './loading';
+import { CreateModal } from './create-modal';
 
-type MorchiMetadata = {
+export type MorchiMetadata = {
   name: string;
   description: string;
   image: string;
@@ -25,10 +26,12 @@ type MorchiMetadata = {
 };
 
 export function MainSection() {
-  const { address, isConnected } = useAccount();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isLoadingNFTs, setIsLoadingNFTs] = useState(false);
   const [nfts, setNfts] = useState<MyNftToken[]>([]);
+  const [selectedNft, setSelectedNft] = useState<MyNftToken>();
 
+  const { address, isConnected } = useAccount();
   const client = usePublicClient() as PublicClient;
 
   const loadMorchiNFTs = useCallback(async () => {
@@ -51,9 +54,14 @@ export function MainSection() {
     loadMorchiNFTs();
   }, [loadMorchiNFTs]);
 
-  async function createAuction(tokenId: bigint) {
-    console.log(`Creating auction for token ${tokenId}`);
-    // Implement auction creation logic here
+  async function createAuction(nft: MyNftToken) {
+    setSelectedNft(nft);
+    setIsCreateModalOpen(true);
+  }
+
+  function onCreateModalClose() {
+    setIsCreateModalOpen(false);
+    setSelectedNft(undefined)
   }
 
   return (
@@ -103,12 +111,12 @@ export function MainSection() {
                         <img
                           src={metadata.image}
                           alt={metadata.name}
-                          className='w-full h-48 object-cover rounded-md'
+                          className='w-full h-64 object-cover rounded-md'
                         />
                       </CardContent>
                       <CardFooter>
                         <Button
-                          onClick={() => createAuction(nft.tokenId)}
+                          onClick={() => createAuction(nft)}
                           className='w-full bg-[rgb(255,127,81)] text-white hover:bg-[rgb(255,150,110)] transition-colors'
                         >
                           Create Auction
@@ -126,6 +134,11 @@ export function MainSection() {
           </p>
         )}
       </section>
+      <CreateModal
+        nft={selectedNft}
+        isOpen={isCreateModalOpen}
+        onClose={onCreateModalClose}
+      />
     </main>
   );
 }
