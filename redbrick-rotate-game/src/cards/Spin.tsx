@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import CountDown from '@/components/count-down';
 import InfoDialog from '@/components/info-dialog';
 import ExtraDialog from '@/components/extra-dialog';
+import RewardDialog from '@/components/reward-dialog';
 
 const itemIndexByType: Record<string, number> = {
   badge: 1,
@@ -38,6 +39,7 @@ export const Spin: React.FC = () => {
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
 
   const [isExtraDialogOpen, setIsExtraDialogOpen] = useState(false);
+  const [isRewardDialogOpen, setIsRewardDialogOpen] = useState(false);
 
   useEffect(() => {
     setLoading(false);
@@ -130,6 +132,14 @@ export const Spin: React.FC = () => {
     setIsExtraDialogOpen(false);
   }
 
+  function onRewardClicked() {
+    setIsRewardDialogOpen(true);
+  }
+
+  function onRewardDialogClose() {
+    setIsRewardDialogOpen(false);
+  }
+
   function onSpinEnd() {
     if (spinResult) {
       setIsInfoDialogOpen(true);
@@ -204,6 +214,13 @@ export const Spin: React.FC = () => {
           secondAuthToken={secondAuthToken}
         />
       )}
+      {authToken && (
+        <RewardDialog
+          isOpen={isRewardDialogOpen}
+          onDialogClose={onRewardDialogClose}
+          authToken={authToken}
+        />
+      )}
       <div className='flex flex-col items-center overflow-hidden relative'>
         <img
           className='mt-2 max-w-28'
@@ -244,8 +261,8 @@ export const Spin: React.FC = () => {
       </div>
       {authToken && (
         <div className='flex flex-col absolute bottom-0 w-full'>
-          <div className='h-20 flex items-center justify-evenly w-full bg-contain bg-no-repeat bg-center bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/btn-bg.png")]'>
-            <div className='flex flex-col items-center cursor-pointer mt-2 px-10'>
+          <div className='h-20 flex items-center justify-center gap-10 w-full bg-contain bg-no-repeat bg-center bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/btn-bg.png")]'>
+            <div className='flex flex-col items-center cursor-pointer mt-2'>
               <img
                 className='max-w-11'
                 onClick={onExtraClicked}
@@ -254,7 +271,16 @@ export const Spin: React.FC = () => {
               />
               <div className='text-white text-xs font-semibold'>EXTRA SPIN</div>
             </div>
-            <div className='flex flex-col items-center cursor-pointer mt-2 px-10'>
+            <div className='flex flex-col items-center cursor-pointer mt-2 mx-[10px]'>
+              <img
+                className='max-w-11'
+                onClick={onRewardClicked}
+                src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/rewards-icon.png'
+                alt='rewards-icon'
+              />
+              <div className='text-white text-xs font-semibold'>REWARD</div>
+            </div>
+            <div className='flex flex-col items-center cursor-pointer mt-2 mx-[10px]'>
               <img
                 className='max-w-12'
                 onClick={onLogout}

@@ -73,6 +73,18 @@ export async function getMissionStatus(authToken: string) {
   return response.data;
 }
 
+export async function getRewards(authToken: string) {
+  const response = await axios.get(
+    `${tokenscript.env.REDBRICK_API_BASE_URL}/partner-0xrotate/rewards`,
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
+  return response.data;
+}
+
 export async function createMission(authToken: string, type: string) {
   const response = await axios.post(
     `${tokenscript.env.REDBRICK_API_BASE_URL}/partner-0xrotate/missions`,
