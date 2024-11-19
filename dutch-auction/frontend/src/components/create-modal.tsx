@@ -18,7 +18,11 @@ import { erc721Abi, parseEther } from 'viem';
 import { Button } from './ui/button';
 import { MyNftToken } from '@token-kit/onchain';
 import { MorchiMetadata } from './main-section';
-import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import {
+  useReadContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from 'wagmi';
 import { Loading } from './loading';
 
 const defaultAuctionData = {
@@ -53,11 +57,12 @@ export function CreateModal({
   isOpen,
   onClose,
 }: {
-  nft?: MyNftToken;
+  nft: MyNftToken;
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [hasApproved, setHasApproved] = useState(false);
   const [auctionData, setAuctionData] = useState(defaultAuctionData);
   const [error, setError] = useState<string>('');
   const [fieldErrors, setFieldErrors] = useState(defaultFieldErrors);
@@ -117,32 +122,57 @@ export function CreateModal({
   };
 
   const handleCreateAuction = async () => {
-    if (nft && validateForm()) {
-      setIsLoading(true);
+    if (validateForm()) {
+      setIsCreating(true);
+    }
+  };
 
-      await approve({
+  const { data: approvedTo } = useReadContract({
+    abi: erc721Abi,
+    address: MORCHI_NFT_CONTRACT,
+    functionName: 'getApproved',
+    args: [nft!.tokenId],
+    query: {
+      enabled: isCreating,
+    },
+  });
+
+  useEffect(() => {
+    if (!approvedTo || !isCreating) return;
+
+    if (approvedTo === DUTCH_AUCTION_CONTRACT) {
+      setHasApproved(true);
+    } else {
+      approve({
         abi: erc721Abi,
         address: MORCHI_NFT_CONTRACT,
         functionName: 'approve',
         args: [DUTCH_AUCTION_CONTRACT, nft.tokenId],
       });
     }
-  };
+  }, [approve, approvedTo, isCreating, nft]);
 
   const { data: approveReceipt, isError: isApproveReceiptError } =
     useWaitForTransactionReceipt({
       hash: approveTxHash,
       confirmations: 1,
+      query: {
+        enabled: !!approveTxHash && isCreating,
+      },
     });
 
   useEffect(() => {
-    if (nft && approveReceipt) {
+    if (approveReceipt) setHasApproved(true);
+  }, [approveReceipt]);
+
+  useEffect(() => {
+    if (isCreating && hasApproved) {
       createAuction({
         abi: DUTCH_AUCTION_ABI,
         address: DUTCH_AUCTION_CONTRACT,
         functionName: 'createAuction',
         args: [
-          DUTCH_AUCTION_CONTRACT,
+          MORCHI_NFT_CONTRACT,
           nft.tokenId,
           parseEther(auctionData.startingPrice),
           parseEther(auctionData.reservePrice),
@@ -151,27 +181,32 @@ export function CreateModal({
         ],
       });
     }
-  }, [approveReceipt, auctionData, createAuction, nft]);
+  }, [hasApproved, auctionData, createAuction, nft, isCreating]);
 
   const { data: createAuctionReceipt, isError: isCreateAuctionReceiptError } =
     useWaitForTransactionReceipt({
       hash: createAuctionTxHash,
       confirmations: 1,
+      query: {
+        enabled: !!createAuctionTxHash && isCreating,
+      },
     });
 
   useEffect(() => {
+    if (!isCreating) return;
+
     if (isApproveError || isApproveReceiptError) {
       setError('Error approving NFT. Please try again.');
-      setIsLoading(false);
+      setIsCreating(false);
     }
 
     if (isCreateAuctionError || isCreateAuctionReceiptError) {
       setError('Error creating auction. Please try again.');
-      setIsLoading(false);
+      setIsCreating(false);
     }
 
     if (createAuctionReceipt) {
-      setIsLoading(false);
+      setIsCreating(false);
     }
   }, [
     createAuctionReceipt,
@@ -179,6 +214,7 @@ export function CreateModal({
     isApproveReceiptError,
     isCreateAuctionError,
     isCreateAuctionReceiptError,
+    isCreating,
   ]);
 
   useEffect(() => {
@@ -189,19 +225,19 @@ export function CreateModal({
       });
     } else {
       setError('');
+      setIsCreating(false);
+      setHasApproved(false);
       setFieldErrors(defaultFieldErrors);
     }
   }, [isOpen]);
-
-  if (!nft) return null;
 
   const metadata = nft.tokenMetadata! as MorchiMetadata;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className='bg-[#2A2A2A] border-[#3A3A3A] text-white'>
-        {isLoading && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        {isCreating && (
+          <div className='absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
             <Loading />
           </div>
         )}
@@ -306,12 +342,6 @@ export function CreateModal({
           </div>
         </div>
         <DialogFooter>
-          <Button
-            onClick={handleCreateAuction}
-            className='bg-[rgb(255,127,81)] text-white hover:bg-[rgb(255,150,110)] transition-colors'
-          >
-            Create Auction
-          </Button>
           {createAuctionReceipt && (
             <p className='text-green-600 mt-2 text-center font-semibold'>
               Auction created successfully!
@@ -319,9 +349,15 @@ export function CreateModal({
           )}
           {error && (
             <p className='text-red-600 mt-2 text-center font-semibold'>
-              Error creating auction. Please try again.
+              {error}
             </p>
           )}
+          <Button
+            onClick={handleCreateAuction}
+            className='bg-[rgb(255,127,81)] text-white hover:bg-[rgb(255,150,110)] transition-colors'
+          >
+            Create Auction
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

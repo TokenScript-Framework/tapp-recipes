@@ -61,7 +61,7 @@ export function MainSection() {
 
   function onCreateModalClose() {
     setIsCreateModalOpen(false);
-    setSelectedNft(undefined)
+    setSelectedNft(undefined);
   }
 
   return (
@@ -134,11 +134,13 @@ export function MainSection() {
           </p>
         )}
       </section>
-      <CreateModal
-        nft={selectedNft}
-        isOpen={isCreateModalOpen}
-        onClose={onCreateModalClose}
-      />
+      {selectedNft && (
+        <CreateModal
+          nft={selectedNft}
+          isOpen={isCreateModalOpen}
+          onClose={onCreateModalClose}
+        />
+      )}
     </main>
   );
 }
