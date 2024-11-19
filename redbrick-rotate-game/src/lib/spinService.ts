@@ -1,5 +1,5 @@
 import { encryptJoinData, encryptSpinData } from './backendApi';
-import { chain, publicClient, walletClient } from './provider';
+import { chain, getWalletClient, publicClient } from './provider';
 import {
   getNonce,
   getSignMessage,
@@ -9,7 +9,7 @@ import {
 
 export async function joinGame() {
   const nonce = await getNonce();
-  const message = getSignMessage(nonce);
+  const message = await getSignMessage(nonce);
   const sig = await tokenscript.personal.sign({ data: message });
   const joinData = await encryptJoinData(message, sig as string);
 
@@ -25,6 +25,7 @@ export async function spinSignature(authToken: string) {
 export async function buySpin(spinSignatureResponse: {
   data: { contractAddress: `0x${string}`; data: `0x${string}`; price: string };
 }) {
+  const walletClient = await getWalletClient();
   await walletClient.addChain({ chain });
   await walletClient.switchChain({ id: chain.id });
   const hash = await walletClient.sendTransaction({

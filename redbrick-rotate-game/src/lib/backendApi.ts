@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getWalletAddress } from './provider';
 
 export async function encryptJoinData(
   message: string,
@@ -10,7 +11,7 @@ export async function encryptJoinData(
     msg: message,
     gid: tokenscript.env.REDBRICK_GAME_ID,
     sig,
-    wdr: walletAddress,
+    wdr: await getWalletAddress(),
     rfc,
     exp: Math.floor(Date.now() / 1000) + 60, // don't change this, RB require it to be 1 minute expiration
   });
@@ -25,7 +26,7 @@ export async function encryptJoinData(
 export async function encryptSpinData() {
   const payload = JSON.stringify({
     iat: Math.floor(Date.now() / 1000),
-    wdr: walletAddress,
+    wdr: await getWalletAddress(),
     exp: Math.floor(Date.now() / 1000) + 60, // don't change this, RB require it to be 1 minute expiration
   });
 
@@ -41,7 +42,7 @@ export async function spin(txHash: string, nonce: string, authToken: string) {
     `${tokenscript.env.BACKEND_API_BASE_URL}/redbrick/spin`,
     {
       txHash,
-      walletAddress,
+      walletAddress: await getWalletAddress(),
       nonce,
       authToken,
     }
@@ -55,7 +56,7 @@ export async function getStlGameInfo() {
     `${tokenscript.env.BACKEND_API_BASE_URL}/redbrick/spin-game-info`,
     {
       params: {
-        wallet: walletAddress,
+        wallet: await getWalletAddress(),
       },
     }
   );

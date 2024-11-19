@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getWalletAddress } from './provider';
 
 export async function getNonce() {
   const response = await axios.get(
@@ -112,7 +113,7 @@ export async function joinDiscord(authToken: string) {
   return response.data;
 }
 
-export function getSignMessage(nonce: string) {
+export async function getSignMessage(nonce: string) {
   return `
       Welcome to REDBRICK!
     
@@ -124,7 +125,7 @@ export function getSignMessage(nonce: string) {
       give REDBRICK permission to perform
       any transactions with your wallet.
     
-      Wallet address:\n${walletAddress}
+      Wallet address:\n${await getWalletAddress()}
       
       Chain ID:\n${chainID}
       Name:\nMetaMask
