@@ -1,8 +1,7 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { sepolia, polygon } from 'wagmi/chains';
-import { isProd } from './lib/utils';
 import { http } from 'wagmi';
-import { CHAIN_ID } from './lib/constant';
+import { CHAIN_ID, isProd } from './lib/constant';
 
 export const config = getDefaultConfig({
   appName: 'Morchi Auction',
@@ -11,8 +10,8 @@ export const config = getDefaultConfig({
   transports: {
     [CHAIN_ID]: http(
       isProd
-        ? `https://polygon-mainnet.infura.io/v3/${env.NEXT_PUBLIC_INFURA_API_KEY}`
-        : `https://sepolia.infura.io/v3/${env.NEXT_PUBLIC_INFURA_API_KEY}`
+        ? `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`
+        : `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`
     ),
   },
   batch: {
