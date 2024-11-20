@@ -13,7 +13,7 @@ import { Plus, Search, Share2, Wallet } from 'lucide-react'
 import { useAccount } from 'wagmi'
 
 export function EnsSales() {
-  const { isConnected } = useAccount()
+  const { address } = useAccount()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100">
@@ -44,12 +44,31 @@ export function EnsSales() {
                   <h3 className="font-semibold text-lg mb-2 text-gray-800">
                     1. Buy ENS domain or create subdomain
                   </h3>
-                  <p
-                    className="text-gray-600"
-                    dangerouslySetInnerHTML={{
-                      __html: `Visit the <a href="https://app.ens.domains/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700 inline-flex items-center">ENS website<svg class="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a> to purchase a domain or create a subdomain`,
-                    }}
-                  />
+                  <p className="text-gray-600">
+                    Visit the{' '}
+                    <a
+                      href="https://app.ens.domains/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:text-blue-700 inline-flex items-center"
+                    >
+                      ENS website
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <polyline points="15 3 21 3 21 9" />
+                        <line x1="10" y1="14" x2="21" y2="3" />
+                      </svg>
+                    </a>{' '}
+                    to purchase a domain or create a subdomain
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-4 group">
@@ -60,12 +79,31 @@ export function EnsSales() {
                   <h3 className="font-semibold text-lg mb-2 text-gray-800">
                     2. List on OpenSea
                   </h3>
-                  <p
-                    className="text-gray-600"
-                    dangerouslySetInnerHTML={{
-                      __html: `Visit <a href="https://opensea.io/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700 inline-flex items-center">OpenSea<svg class="w-4 h-4 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>, list your ENS domain NFT, and set a price`,
-                    }}
-                  />
+                  <p className="text-gray-600">
+                    Visit{' '}
+                    <a
+                      href="https://opensea.io/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:text-blue-700 inline-flex items-center"
+                    >
+                      OpenSea
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <polyline points="15 3 21 3 21 9" />
+                        <line x1="10" y1="14" x2="21" y2="3" />
+                      </svg>
+                    </a>
+                    , list your ENS domain NFT, and set a price
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-4 group">
@@ -78,7 +116,7 @@ export function EnsSales() {
                   </h3>
                   <p className="text-gray-600">
                     After connecting your wallet, your listed domain NFTs will
-                    appear here
+                    appear below
                   </p>
                 </div>
               </div>
@@ -103,15 +141,17 @@ export function EnsSales() {
           <CardHeader className="bg-gradient-to-r from-green-500 to-blue-500 text-white">
             <CardTitle className="text-2xl">Your ENS Domains</CardTitle>
             <CardDescription className="text-blue-100">
-              {isConnected
+              {address
                 ? 'Here are your domains for sale'
                 : 'Please connect your wallet to view your domains'}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="flex flex-col items-center justify-center py-12">
-              <ConnectButton chainStatus="icon" showBalance={false} />
-              <div>
+            <div className="flex flex-col items-center justify-center">
+              {!address && (
+                <ConnectButton chainStatus="icon" showBalance={false} />
+              )}
+              <div className="w-full">
                 <MainSection />
               </div>
             </div>
