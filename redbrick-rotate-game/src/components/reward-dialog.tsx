@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { getRewards } from '@/lib/redbrickApi';
+import { getSLNRewards } from '@/lib/backendApi';
 
 function defaultRewards() {
   return {
@@ -12,6 +13,10 @@ function defaultRewards() {
     bric: { count: 0 },
   };
 }
+
+const defaultSlnRewards = {
+  sln: 0,
+};
 
 const itemIcons: Record<string, string> = {
   badge: 'badge',
@@ -52,6 +57,10 @@ export default function RewardDialog({
   authToken,
 }: RewardDialogProps) {
   const [rewards, setRewards] = useState<Rewards>(defaultRewards());
+  const [slnRewards, setSlnRewards] = useState<{
+    sln: number;
+    lastRewardedAt?: number;
+  }>(defaultSlnRewards);
 
   const loadRewards = useCallback(async () => {
     const result = await getRewards(authToken);
@@ -75,17 +84,23 @@ export default function RewardDialog({
     setRewards(rewards);
   }, [authToken]);
 
+  const loadSLNRewards = useCallback(async () => {
+    const result = await getSLNRewards();
+    setSlnRewards(result);
+  }, []);
+
   useEffect(() => {
     if (isOpen) {
       loadRewards();
+      loadSLNRewards();
     }
-  }, [loadRewards, isOpen]);
+  }, [loadRewards, loadSLNRewards, isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onDialogClose}>
       <DialogContent className='flex flex-col gap-0 justify-start text-white py-0 px-2 w-full h-dvh bg-center bg-cover bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/background.png")] border-none'>
         <DialogTitle className='h-0'></DialogTitle>
-        <div className='flex flex-col items-center gap-3 w-full z-50'>
+        <div className='flex flex-col items-center gap-1 w-full z-50'>
           <div className='flex justify-around items-center w-full h-20 bg-center bg-[length:100%_100%] bg-no-repeat bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/dialog-title-bg.png")]'>
             <img
               className='max-w-[72px] max-h-12 mt-2 cursor-pointer'
@@ -95,20 +110,20 @@ export default function RewardDialog({
             />
             <div className='font-bold text-2xl tracking-[1rem]'>REWARD</div>
           </div>
-          <div className='flex flex-col items-center'>
+          <div className='flex flex-col items-center -mt-2'>
             <img
-              className='max-w-32'
+              className='max-w-24'
               src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/rewards-icon.png'
               alt='rewards-icon'
             />
             <div className='-mt-4'>Reward assets you collect</div>
           </div>
-          <div className='flex flex-col items-center w-full pt-16 h-96 bg-center bg-[length:90%_100%] bg-no-repeat bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/dialog-bg.png")]'>
+          <div className='flex flex-col items-center gap-1 w-full pt-4 px-20 h-[430px] bg-center bg-[length:90%_100%] bg-no-repeat bg-[url("https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/dialog-bg.png")]'>
             <div className='flex gap-4'>
               {Object.entries(rewards).map(([type, { count, lastUpdate }]) => (
-                <div className='flex flex-col gap-3 items-center'>
+                <div className='flex flex-col gap-1 items-center'>
                   <div className='flex flex-col self-start gap-1'>
-                    <div className='bg-black/70 rounded-sm text-xs w-fit px-1'>
+                    <div className='bg-black/70 rounded-sm text-[0.5rem] w-fit px-1'>
                       Update
                     </div>
                     <div className='text-[#64DA4C] text-xs'>
@@ -121,13 +136,36 @@ export default function RewardDialog({
                       src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/${itemIcons[type]}-icon.png`}
                       alt='item-icon'
                     />
-                    <div className='text-md font-bold flex justify-center items-center min-h-14'>
+                    <div className='text-md font-bold flex justify-center items-center min-h-8'>
                       {itemDesc[type]}
                     </div>
                   </div>
                   <div className='text-2xl font-bold'>{count}</div>
                 </div>
               ))}
+            </div>
+            <div className='flex flex-col gap-1 self-start items-center'>
+              <div className='flex flex-col self-start gap-1'>
+                <div className='bg-black/70 rounded-sm text-[0.5rem] w-fit px-1'>
+                  Update
+                </div>
+                <div className='text-[#64DA4C] text-xs'>
+                  {slnRewards.lastRewardedAt
+                    ? formatDate(new Date(slnRewards.lastRewardedAt))
+                    : '00:00:00 | 00-00'}
+                </div>
+              </div>
+              <div className='bg-gray-400 rounded-xl text-center'>
+                <img
+                  className='w-24 h-24'
+                  src={`https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/sln-token.png`}
+                  alt='item-icon'
+                />
+                <div className='text-md font-bold flex justify-center items-center min-h-8'>
+                  SLN
+                </div>
+              </div>
+              <div className='text-2xl font-bold'>{slnRewards.sln}</div>
             </div>
           </div>
         </div>

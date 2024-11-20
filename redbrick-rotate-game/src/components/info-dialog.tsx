@@ -69,20 +69,17 @@ export default function InfoDialog({
                 </div>
               </div>
               {!!spinResult.stlRewardAmount && (
-                <>
-                  <div className='text-2xl font-bold text-white'>+</div>
-                  <div className='bg-gray-400 px-[14px] pt-[14px] pb-1 rounded-xl'>
-                    <img
-                      className='w-32 h-32 mb-[6px]'
-                      src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/sln-token.png'
-                      alt='sln-token'
-                    />
-                    <div className='text-2xl font-bold'>
-                      {spinResult.stlRewardAmount}
-                    </div>
-                    <div className='text-md font-bold'>$SLN</div>
+                <div className='bg-gray-400 p-1 rounded-xl'>
+                  <img
+                    className='w-36 h-36'
+                    src='https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/sln-token.png'
+                    alt='sln-token'
+                  />
+                  <div className='text-2xl font-bold'>
+                    {spinResult.stlRewardAmount}
                   </div>
-                </>
+                  <div className='text-md font-bold'>SLN</div>
+                </div>
               )}
             </div>
             <img

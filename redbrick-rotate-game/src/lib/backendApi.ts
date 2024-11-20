@@ -63,3 +63,16 @@ export async function getStlGameInfo() {
 
   return response.data;
 }
+
+export async function getSLNRewards() {
+  const response = await axios.get(
+    `${tokenscript.env.BACKEND_API_BASE_URL}/redbrick/sln-rewards`,
+    {
+      params: {
+        wallet: await getWalletAddress(),
+      },
+    }
+  );
+
+  return response.data;
+}
