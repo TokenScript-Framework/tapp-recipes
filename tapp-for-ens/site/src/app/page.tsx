@@ -1,16 +1,18 @@
-import { Footer } from '@/components/footer';
-import { Header } from '@/components/header';
-import { MainSection } from '@/components/main-section';
+import { EnsSales } from '@/components/ens-sales'
+import { Footer } from '@/components/footer'
+import { Header } from '@/components/header'
+import { MainSection } from '@/components/main-section'
 
 export default function Page() {
+  return <EnsSales />
   return (
-    <div className='flex flex-col min-h-screen bg-white text-gray-900'>
+    <div className="flex flex-col min-h-screen bg-white text-gray-900">
       <Header />
 
-      <main className='flex-grow'>
+      <main className="flex-grow">
         <MainSection />
       </main>
       <Footer />
     </div>
-  );
+  )
 }
