@@ -291,26 +291,32 @@ export const Spin: React.FC = () => {
             </div>
           </div>
           {stlGameInfo && (
-            <div className='text-sm w-full rounded-b-md bg-[#0E1D3D] flex justify-around items-center gap-4 text-white px-2'>
+            <div className='text-xs w-full rounded-b-md bg-[#0E1D3D] flex flex-col items-center text-white px-2'>
               {stlGameInfo.availableSLNRewards > 0 ? (
                 <>
-                  <div>$SLN Rewards</div>
-                  <div>
-                    Pool:{' '}
-                    <span className='font-semibold text-base'>
-                      {stlGameInfo.availableSLNRewards}/
-                      {stlGameInfo.totalSLNRewards}
-                    </span>
+                  <div className='text-sky-500'>
+                    👉 5 $SLN rewarded once daily limit is reached
                   </div>
-                  <div>
-                    Next Reward:{' '}
-                    <span className='font-semibold text-base'>
-                      {stlGameInfo.unrewardedSpinCount}/10
-                    </span>
+                  <div className='flex justify-around items-center w-full'>
+                    <div>
+                      Pool:{' '}
+                      <span className='font-semibold text-base'>
+                        {stlGameInfo.availableSLNRewards}/
+                        {stlGameInfo.totalSLNRewards}
+                      </span>
+                    </div>
+                    <div>
+                      Next Reward:{' '}
+                      <span className='font-semibold text-base'>
+                        {stlGameInfo.unrewardedSpinCount}/10
+                      </span>
+                    </div>
                   </div>
                 </>
               ) : (
-                <div>All $SLN Rewards have been claimed</div>
+                <div className='text-sky-500'>
+                  👉 All $SLN Rewards have been claimed
+                </div>
               )}
             </div>
           )}
