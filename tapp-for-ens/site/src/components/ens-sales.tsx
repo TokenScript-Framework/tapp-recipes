@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { MainSection } from '@/components/main-section'
 import {
   Card,
   CardContent,
@@ -8,22 +8,22 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Plus, Search, Share2, Wallet } from 'lucide-react'
-import { useState } from 'react'
+import { useAccount } from 'wagmi'
 
 export function EnsSales() {
-  const [isConnected, setIsConnected] = useState(false)
+  const { isConnected } = useAccount()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-5xl font-bold text-blue-600 mb-4">
-            Sell Your ENS Domain
+            Sell Your ENS Domain with Tlink
           </h1>
           <p className="text-xl text-gray-700">
-            Easily sell your ENS domain or subdomain in the web3 marketplace
+            Easily sell your ENS domain or subdomain in the social media
           </p>
         </div>
 
@@ -109,30 +109,12 @@ export function EnsSales() {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
-            {!isConnected ? (
-              <div className="text-center py-12">
-                <Button
-                  onClick={() => setIsConnected(true)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300 hover:scale-105"
-                >
-                  <Wallet className="w-5 h-5 mr-2" />
-                  Connect Wallet
-                </Button>
+            <div className="flex flex-col items-center justify-center py-12">
+              <ConnectButton chainStatus="icon" showBalance={false} />
+              <div>
+                <MainSection />
               </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="relative">
-                  <Input
-                    placeholder="Search your domains"
-                    className="w-full pl-10 pr-4 py-2 rounded-full border-2 border-gray-300 focus:border-blue-500 transition-colors duration-300"
-                  />
-                  <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                </div>
-                <div className="text-center text-gray-500 py-8 animate-pulse">
-                  Your domains will appear here after connecting your wallet
-                </div>
-              </div>
-            )}
+            </div>
           </CardContent>
         </Card>
       </div>
