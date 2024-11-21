@@ -34,7 +34,7 @@
 			<ts:label>
 				<ts:string xml:lang="en">Buy</ts:string>
 			</ts:label>
-			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" urlFragment="buy">
 				<ts:viewContent name="common"/>
 			</ts:view>
 		</ts:card>

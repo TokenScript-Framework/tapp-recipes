@@ -23,13 +23,14 @@ const App: FC = () => {
     const card = params.get('card');
     console.log('card--',card)
 
-    switch (card) {
-      case 'Buy':{
-        return CardName.Buy;
-      }
-      default:
-        return CardName.NotFound;
-    }
+    // switch (card) {
+    //   case 'Buy':{
+    //     return CardName.Buy;
+    //   }
+    //   default:
+    //     return CardName.NotFound;
+    // }
+    return CardName.Buy;
 
 
   };

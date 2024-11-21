@@ -29,9 +29,9 @@ interface Token {
 
 // @ts-ignore
 export const Buy: React.FC = () => {
-    const [orderHash, setOrderHash] = useState<`0x${string}` | null>(null);
-    const [protocolAddress, setProtocolAddress] = useState<`0x${string}` | null>(null);
-    const [targetChain, setTargetChain] = useState(0);
+    const [orderHash, setOrderHash] = useState<`0x${string}` | null>("0x0f07e4001b1f9671cce58f1ea593706c782ba4c0adf4f935884072503a485fe3");
+    const [protocolAddress, setProtocolAddress] = useState<`0x${string}` | null>("0x0000000000000068f116a894984e2db1123eb395");
+    const [targetChain, setTargetChain] = useState(11155111);
     const [loading, setLoading] = useState(true);
     const [confirming, setConfirming] = useState(false);
     const [order, setOrder] = useState<any>();
