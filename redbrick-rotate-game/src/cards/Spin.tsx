@@ -46,9 +46,9 @@ export const Spin: React.FC = () => {
     async function run() {
       const eventStatus = await getGameStatus();
       if (eventStatus.data.isComing) {
-        setBlockingMessage(`Coming Soon (${eventStatus.data.open})`);
+        setBlockingMessage(`Coming Soon (${eventStatus.data.open} UTC)`);
       } else if (eventStatus.data.isEnd) {
-        setBlockingMessage(`Event Ended (${eventStatus.data.close})`);
+        setBlockingMessage(`Event Ended (${eventStatus.data.close} UTC)`);
       }
     }
 
