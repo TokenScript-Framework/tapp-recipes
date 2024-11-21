@@ -34,11 +34,11 @@
 			<ts:include type="css" src="./src/styles.css"/>
 		</ts:viewContent>
 
-		<ts:card type="onboarding" name="Spin">
+		<ts:card type="token" name="Spin">
 			<ts:label>
 				<ts:string xml:lang="en">Spin</ts:string>
 			</ts:label>
-			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" urlFragment="spin" uiButton="false" >
+			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" urlFragment="spin">
 				<ts:viewContent name="common"/>
 			</ts:view>
 		</ts:card>
