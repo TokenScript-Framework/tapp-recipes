@@ -101,7 +101,7 @@ export async function loadListings(apiRoot:string,chainId: number, maker: string
                 const result = await tokenData(
                     client as PublicClient,
                     listing.protocol_data.parameters.offer[0].token as `0x${string}`,
-                    Number(listing.protocol_data.parameters.offer[0].identifierOrCriteria), { includeTokenMetadata: true },
+                    BigInt(listing.protocol_data.parameters.offer[0].identifierOrCriteria), { includeTokenMetadata: true },
                 );
 
                 if ('tokenMetadata' in result) {
