@@ -4,11 +4,11 @@
 		  xsi:schemaLocation="http://tokenscript.org/2024/01/tokenscript https://www.tokenscript.org/schemas/2024-01/tokenscript.xsd"
 		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		  xmlns:ethereum="urn:ethereum:constantinople"
-		  name="Redbrick-Rotate-Game">
+		  name="Redbrick-Web3-Portal">
 	<ts:label>
 		<ts:plurals xml:lang="en">
-			<ts:string quantity="one">Redbrick Rotate Game</ts:string>
-			<ts:string quantity="other">Redbrick Rotate Game</ts:string>
+			<ts:string quantity="one">Redbrick Web3 Portal</ts:string>
+			<ts:string quantity="other">Redbrick Web3 Portal</ts:string>
 		</ts:plurals>
 	</ts:label>
 	<ts:meta>
