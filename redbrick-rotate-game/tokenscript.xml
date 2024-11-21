@@ -13,7 +13,7 @@
 	</ts:label>
 	<ts:meta>
 		<ts:description xml:lang="en">Redbrick Engine: Unifying Creators, Developers, and Players.</ts:description>
-		<ts:aboutUrl xml:lang="en">https://html5-game.redbrick.land/0xRotate-platform/</ts:aboutUrl>
+		<ts:aboutUrl xml:lang="en">https://redbrick.land/web3-portal/</ts:aboutUrl>
 		<ts:iconUrl xml:lang="en">https://resources.smartlayer.network/smart-token-store/images/redbrick-spin/ts-icon.png</ts:iconUrl>
 		<ts:env name="BACKEND_API_BASE_URL">$tst{BACKEND_API_BASE_URL}</ts:env>
 		<ts:env name="REDBRICK_API_BASE_URL">$tst{REDBRICK_API_BASE_URL}</ts:env>
