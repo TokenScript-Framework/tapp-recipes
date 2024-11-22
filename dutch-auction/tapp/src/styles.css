@@ -1,12 +1,11 @@
 * {
-  font-family: "Rubik", sans-serif;
+  font-family: 'Rubik', sans-serif;
   box-sizing: border-box;
 }
 
 body {
-  background-color: white;
-  color: #0b0b0b;
-  padding: 20px;
+  background-color: rbg(33, 33, 33);
+  color: white;
 }
 
 h1 {

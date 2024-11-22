@@ -86,56 +86,70 @@ export const Buy: React.FC = () => {
     // TODO: buy tx
   }
 
+  function onViewOnMooar() {
+    window.open(
+      `https://mooar.com/item/${tokenscript.env.CONTRACT_ADDRESS}/${65}`,
+      '_blank'
+    );
+  }
+
   return (
-    <div className='w-full'>
-      <h2 className='text-xl font-bold'>Morchi Auction</h2>
-      <div className='space-y-6'>
-        <div className='relative aspect-square'>
-          <div className='absolute inset-0 bg-gradient-to-br from-gray-900 to-transparent opacity-50' />
-          <img
-            src={metadata.image}
-            alt={metadata.name}
-            className='w-full h-full object-contain'
-          />
-        </div>
+    <div className='flex flex-col items-start gap-2 w-full p-5'>
+      <div className='flex gap-2 items-center'>
+        <img
+          className='h-8 w-8'
+          src='https://resources.smartlayer.network/smart-token-store/images/morchi/landingpage/mooar_logo.svg'
+          alt='logo'
+        />
+        <h2 className='text-xl font-bold'>Morchi Auction</h2>
+      </div>
 
-        <div className='grid grid-cols-4 gap-4 text-center'>
-          <div className='space-y-1'>
-            <div className='text-3xl font-bold'>{auction.startPrice}</div>
-            <div className='text-xs text-gray-400 uppercase'>
-              Starting Price
-            </div>
-          </div>
-          <div className='space-y-1'>
-            <div className='text-3xl font-bold'>{auction.reservePrice}</div>
-            <div className='text-xs text-gray-400 uppercase'>Reserve Price</div>
-          </div>
-          <div className='space-y-1'>
-            <div className='text-3xl font-bold'>{auction.currentPrice}</div>
-            <div className='text-xs text-gray-400 uppercase'>Current Price</div>
-          </div>
-          <div className='space-y-1'>
-            <div className='text-3xl font-bold'>{auction.nextPrice}</div>
-            <div className='text-xs text-gray-400 uppercase'>Next Price</div>
-            <div className='text-sm text-gray-400'>
-              {formatTime(timeUntilDrop)}
-            </div>
-          </div>
-        </div>
+      <div className='relative aspect-square border-2 rounded-2xl border-[#FF605F]'>
+        <div className='absolute inset-0 bg-gradient-to-br from-gray-900 to-transparent opacity-50 rounded-2xl' />
+        <img
+          src={metadata.image}
+          alt={metadata.name}
+          className='w-full h-full object-contain rounded-2xl'
+        />
+      </div>
 
-        <div className='text-center text-lg'>
-          {metadata.name} starting at 18k $GMT
+      <div className='grid grid-cols-4 gap-4 text-center'>
+        <div className='space-y-1'>
+          <div className='text-3xl font-bold'>{auction.startPrice}</div>
+          <div className='text-xs text-gray-400 uppercase'>Starting Price</div>
+        </div>
+        <div className='space-y-1'>
+          <div className='text-3xl font-bold'>{auction.reservePrice}</div>
+          <div className='text-xs text-gray-400 uppercase'>Reserve Price</div>
+        </div>
+        <div className='space-y-1'>
+          <div className='text-3xl font-bold'>{auction.currentPrice}</div>
+          <div className='text-xs text-gray-400 uppercase'>Current Price</div>
+        </div>
+        <div className='space-y-1'>
+          <div className='text-3xl font-bold'>{auction.nextPrice}</div>
+          <div className='text-xs text-gray-400 uppercase'>Next Price</div>
+          <div className='text-sm text-gray-400'>
+            {formatTime(timeUntilDrop)}
+          </div>
         </div>
       </div>
 
-      <div className='flex gap-4 justify-center'>
-        <Button onClick={onBuy} className='bg-blue-600 hover:bg-blue-700'>
+      <div className='text-center text-lg'>
+        {metadata.name} starting at {auction.startPrice}{' '}
+        {tokenscript.env.CONTRACT_CHAIN === '137' ? 'POL' : 'ETH'}
+      </div>
+      <div className='flex w-full gap-4 justify-evenly'>
+        <Button
+          onClick={onBuy}
+          className='min-w-40 rounded-full hover:from-[#FF9C5A] hover:to-[#FF706F] bg-gradient-to-r from-[#FF8C4A] from-10% to-[#FF605F] to-90%'
+        >
           Buy Now
         </Button>
         <Button
           variant='outline'
-          className='border-gray-700 hover:bg-gray-800'
-          onClick={() => window.open('/', '_blank')}
+          className='min-w-40 rounded-full text-[#212121] border-gray-300 hover:bg-gray-400'
+          onClick={onViewOnMooar}
         >
           <ExternalLink className='w-4 h-4 mr-2' />
           View on MOOAR

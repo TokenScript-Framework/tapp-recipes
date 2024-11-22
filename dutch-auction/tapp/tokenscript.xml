@@ -14,6 +14,8 @@
 		<ts:description xml:lang="en">Trade Morchi NFT with Dutch Auction</ts:description>
 		<ts:aboutUrl xml:lang="en">https://morchi.mooar.com/</ts:aboutUrl>
 		<ts:iconUrl xml:lang="en">https://resources.smartlayer.network/smart-token-store/images/morchi.png</ts:iconUrl>
+		<ts:env name="CONTRACT_ADDRESS">$tst{CONTRACT_ADDRESS}</ts:env>
+		<ts:env name="CONTRACT_CHAIN">$tst{CONTRACT_CHAIN}</ts:env>
 	</ts:meta>
 	<ts:contract interface="erc721" name="Token">
 		<ts:address network="$tst{CONTRACT_CHAIN}">$tst{CONTRACT_ADDRESS}</ts:address>
@@ -540,7 +542,7 @@
 					</ts:data>
 				</ethereum:transaction>
 			</ts:transaction>
-			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" urlFragment="buy">
+			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" urlFragment="buy" uiButton="false">
 				<ts:viewContent name="common"/>
 			</ts:view>
 		</ts:card>
