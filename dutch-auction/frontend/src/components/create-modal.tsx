@@ -244,7 +244,7 @@ export function CreateModal({
             <Loading />
           </div>
         )}
-        {createAuctionReceipt || true ? (
+        {createAuctionReceipt ? (
           <div className='flex flex-col items-center justify-center py-6'>
             <div className='w-16 h-16 bg-[rgb(255,127,81)] rounded-full flex items-center justify-center mb-4'>
               <Check className='w-8 h-8 text-white' />
