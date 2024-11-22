@@ -315,7 +315,7 @@ export const Spin: React.FC = () => {
                 </>
               ) : (
                 <div className='text-sky-500'>
-                  👉 All $SLN Rewards have been claimed
+                  👉 All $SLN Rewards for today have been claimed, Pool will be reloaded at 04:00 UTC
                 </div>
               )}
             </div>
