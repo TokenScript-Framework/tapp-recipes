@@ -12,7 +12,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import {
-  CHAIN_ID,
   DUTCH_AUCTION_ABI,
   DUTCH_AUCTION_CONTRACT,
   MORCHI_NFT_CONTRACT,
@@ -23,6 +22,8 @@ import { PublicClient, zeroAddress } from 'viem';
 import { useAccount, usePublicClient, useReadContracts } from 'wagmi';
 import { CreateModal } from './create-modal';
 import { Loading } from './loading';
+import { shareOnTwitter } from '@/lib/utils';
+import { XIcon } from './x-icon';
 
 export type MorchiMetadata = {
   name: string;
@@ -98,16 +99,6 @@ export function MainSection() {
     setIsCreateModalOpen(true);
   }
 
-  async function shareOnTwitter(nft: MyNftToken) {
-    const text = 'Want a Morchi NFT, check out this Auction!';
-    const url = `https://viewer.tokenscript.org/?chain=${CHAIN_ID}&contract=${MORCHI_NFT_CONTRACT}&tokenId=${nft.tokenId}&scriptId=7738_X#card=Buy`;
-    const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      text
-    )}&url=${encodeURIComponent(url)}`;
-
-    window.open(twitterLink, '_blank');
-  }
-
   function onCreateModalClose() {
     setIsCreateModalOpen(false);
     setSelectedNft(undefined);
@@ -180,8 +171,9 @@ export function MainSection() {
                           {onAuction && (
                             <Button
                               onClick={() => shareOnTwitter(nft)}
-                              className='w-full bg-[rgb(255,127,81)] text-white hover:bg-[rgb(255,150,110)] transition-colors'
+                              className='w-full flex gap-2 bg-white hover:bg-gray-200 text-black/70 transition-colors'
                             >
+                              <XIcon className='w-4 h-4' />
                               Share on Twitter
                             </Button>
                           )}

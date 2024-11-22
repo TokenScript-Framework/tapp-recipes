@@ -24,6 +24,9 @@ import {
   useWriteContract,
 } from 'wagmi';
 import { Loading } from './loading';
+import { Check } from 'lucide-react';
+import { XIcon } from './x-icon';
+import { shareOnTwitter } from '@/lib/utils';
 
 const defaultAuctionData = {
   startTime: '',
@@ -241,124 +244,144 @@ export function CreateModal({
             <Loading />
           </div>
         )}
-        <DialogHeader>
-          <DialogTitle className='text-2xl font-bold text-[rgb(255,127,81)]'>
-            Create Auction for {metadata.name}
-          </DialogTitle>
-          <DialogDescription className='text-gray-300'>
-            Set the parameters for your Dutch auction below.
-          </DialogDescription>
-        </DialogHeader>
-        <div className='grid gap-4 py-4'>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='startTime' className='text-right'>
-              Start Time
-            </Label>
-            <div className='col-span-3 flex flex-col gap-2'>
-              <div className='flex gap-2'>
-                <Input
-                  id='startTime'
-                  name='startTime'
-                  type='datetime-local'
-                  value={auctionData.startTime}
-                  onChange={handleInputChange}
-                  className='flex-grow bg-[#3A3A3A] border-[#4A4A4A] text-white w-full [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-8'
-                  required
-                />
+        {createAuctionReceipt || true ? (
+          <div className='flex flex-col items-center justify-center py-6'>
+            <div className='w-16 h-16 bg-[rgb(255,127,81)] rounded-full flex items-center justify-center mb-4'>
+              <Check className='w-8 h-8 text-white' />
+            </div>
+            <h3 className='text-2xl font-bold mb-2'>
+              Auction Created Successfully!
+            </h3>
+            <p className='text-gray-300 text-center mb-6'>
+              Your Morchi NFT auction has been set up and is now live.
+            </p>
+            <Button
+              className='bg-white hover:bg-gray-200 text-black/70 transition-colors flex items-center gap-2'
+              onClick={() => shareOnTwitter(nft)}
+            >
+              <XIcon className='w-5 h-5' />
+              Share on Twitter
+            </Button>
+          </div>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle className='text-2xl font-bold text-[rgb(255,127,81)]'>
+                Create Auction for {metadata.name}
+              </DialogTitle>
+              <DialogDescription className='text-gray-300'>
+                Set the parameters for your Dutch auction below.
+              </DialogDescription>
+            </DialogHeader>
+            <div className='grid gap-4 py-4'>
+              <div className='grid grid-cols-4 items-center gap-4'>
+                <Label htmlFor='startTime' className='text-right'>
+                  Start Time
+                </Label>
+                <div className='col-span-3 flex flex-col gap-2'>
+                  <div className='flex gap-2'>
+                    <Input
+                      id='startTime'
+                      name='startTime'
+                      type='datetime-local'
+                      value={auctionData.startTime}
+                      onChange={handleInputChange}
+                      className='flex-grow bg-[#3A3A3A] border-[#4A4A4A] text-white w-full [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-8'
+                      required
+                    />
+                  </div>
+                  {fieldErrors.startTime && (
+                    <p className='text-red-500 text-sm'>
+                      {fieldErrors.startTime}
+                    </p>
+                  )}
+                </div>
               </div>
-              {fieldErrors.startTime && (
-                <p className='text-red-500 text-sm'>{fieldErrors.startTime}</p>
-              )}
+              <div className='grid grid-cols-4 items-center gap-4'>
+                <Label htmlFor='startingPrice' className='text-right'>
+                  Starting Price (ETH)
+                </Label>
+                <div className='col-span-3 flex flex-col gap-2'>
+                  <Input
+                    id='startingPrice'
+                    name='startingPrice'
+                    type='number'
+                    min='0'
+                    step='0.01'
+                    value={auctionData.startingPrice}
+                    onChange={handleInputChange}
+                    className='bg-[#3A3A3A] border-[#4A4A4A] text-white'
+                    required
+                  />
+                  {fieldErrors.startingPrice && (
+                    <p className='text-red-500 text-sm'>
+                      {fieldErrors.startingPrice}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className='grid grid-cols-4 items-center gap-4'>
+                <Label htmlFor='reservePrice' className='text-right'>
+                  Reserve Price (ETH)
+                </Label>
+                <div className='col-span-3 flex flex-col gap-2'>
+                  <Input
+                    id='reservePrice'
+                    name='reservePrice'
+                    type='number'
+                    min='0'
+                    step='0.01'
+                    value={auctionData.reservePrice}
+                    onChange={handleInputChange}
+                    className='bg-[#3A3A3A] border-[#4A4A4A] text-white'
+                    required
+                  />
+                  {fieldErrors.reservePrice && (
+                    <p className='text-red-500 text-sm'>
+                      {fieldErrors.reservePrice}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className='grid grid-cols-4 items-center gap-4'>
+                <Label htmlFor='dropRatePerHour' className='text-right'>
+                  Drop Rate (ETH/hour)
+                </Label>
+                <div className='col-span-3 flex flex-col gap-2'>
+                  <Input
+                    id='dropRatePerHour'
+                    name='dropRatePerHour'
+                    type='number'
+                    min='0'
+                    step='0.01'
+                    value={auctionData.dropRatePerHour}
+                    onChange={handleInputChange}
+                    className='bg-[#3A3A3A] border-[#4A4A4A] text-white'
+                    required
+                  />
+                  {fieldErrors.dropRatePerHour && (
+                    <p className='text-red-500 text-sm'>
+                      {fieldErrors.dropRatePerHour}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='startingPrice' className='text-right'>
-              Starting Price (ETH)
-            </Label>
-            <div className='col-span-3 flex flex-col gap-2'>
-              <Input
-                id='startingPrice'
-                name='startingPrice'
-                type='number'
-                min='0'
-                step='0.01'
-                value={auctionData.startingPrice}
-                onChange={handleInputChange}
-                className='bg-[#3A3A3A] border-[#4A4A4A] text-white'
-                required
-              />
-              {fieldErrors.startingPrice && (
-                <p className='text-red-500 text-sm'>
-                  {fieldErrors.startingPrice}
+            <DialogFooter>
+              {error && (
+                <p className='text-red-600 mt-2 text-center font-semibold'>
+                  {error}
                 </p>
               )}
-            </div>
-          </div>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='reservePrice' className='text-right'>
-              Reserve Price (ETH)
-            </Label>
-            <div className='col-span-3 flex flex-col gap-2'>
-              <Input
-                id='reservePrice'
-                name='reservePrice'
-                type='number'
-                min='0'
-                step='0.01'
-                value={auctionData.reservePrice}
-                onChange={handleInputChange}
-                className='bg-[#3A3A3A] border-[#4A4A4A] text-white'
-                required
-              />
-              {fieldErrors.reservePrice && (
-                <p className='text-red-500 text-sm'>
-                  {fieldErrors.reservePrice}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='dropRatePerHour' className='text-right'>
-              Drop Rate (ETH/hour)
-            </Label>
-            <div className='col-span-3 flex flex-col gap-2'>
-              <Input
-                id='dropRatePerHour'
-                name='dropRatePerHour'
-                type='number'
-                min='0'
-                step='0.01'
-                value={auctionData.dropRatePerHour}
-                onChange={handleInputChange}
-                className='bg-[#3A3A3A] border-[#4A4A4A] text-white'
-                required
-              />
-              {fieldErrors.dropRatePerHour && (
-                <p className='text-red-500 text-sm'>
-                  {fieldErrors.dropRatePerHour}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-        <DialogFooter>
-          {createAuctionReceipt && (
-            <p className='text-green-600 mt-2 text-center font-semibold'>
-              Auction created successfully!
-            </p>
-          )}
-          {error && (
-            <p className='text-red-600 mt-2 text-center font-semibold'>
-              {error}
-            </p>
-          )}
-          <Button
-            onClick={handleCreateAuction}
-            className='bg-[rgb(255,127,81)] text-white hover:bg-[rgb(255,150,110)] transition-colors'
-          >
-            Create Auction
-          </Button>
-        </DialogFooter>
+              <Button
+                onClick={handleCreateAuction}
+                className='bg-[rgb(255,127,81)] text-white hover:bg-[rgb(255,150,110)] transition-colors'
+              >
+                Create Auction
+              </Button>
+            </DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
