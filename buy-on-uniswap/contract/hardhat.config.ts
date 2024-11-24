@@ -15,22 +15,23 @@ const config: HardhatUserConfig = {
 
   networks: {
     hardhat: {
-      chains: {
-        137: {
-          hardforkHistory: {
-            london: 60_000_000,
-          },
-        },
-      },
+      // chains: {
+      //   137: {
+      //     hardforkHistory: {
+      //       london: 60_000_000,
+      //     },
+      //   },
+      // },
       // accounts: {
       // 	count: 50,
       // 	mnemonic: 'test test test test test test test test test test test junk',
       // 	path: "m/44'/60'/0'/0",
       // },
       forking: {
-        url: 'https://polygon-mainnet.infura.io/v3/3ca8f1ba91f84e1f97c99f6218fe3743',
+        url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
         // url: 'https://polygon-rpc.com',
-        blockNumber: 62798800,
+        // blockNumber: 62798800,// polygon
+        blockNumber: 21218123,// mainnet
       },
       //   gasPrice: 40_000_000_000,
       //   loggingEnabled: true,

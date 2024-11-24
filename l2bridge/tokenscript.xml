@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ts:token xmlns:ts="http://tokenscript.org/2024/01/tokenscript"
+		  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+		  xsi:schemaLocation="http://tokenscript.org/2024/01/tokenscript https://www.tokenscript.org/schemas/2024-01/tokenscript.xsd"
+		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xmlns:ethereum="urn:ethereum:constantinople"
+		  name="L2Bridge">
+	<ts:label>
+		<ts:plurals xml:lang="en">
+			<ts:string quantity="one">BSC to opBNB Bridge</ts:string>
+			<ts:string quantity="other">BSC to opBNB Bridge</ts:string>
+		</ts:plurals>
+	</ts:label>
+	<ts:meta>
+		<ts:description xml:lang="en">BSC to opBNB Bridge</ts:description>
+		<ts:aboutUrl xml:lang="en">User can bridge own BSC to opBNB</ts:aboutUrl>
+		<ts:iconUrl xml:lang="en">https://blockmanity.com/wp-content/webp-express/webp-images/uploads/2023/06/opbnb.jpg.webp</ts:iconUrl>
+	</ts:meta>
+	<ts:contract interface="erc20" name="L1Token">
+		<ts:address network="$tst{L1_CONTRACT_CHAIN}">$tst{L1_CONTRACT_ADDRESS}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="L2Token">
+		<ts:address network="$tst{L2_CONTRACT_CHAIN}">$tst{L2_CONTRACT_ADDRESS}</ts:address>
+	</ts:contract>
+	<ts:contract name="Bridge">
+		<ts:address network="$tst{L1_CONTRACT_CHAIN}">$tst{L1_L2_BRIDGE}</ts:address>
+		<ts:abi>
+			<![CDATA[
+				[
+{
+    "inputs": [
+    {
+        "internalType": "address",
+        "name": "_l1Token",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "_l2Token",
+        "type": "address"
+    },
+    {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+    },
+    {
+        "internalType": "uint32",
+        "name": "_minGasLimit",
+        "type": "uint32"
+    },
+    {
+        "internalType": "bytes",
+        "name": "_extraData",
+        "type": "bytes"
+    }],
+    "name": "depositERC20",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+},
+{
+    "inputs": [
+    {
+        "internalType": "address",
+        "name": "_l1Token",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "_l2Token",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "_to",
+        "type": "address"
+    },
+    {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+    },
+    {
+        "internalType": "uint32",
+        "name": "_minGasLimit",
+        "type": "uint32"
+    },
+    {
+        "internalType": "bytes",
+        "name": "_extraData",
+        "type": "bytes"
+    }],
+    "name": "depositERC20To",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+},
+{
+    "inputs": [
+    {
+        "internalType": "address",
+        "name": "_localToken",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "_remoteToken",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "_from",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "_to",
+        "type": "address"
+    },
+    {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+    },
+    {
+        "internalType": "bytes",
+        "name": "_extraData",
+        "type": "bytes"
+    }],
+    "name": "finalizeBridgeERC20",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+},
+{
+    "inputs": [
+    {
+        "internalType": "address",
+        "name": "_l1Token",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "_l2Token",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "_from",
+        "type": "address"
+    },
+    {
+        "internalType": "address",
+        "name": "_to",
+        "type": "address"
+    },
+    {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+    },
+    {
+        "internalType": "bytes",
+        "name": "_extraData",
+        "type": "bytes"
+    }],
+    "name": "finalizeERC20Withdrawal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+}]
+			]]>
+		</ts:abi>
+	</ts:contract>
+	<ts:origins>
+		<!-- Define the contract which holds the token that the user will use -->
+		<ts:ethereum contract="L1Token"/>
+	</ts:origins>
+	
+	<ts:selection name="notOwner" filter="balance=0">
+		<ts:label>
+			<ts:string xml:lang="en">You need SLN token to bridge</ts:string>
+		</ts:label>
+	</ts:selection>
+	<ts:cards>
+		<ts:viewContent name="common" xmlns="http://www.w3.org/1999/xhtml">
+			<ts:include type="html" src="./dist/index.html"/>
+			<ts:include type="css" src="./src/styles.css"/>
+		</ts:viewContent>
+		<ts:card type="onboarding" name="Bridge">
+		  <!-- exclude="notOwner" -->
+			<ts:label>
+				<ts:string xml:lang="en">Bridge SLN from BSC to opBNB</ts:string>
+			</ts:label>
+			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" uiButton="false">
+				<ts:viewContent name="common"/>
+			</ts:view>
+		</ts:card>
+	</ts:cards>
+	
+	<ts:attribute name="userBalance">
+		<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+		<ts:label>
+			<ts:string xml:lang="en">L1 ERC20 balance</ts:string>
+		</ts:label>
+		<ts:origins>
+			<ethereum:call function="balanceOf" contract="L1Token" as="uint">
+				<ts:data>
+					<ts:address ref="ownerAddress"/>
+				</ts:data>
+			</ethereum:call>
+		</ts:origins>
+	</ts:attribute>
+	<ts:attribute name="bridgeAllowance">
+		<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+		<ts:label>
+			<ts:string xml:lang="en">L1 ERC20 allowance</ts:string>
+		</ts:label>
+		<ts:origins>
+			<ethereum:call function="allowance" contract="L1Token" as="uint">
+				<ts:data>
+					<ts:address ref="ownerAddress"/>
+					<ts:address ref="contractAddress_Bridge"/>
+				</ts:data>
+			</ethereum:call>
+		</ts:origins>
+	</ts:attribute>
+	<ts:transaction name="startBridge">
+		<ethereum:transaction contract="Bridge" function="depositERC20">
+			<ts:data>
+				<ts:address ref="contractAddress_L1Token"/>
+				<ts:address ref="contractAddress_L2Token"/>
+				<ts:uint256 local-ref="amount"/>
+				<ts:uint32>200000</ts:uint32>
+				<ts:bytes>0x00</ts:bytes>
+			</ts:data>
+		</ethereum:transaction>
+	</ts:transaction>
+	<ts:transaction name="startBridgeToUserAddress">
+		<ethereum:transaction contract="Bridge" function="depositERC20To">
+			<ts:data>
+				<ts:address ref="contractAddress_L1Token"/>
+				<ts:address ref="contractAddress_L2Token"/>
+				<ts:address local-ref="to"/>
+				<ts:uint256 local-ref="amount"/>
+				<ts:uint32>200000</ts:uint32>
+				<ts:bytes>0x00</ts:bytes>
+			</ts:data>
+		</ethereum:transaction>
+	</ts:transaction>
+	<ts:transaction name="l1approve">
+		<ethereum:transaction contract="L1Token" function="approve">
+			<ts:data>
+				<ts:address ref="contractAddress_Bridge"/>
+				<ts:uint256 local-ref="amount"/>
+			</ts:data>
+		</ethereum:transaction>
+	</ts:transaction>
+</ts:token>
