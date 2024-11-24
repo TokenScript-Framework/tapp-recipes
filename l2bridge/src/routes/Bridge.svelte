@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { data } from '../lib/context';
-	import context from "../lib/context";
+	import context from '../lib/context';
 
 	let amount;
 	let amountAsBigInt;
@@ -11,8 +11,11 @@
 	let invalidAmount = false;
 	let invalidAllowance = false;
 	let anotherUserAddress = '';
-	let invalidanotherUserAddress = false;
-
+	let invalidAnotherUserAddress = true;
+	let bridgingError = {
+		done: false,
+		error: false
+	};
 
 	let token;
 	context.data.subscribe((value) => {
@@ -21,10 +24,9 @@
 
 	$: {
 		userBalance = token.userBalance;
-		console.log({bridgeAllowance})
 		bridgeAllowance = token.bridgeAllowance;
-		amountAsBigInt = BigInt(Math.floor((parseFloat(amount)||0) * 10 ** 18))
-		invalidAmount = BigInt(userBalance) < amountAsBigInt;
+		amountAsBigInt = BigInt(Math.floor((parseFloat(amount) || 0) * 10 ** 18));
+		invalidAmount = amountAsBigInt === 0n || BigInt(userBalance) < amountAsBigInt;
 		invalidAllowance = BigInt(bridgeAllowance) < amountAsBigInt;
 	}
 
@@ -36,31 +38,43 @@
 			const rightPart = ((bigIntVal - leftPart * divisor) * 10n ** BigInt(decimals)) / 10n ** 18n;
 			return Number(leftPart) + Number(rightPart) / 10 ** decimals;
 		} catch (error) {
-			return "N/A";
+			return 'N/A';
 		}
 	}
-	async function handleBridgeToOwnAddress() {
+	async function handleBridgeToOwnAddress(wallet: string = '') {
 		try {
+			bridgingError.done = false;
+
 			tokenscript.action.showLoader();
-			tokenscript.action.setProps({
-				amount: amountAsBigInt
-			});
-				let error = !(await tokenscript.action.executeTransaction('startBridge'));
-			poapMessage = error ? 'TX error' : 'Bridge OK';
+
+			tokenscript.action.setProps(
+				// 	wallet ? {
+				// 	amount: amountAsBigInt
+				// }:
+				{
+					amount: amountAsBigInt,
+					to: wallet
+				}
+			);
+			bridgingError.error = !(await tokenscript.action.executeTransaction(
+				wallet ? 'startBridgeToUserAddress' : 'startBridge'
+			));
+			amount = '';
 		} catch (error) {
-			console.error('Error during minting process:', error);
+			bridgingError.error = true;
 			console.log(error);
-			tokenscript.action.showMessageToast('error', 'Failed to prepare Minting', error.message);
+			tokenscript.action.showMessageToast('error', 'Failed to Bridge', error.message);
 		}
+		bridgingError.done = true;
 
 		tokenscript.action.hideLoader();
 	}
 
-	async function handleBridgeToAnotherAddress(){
+	async function handleBridgeToAnotherAddress() {
 		// TODO
-		console.log("handleBridgeToAnotherAddress")
+		console.log('handleBridgeToAnotherAddress');
 	}
-	async function handleBridgeAllowance(){
+	async function handleBridgeAllowance() {
 		try {
 			tokenscript.action.showLoader();
 
@@ -68,6 +82,7 @@
 			tokenscript.action.setProps({
 				amount: amountAsBigInt
 			});
+
 			let error = !(await tokenscript.action.executeTransaction('l1approve'));
 			poapMessage = error ? 'TX error' : 'Bridge OK';
 		} catch (error) {
@@ -116,40 +131,56 @@
 
 		<button
 			on:click={handleBridgeToOwnAddress}
-			class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors {!invalidAmount ||
-			!invalidAllowance
+			class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors {invalidAmount ||
+			invalidAllowance
 				? 'disabled'
 				: ''}"
-			disabled={!invalidAmount || !invalidAllowance}
+			disabled={invalidAmount || invalidAllowance}
 		>
 			Bridge to your wallet
 		</button>
 
-		<div class="text-white">Bridge $SLN to specific address under opBNB</div>
+		<div class=" border-gray-300 text-white">--- or set receiver address ---</div>
+
 		<input
 			type="text"
 			bind:value={anotherUserAddress}
 			on:input={() => {
-				invalidAnotherUserAddress = /^0x[a-fA-F0-9]{40}$/.test(anotherUserAddress);
+				invalidAnotherUserAddress = !/^0x[a-fA-F0-9]{40}$/.test(anotherUserAddress);
 			}}
 			placeholder="Fill wallet address to bridge to"
 			class="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500
-			{invalidAmount || invalidAllowance ? 'border-red-500' : ''}"
+			{invalidAnotherUserAddress ? 'border-red-500' : ''}"
 		/>
 
 		<button
-			on:click={handleBridgeToAnotherAddress}
-			class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors {!invalidAmount ||
-			!invalidAllowance
+			on:click={() => {
+				handleBridgeToOwnAddress(anotherUserAddress);
+			}}
+			class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors {invalidAmount ||
+			invalidAllowance ||
+			invalidAnotherUserAddress
 				? 'disabled'
 				: ''}"
-			disabled={!invalidAmount || !invalidAllowance}
+			disabled={invalidAmount || invalidAllowance || invalidAnotherUserAddress}
 		>
-			Bridge to another wallet
+			Bridge to specified wallet
 		</button>
 
-		{#if poapMessage}
-			<div class="text-bold text-green-400 p-4">{poapMessage}</div>
+		{#if bridgingError.done}
+			{#if bridgingError.error}
+				<div class="text-bold text-red-400 p-4">TX error</div>
+			{:else}
+				<div class="text-bold text-green-400 p-4">Bridge OK</div>
+				<button
+					on:click={() => {
+						window.open(env.DEPOSITS + walletAddress + '?tab=deposit&p=1');
+					}}
+					class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+				>
+					List of deposits (1 min delay)
+				</button>
+			{/if}
 		{/if}
 	</div>
 </div>

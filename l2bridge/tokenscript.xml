@@ -15,6 +15,7 @@
 		<ts:description xml:lang="en">BSC to opBNB Bridge</ts:description>
 		<ts:aboutUrl xml:lang="en">User can bridge own BSC to opBNB</ts:aboutUrl>
 		<ts:iconUrl xml:lang="en">https://blockmanity.com/wp-content/webp-express/webp-images/uploads/2023/06/opbnb.jpg.webp</ts:iconUrl>
+		<ts:env name="DEPOSITS">$tst{DEPOSITS}</ts:env>
 	</ts:meta>
 	<ts:contract interface="erc20" name="L1Token">
 		<ts:address network="$tst{L1_CONTRACT_CHAIN}">$tst{L1_CONTRACT_ADDRESS}</ts:address>
