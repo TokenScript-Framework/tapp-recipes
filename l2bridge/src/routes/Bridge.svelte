@@ -47,15 +47,10 @@
 
 			tokenscript.action.showLoader();
 
-			tokenscript.action.setProps(
-				// 	wallet ? {
-				// 	amount: amountAsBigInt
-				// }:
-				{
-					amount: amountAsBigInt,
-					to: wallet
-				}
-			);
+			tokenscript.action.setProps({
+				amount: amountAsBigInt,
+				to: wallet
+			});
 			bridgingError.error = !(await tokenscript.action.executeTransaction(
 				wallet ? 'startBridgeToUserAddress' : 'startBridge'
 			));
@@ -70,15 +65,10 @@
 		tokenscript.action.hideLoader();
 	}
 
-	async function handleBridgeToAnotherAddress() {
-		// TODO
-		console.log('handleBridgeToAnotherAddress');
-	}
 	async function handleBridgeAllowance() {
 		try {
 			tokenscript.action.showLoader();
 
-			// Do donation
 			tokenscript.action.setProps({
 				amount: amountAsBigInt
 			});
@@ -93,8 +83,6 @@
 
 		tokenscript.action.hideLoader();
 	}
-
-	// TODO update link for "Make My Own"
 </script>
 
 <div class="min-h-screen bg-blue-600 flex flex-col items-center justify-center p-4">
