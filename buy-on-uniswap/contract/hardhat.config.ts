@@ -27,12 +27,15 @@ const config: HardhatUserConfig = {
       // 	mnemonic: 'test test test test test test test test test test test junk',
       // 	path: "m/44'/60'/0'/0",
       // },
-      forking: {
-        url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
-        // url: 'https://polygon-rpc.com',
-        // blockNumber: 62798800,// polygon
-        blockNumber: 21259738,// mainnet
-      },
+      // forking: {
+      //   // mainnet
+      //   // url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
+      //   // blockNumber: 21259738,// mainnet
+      //   url: 'https://sepolia.base.org',
+      //   blockNumber: 18367792,// base sepolia
+      //   // url: 'https://polygon-rpc.com',
+      //   // blockNumber: 62798800,// polygon
+      // },
       //   gasPrice: 40_000_000_000,
       //   loggingEnabled: true,
     },
@@ -53,16 +56,29 @@ const config: HardhatUserConfig = {
       url: 'https://polygon-mainnet.infura.io/v3/3ca8f1ba91f84e1f97c99f6218fe3743',
       // url: 'https://polygon-rpc.com',
       // gasPrice: 200000000000,
-      accounts: [process.env.PRIVATE_KEY_PROD ?? ''],
+      // accounts: [process.env.PRIVATE_KEY_PROD ?? ''],
     },
     // hardhat.config.ts
     polygonAmoy: {
       url: 'https://rpc-amoy.polygon.technology/',
-      accounts: [
-        fs.existsSync(PRIVATE_KEY_TEST_PATH)
-          ? fs.readFileSync(PRIVATE_KEY_TEST_PATH).toString().trim()
-          : '',
-      ],
+      // accounts: [
+      //   fs.existsSync(PRIVATE_KEY_TEST_PATH)
+      //     ? fs.readFileSync(PRIVATE_KEY_TEST_PATH).toString().trim()
+      //     : '',
+      // ],
+    },
+    baseSepolia: {
+      //     "https://base-sepolia-rpc.publicnode.com",
+      url: 'https://sepolia.base.org',
+      accounts: [process.env.PRIVATE_KEY_HU ?? ""]
+    },
+    base: {
+      // "https://mainnet.base.org/",
+      // "https://developer-access-mainnet.base.org/",
+      // "https://base.gateway.tenderly.co",
+      // "https://base-rpc.publicnode.com",
+      url: 'https://mainnet.base.org/',
+      // accounts: [process.env.PRIVATE_KEY_PROD ?? "", process.env.PRIVATE_KEY_SIGNER ?? ""]
     },
   },
   etherscan: {
@@ -72,6 +88,8 @@ const config: HardhatUserConfig = {
       polygon: process.env.POLYGON_API_KEY || '',
       polygonAmoy: process.env.POLYGON_API_KEY || '',
       sepolia: process.env.ETHERSCAN_API_KEY || '',
+      baseSepolia: process.env.BASESCAN_API_KEY || '',
+      base: process.env.BASESCAN_API_KEY || '',
     },
   },
 };
