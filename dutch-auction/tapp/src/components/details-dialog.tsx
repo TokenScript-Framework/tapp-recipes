@@ -1,20 +1,18 @@
 'use client';
 
-import { DialogClose } from '@radix-ui/react-dialog';
-import { Dialog, DialogContent, DialogFooter, DialogTitle } from './ui/dialog';
-import {Button} from './ui/button';
+import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 
-interface InfoDialogProps {
+interface DetailsDialogProps {
   isOpen: boolean;
   onDialogClose: () => void;
   attributes: { trait_type: string; value: string | number }[];
 }
 
-export default function InfoDialog({
+export default function DetailsDialog({
   isOpen,
   onDialogClose,
   attributes,
-}: InfoDialogProps) {
+}: DetailsDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onDialogClose}>
       <DialogContent className='flex flex-col justify-start w-full h-dvh bg-transparent backdrop-blur-xl border-none'>

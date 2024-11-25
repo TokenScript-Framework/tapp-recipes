@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
-import Loader from '../components/loader/loader';
-import { ExternalLink } from 'lucide-react';
+import DetailsDialog from '@/components/details-dialog';
 import { Button } from '@/components/ui/button';
-import InfoDialog from '@/components/info-dialog';
+import React, { useEffect, useState } from 'react';
+import Loader from '../components/loader/loader';
 
 const metadata = {
   image:
@@ -64,7 +63,7 @@ const auction = {
 export const Buy: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [timeUntilDrop, setTimeUntilDrop] = useState<number>(3600);
-  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
 
   useEffect(() => {
     setLoading(false);
@@ -89,7 +88,7 @@ export const Buy: React.FC = () => {
   }
 
   function onViewDetails() {
-    setIsInfoDialogOpen(true);
+    setIsDetailsDialogOpen(true);
   }
 
   function OnMooar() {
@@ -99,15 +98,15 @@ export const Buy: React.FC = () => {
     );
   }
 
-  function onInfoDialogClose() {
-    setIsInfoDialogOpen(false);
+  function onDetailsDialogClose() {
+    setIsDetailsDialogOpen(false);
   }
 
   return (
     <div className='flex flex-col items-start gap-4 w-full p-5'>
-      <InfoDialog
-        isOpen={isInfoDialogOpen}
-        onDialogClose={onInfoDialogClose}
+      <DetailsDialog
+        isOpen={isDetailsDialogOpen}
+        onDialogClose={onDetailsDialogClose}
         attributes={metadata.attributes}
       />
 
