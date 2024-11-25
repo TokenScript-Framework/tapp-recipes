@@ -31,7 +31,7 @@ const config: HardhatUserConfig = {
         url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
         // url: 'https://polygon-rpc.com',
         // blockNumber: 62798800,// polygon
-        blockNumber: 21218123,// mainnet
+        blockNumber: 21259738,// mainnet
       },
       //   gasPrice: 40_000_000_000,
       //   loggingEnabled: true,
