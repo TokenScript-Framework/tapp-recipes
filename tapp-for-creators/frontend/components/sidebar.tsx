@@ -14,7 +14,7 @@ export const Sidebar = () => {
           {isSidebarOpen && <span>Menu</span>}
         </Button>
       </div>
-      <ScrollArea className="h-[calc(100vh-5rem)]">
+      <ScrollArea className="h-[calc(100vh-185px)]">
         <SidebarContent isOpen={isSidebarOpen} />
       </ScrollArea>
     </aside>

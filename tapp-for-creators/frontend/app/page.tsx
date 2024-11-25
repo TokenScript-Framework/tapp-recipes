@@ -3,8 +3,6 @@
 import * as React from 'react'
 
 export default function Dashboard() {
-
-
   return (
     <>
       <main className="flex-grow p-6">

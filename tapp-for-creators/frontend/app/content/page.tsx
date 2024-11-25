@@ -28,36 +28,38 @@ export default function ContentPage() {
   }
 
   return (
-    <main className="flex-grow p-6 bg-white">
-      <h1 className="text-2xl font-bold mb-4">Content</h1>
-      <div className="flex mb-4">
-        <Input
-          value={newContent}
-          onChange={(e) => setNewContent(e.target.value)}
-          placeholder="New content title"
-          className="mr-2"
-        />
-        <Button onClick={handleCreate}>Create</Button>
-      </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {contents.map((content) => (
-            <TableRow key={content.id}>
-              <TableCell>{content.title}</TableCell>
-              <TableCell>
-                <Button onClick={() => handleEdit(content.id, prompt('New title') || content.title)} className="mr-2">Edit</Button>
-                <Button onClick={() => handleDelete(content.id)} variant="destructive">Delete</Button>
-              </TableCell>
+    <main className="flex-grow p-6">
+      <div className="container mx-auto bg-white p-6 rounded-lg">
+        <h1 className="text-2xl font-bold mb-4">Content</h1>
+        <div className="flex mb-4">
+          <Input
+            value={newContent}
+            onChange={(e) => setNewContent(e.target.value)}
+            placeholder="New content title"
+            className="mr-2"
+          />
+          <Button onClick={handleCreate}>Create</Button>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {contents.map((content) => (
+              <TableRow key={content.id}>
+                <TableCell>{content.title}</TableCell>
+                <TableCell>
+                  <Button onClick={() => handleEdit(content.id, prompt('New title') || content.title)} className="mr-2">Edit</Button>
+                  <Button onClick={() => handleDelete(content.id)} variant="destructive">Delete</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </main>
   )
 }

@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { Toaster } from "@/components/ui/toaster";
-import { Sidebar } from "@/components/sidebar";
+import MainSection from "@/components/main-section";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -49,10 +49,7 @@ export default function RootLayout({
             <QueryClientProvider client={queryClient}>
               <RainbowKitProvider>
                 <Header />
-                <div className="flex-grow flex">
-                  <Sidebar />
-                  {children}
-                </div>
+                <MainSection children={children}/>
                 <Footer />
               </RainbowKitProvider>
             </QueryClientProvider>

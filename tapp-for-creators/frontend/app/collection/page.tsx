@@ -28,36 +28,39 @@ export default function CollectionPage() {
   }
 
   return (
-    <main className="flex-grow p-6 bg-white">
-      <h1 className="text-2xl font-bold mb-4">Collections</h1>
-      <div className="flex mb-4">
-        <Input
-          value={newCollection}
-          onChange={(e) => setNewCollection(e.target.value)}
-          placeholder="New collection name"
-          className="mr-2"
-        />
-        <Button onClick={handleCreate}>Create</Button>
-      </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {collections.map((collection) => (
-            <TableRow key={collection.id}>
-              <TableCell>{collection.name}</TableCell>
-              <TableCell>
-                <Button onClick={() => handleEdit(collection.id, prompt('New name') || collection.name)} className="mr-2">Edit</Button>
-                <Button onClick={() => handleDelete(collection.id)} variant="destructive">Delete</Button>
-              </TableCell>
+    <main className="flex-grow p-6">
+      <div className="container mx-auto bg-white p-6 rounded-lg">
+
+        <h1 className="text-2xl font-bold mb-4">Collections</h1>
+        <div className="flex mb-4">
+          <Input
+            value={newCollection}
+            onChange={(e) => setNewCollection(e.target.value)}
+            placeholder="New collection name"
+            className="mr-2"
+          />
+          <Button onClick={handleCreate}>Create</Button>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {collections.map((collection) => (
+              <TableRow key={collection.id}>
+                <TableCell>{collection.name}</TableCell>
+                <TableCell>
+                  <Button onClick={() => handleEdit(collection.id, prompt('New name') || collection.name)} className="mr-2">Edit</Button>
+                  <Button onClick={() => handleDelete(collection.id)} variant="destructive">Delete</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </main>
   )
 }
