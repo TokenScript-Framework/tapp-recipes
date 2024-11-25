@@ -26,9 +26,8 @@
 		context.setToken(updatedTokens.currentInstance);
 		token = updatedTokens.currentInstance;
 
-		if (tokenscript.tokens.data.currentInstance) {
-			context.setToken(tokenscript.tokens.data.currentInstance);
-			token = tokenscript.tokens.data.currentInstance
+		if (token) {
+			context.setToken(token);
 			console.log({token})
 		}
 		routeChange();
