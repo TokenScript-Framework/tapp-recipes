@@ -3,6 +3,7 @@ import DetailsDialog from '@/components/details-dialog';
 import { Button } from '@/components/ui/button';
 import React, { useEffect, useState } from 'react';
 import Loader from '../components/loader/loader';
+import {PriceDisplay} from '@/components/price-display';
 
 const metadata = {
   image:
@@ -53,10 +54,9 @@ const metadata = {
 };
 
 const auction = {
-  startPrice: '1.0',
-  reservePrice: '0.5',
-  currentPrice: '0.8',
-  nextPrice: '0.7',
+  startPrice: 1000000000000000000n,
+  currentPrice: 812312312300000000n,
+  nextPrice: 712331213000000000n,
 };
 
 // @ts-ignore
@@ -119,18 +119,24 @@ export const Buy: React.FC = () => {
         />
       </div>
 
-      <div className='grid grid-cols-4 gap-4 text-center'>
+      <div className='grid grid-cols-4 gap-4 text-center cursor-default'>
         <div className='space-y-1'>
           <div className='text-xs text-gray-400 uppercase'>Starting Price</div>
-          <div className='text-3xl font-bold'>{auction.startPrice}</div>
-        </div>
-        <div className='space-y-1'>
-          <div className='text-xs text-gray-400 uppercase'>Reserve Price</div>
-          <div className='text-3xl font-bold'>{auction.reservePrice}</div>
+          <div className='text-3xl font-bold'>
+            <PriceDisplay price={auction.startPrice} />
+          </div>
         </div>
         <div className='space-y-1'>
           <div className='text-xs text-gray-400 uppercase'>Current Price</div>
-          <div className='text-3xl font-bold'>{auction.currentPrice}</div>
+          <div className='text-3xl font-bold'>
+            <PriceDisplay price={auction.currentPrice} />
+          </div>
+        </div>
+        <div className='space-y-1'>
+          <div className='text-xs text-gray-400 uppercase'>Next Price</div>
+          <div className='text-3xl font-bold'>
+            <PriceDisplay price={auction.nextPrice} />
+          </div>
         </div>
         <div className='space-y-1'>
           <div className='text-xs text-gray-400 uppercase'>Price Drops</div>
