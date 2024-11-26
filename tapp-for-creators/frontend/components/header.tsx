@@ -13,7 +13,7 @@ import {
 import { Button } from "./ui/button"
 import { ScrollArea } from "./ui/scroll-area"
 import Image from "next/image"
-import { Menu, Settings } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { ERROR_LIST, ERROR_PARAM, NEXT_PUBLIC_BACKEND_BASE, TOKEN_PARAM, TWITTER_ROOT } from "../lib/constants"
 import { useCallback, useEffect, useState } from "react"
@@ -123,12 +123,12 @@ export const Header = () => {
             </SheetContent>
           </Sheet>
           <a href="/" className="flex items-center gap-2">
-            <Image src="/images/logo.svg" alt="Logo" width={48} height={48} className="h-12 w-auto" /> <span className="font-bold text-3xl uppercase">Twitter Creators</span>
+            <Image src="/images/logo.svg" alt="Logo" width={48} height={48} className="h-12 w-auto" /> <span className="font-bold text-3xl uppercase">Tweet Creators</span>
           </a>
         </div>
         <div className="flex items-center space-x-4">
           <ConnectButton showBalance={false} />
-          {!twitterAccount ? (<><Button variant="outline" className="rounded-lg bg-black gap-2 text-white font-bold h-10 text-base hover:bg-black hover:text-white hover:scale-[1.025]" disabled={linking} onClick={() => {
+          {!twitterAccount ? (<><Button variant="outline" className="rounded-lg bg-black gap-2 text-white font-bold h-10 text-base hover:bg-black hover:text-white hover:scale-[1.025] w-[156px]" disabled={linking} onClick={() => {
             signTwitterClick()
           }}>
             {linking && <SpinLoading />}

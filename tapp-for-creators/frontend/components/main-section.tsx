@@ -5,21 +5,20 @@ import { useAccount } from 'wagmi';
 
 interface MainSectionProps {
   children: React.ReactNode;
-  className?: string;
 }
 
-const MainSection: React.FC<MainSectionProps> = ({ children, className = '' }) => {
+const MainSection: React.FC<MainSectionProps> = ({ children }) => {
 
   const { isConnected } = useAccount();
   return (
     <main  className="min-h-[calc(100vh-118px)]">
       {isConnected ? (
-        <>
-          <div className="flex-grow">
+    
+          <div className="flex-grow flex">
             <Sidebar />
             {children}
           </div>
-        </>
+        
       ) : (
         <LandingPage />
       )}
