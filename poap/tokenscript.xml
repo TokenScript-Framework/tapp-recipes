@@ -14,10 +14,51 @@
 	<ts:meta>
 		<ts:description xml:lang="en">Souvenir NFT TLink/Tapp</ts:description>
 		<ts:aboutUrl xml:lang="en">Let users mint Souvenir NFTs</ts:aboutUrl>
-		<ts:iconUrl xml:lang="en">https://resources.smartlayer.network/smart-token-store/images/create-icon.png</ts:iconUrl>
+		<ts:iconUrl xml:lang="en">https://tokens.antopolbus.rv.ua/images/souvenir_nft6.jpeg</ts:iconUrl>
+		<ts:env name="API_BASE_URL">$tst{API_BASE_URL}</ts:env>
+		<ts:env name="SLN_CHAIN_LIST">$tst{SLN_CHAIN_LIST}</ts:env>
 	</ts:meta>
 	<ts:contract interface="erc721" name="Token">
 		<ts:address network="$tst{CONTRACT_CHAIN}">$tst{CONTRACT_ADDRESS}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_ETH">
+		<ts:address network="$tst{SLN_ETH_CHAIN}">$tst{SLN_ETH}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_LINEA">
+		<ts:address network="$tst{SLN_LINEA_CHAIN}">$tst{SLN_LINEA}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_ARB">
+		<ts:address network="$tst{SLN_ARB_CHAIN}">$tst{SLN_ARB}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_POLYGONZKEVM">
+		<ts:address network="$tst{SLN_POLYGONZKEVM_CHAIN}">$tst{SLN_POLYGONZKEVM}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_ZKSYNC">
+		<ts:address network="$tst{SLN_ZKSYNC_CHAIN}">$tst{SLN_ZKSYNC}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_SCROLL">
+		<ts:address network="$tst{SLN_SCROLL_CHAIN}">$tst{SLN_SCROLL}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_POLYGON">
+		<ts:address network="$tst{SLN_POLYGON_CHAIN}">$tst{SLN_POLYGON}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_OP">
+		<ts:address network="$tst{SLN_OP_CHAIN}">$tst{SLN_OP}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_KLAYTN">
+		<ts:address network="$tst{SLN_KLAYTN_CHAIN}">$tst{SLN_KLAYTN}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_MINT">
+		<ts:address network="$tst{SLN_MINT_CHAIN}">$tst{SLN_MINT}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_BASE">
+		<ts:address network="$tst{SLN_BASE_CHAIN}">$tst{SLN_BASE}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_BSC">
+		<ts:address network="$tst{SLN_BSC_CHAIN}">$tst{SLN_BSC}</ts:address>
+	</ts:contract>
+	<ts:contract interface="erc20" name="SLN_OPBNB">
+		<ts:address network="$tst{SLN_OPBNB_CHAIN}">$tst{SLN_OPBNB}</ts:address>
 	</ts:contract>
 	<ts:origins>
 		<!-- Define the contract which holds the token that the user will use -->
@@ -33,9 +74,180 @@
 			<ts:label>
 				<ts:string xml:lang="en">Create new Souvenir factory</ts:string>
 			</ts:label>
+			<ts:attribute name="SLN_ETH_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_ETH ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_ETH" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_LINEA_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_LINEA ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_LINEA" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_ARB_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_ARB ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_ARB" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_POLYGONZKEVM_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_POLYGONZKEVM ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_POLYGONZKEVM" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_ZKSYNC_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_ZKSYNC ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_ZKSYNC" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_SCROLL_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_SCROLL ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_SCROLL" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_POLYGON_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_POLYGON ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_POLYGON" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_OP_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_OP ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_OP" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_KLAYTN_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_KLAYTN ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_KLAYTN" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_MINT_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_MINT ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_MINT" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_BASE_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_BASE ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_BASE" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_BSC_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_BSC ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_BSC" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
+			<ts:attribute name="SLN_OPBNB_Balance">
+				<ts:type><ts:syntax>1.3.6.1.4.1.1466.115.121.1.27</ts:syntax></ts:type>
+				<ts:label>
+					<ts:string xml:lang="en">SLN_OPBNB ERC20 balance</ts:string>
+				</ts:label>
+				<ts:origins>
+					<ethereum:call function="balanceOf" contract="SLN_OPBNB" as="uint">
+						<ts:data>
+							<ts:address ref="ownerAddress"/>
+						</ts:data>
+					</ethereum:call>
+				</ts:origins>
+			</ts:attribute>
 			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" uiButton="false">
 				<ts:viewContent name="common"/>
+				
 			</ts:view>
+			
 		</ts:card>
 
 		<ts:card type="onboarding" name="MintSouvenir">
@@ -54,7 +266,6 @@
 					</ethereum:transaction>
 				</ts:transaction>
 			</ts:view>
-			
 		</ts:card>
 	</ts:cards>
 </ts:token>

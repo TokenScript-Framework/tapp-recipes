@@ -43,7 +43,7 @@ contract Poap is AccessControlEnumerableUpgradeable, ERC721EnumerableUpgradeable
   }
 
   function initialize() public initializer {
-    __ERC721_init("Souvenir", "POAP");
+    __ERC721_init("Souvenir", "SVNR");
     __Ownable_init(msg.sender);
     __AccessControlEnumerable_init();
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -94,7 +94,21 @@ contract Poap is AccessControlEnumerableUpgradeable, ERC721EnumerableUpgradeable
 
   }
 
-  // TODO add getters like isPoap(poapId, tokenId) getPoapByIndex(poapId, index)...
+  function getSouvenirAmount(uint souvenirId) public view returns(uint){
+    return _poapSets[souvenirId].length();
+  }
+
+  function isTokenSouvenir(uint souvenirId, uint tokenId) public view returns(bool){
+    return _poapSets[souvenirId].contains(tokenId);
+  }
+
+  function getSouvenirByIndex(uint souvenirId, uint index) public view returns(uint){
+    return _poapSets[souvenirId].at(index);
+  }
+
+  function getAllSouvenirs(uint souvenirId) public view returns(uint[] memory){
+    return _poapSets[souvenirId].values();
+  }
 
   // TODO add bulk mint
   function mintDirect(

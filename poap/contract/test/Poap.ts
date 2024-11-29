@@ -82,9 +82,17 @@ describe('Poap', () => {
         1n, // tokenId
         trusted
       );
+      expect(await nft.getSouvenirAmount(0)).to.eq(0n);
+      expect(await nft.isTokenSouvenir(0,1)).to.eq(false);
+      expect(await nft.getAllSouvenirs(0)).to.deep.eq([]);
+      // expect(await nft.getSouvenirByIndex(0,0)).to.eq(false);
       await nft.connect(otherAccount).mint(0, 1, signature);
-
+      
       expect(await nft.balanceOf(otherAccount.address)).to.eq(1n);
+      expect(await nft.getSouvenirAmount(0)).to.eq(1n);
+      expect(await nft.isTokenSouvenir(0,1)).to.eq(true);
+      expect(await nft.getSouvenirByIndex(0,0)).to.eq(1n);
+      expect(await nft.getAllSouvenirs(0)).to.deep.eq([1n]);
     });
   });
   /*

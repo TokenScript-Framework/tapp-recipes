@@ -1,8 +1,5 @@
 import type { ITokenContextData } from '@tokenscript/card-sdk/dist/types';
 
-export const API_URL = "https://store-backend-stage.smartlayer.network/poap"
-// export const API_URL = "http://127.0.0.1:3006/poap"
-
 export type PoapProfile = {
 	name: string;
 	description: string;
@@ -44,7 +41,7 @@ export async function getTlink(poap: PoapProfile, file: any) {
 	formData.append('signature', signature);
 	
 	// const res = await fetch(tokenscript.env.API_BASE_URL + `/create`, {
-	const res = await fetch(API_URL + `/create`, {
+	const res = await fetch(tokenscript.env.API_BASE_URL + `/create`, {
 		method: 'POST',
 		body: formData
 	});
@@ -59,10 +56,10 @@ export async function getTlink(poap: PoapProfile, file: any) {
 	return data["tlinkUrl"] || "";
 }
 
-export async function getSignatureToMint(poapId: bigint, address:string, secret: string = ""){
+export async function getSignatureToMint(poapId: bigint, secret: string = ""){
 	const msgToSign = JSON.stringify({
 		poapId: poapId,
-		address: address.toLowerCase(),
+		address: walletAddress.toLowerCase(),
 		secret,
 	});
 
@@ -70,7 +67,7 @@ export async function getSignatureToMint(poapId: bigint, address:string, secret:
 
 	return await apiRequest(`/mint/${poapId}`, "POST", {
 		secret,
-		address: address.toLowerCase(),
+		address: walletAddress.toLowerCase(),
 		signature,
 	});
 }
@@ -85,7 +82,7 @@ export async function apiRequest(url: string, method: 'GET' | 'POST', requestDat
 		Accept: 'application/json'
 	};
 
-	const res = await fetch(API_URL + url, {
+	const res = await fetch(tokenscript.env.API_BASE_URL + url, {
 		method,
 		headers,
 		cache: 'no-store',

@@ -1,17 +1,32 @@
 <script lang="ts">
-	import { API_URL } from '../lib/api.ts';
 	import ClickToCopy from '../components/ClickToCopy.svelte';
+	import context from '../lib/context';
+
+	let token;
+	context.data.subscribe((value) => {
+		token = value.token;
+	});
+
 	let eventName = '';
 	let description = '';
 	let imageUrl = '';
+	let imageUrlValid = '';
 	let selectedFile = null;
 	let fileInput = null;
 	let startDate = '';
+	let startDateValid = '';
 	let endDate = '';
+	let endDateValid = '';
 	let attendees = '';
+	let attendeesValid = '';
 	let mintCondition = 'public';
 	let secret = '';
 	let tlink = '';
+	let totalBalance = 0;
+	let missingRequirement = '';
+
+
+	const uriPattern = /^https?:\/\/[^\s/$.?#].[^\s]*$/i;
 
 	function handleFileSelect(event) {
 		const file = event.target.files[0];
@@ -21,7 +36,7 @@
 	}
 
 	async function handleSubmit() {
-		if (!formIsFilled) {
+		if (missingRequirement) {
 			console.log('Fill the full form');
 			return;
 		}
@@ -40,15 +55,73 @@
 			selectedFile
 		);
 	}
-	let formIsFilled;
+
 	$: {
-		formIsFilled =
-			eventName &&
-			(imageUrl || selectedFile) &&
-			startDate &&
-			endDate &&
-			attendees &&
-			(mintCondition != 'private' || secret);
+		totalBalance = getSLNTotalBalance()
+		console.log('totalBalance', totalBalance)
+
+		missingRequirement = ''
+		if (!eventName) {
+			missingRequirement = 'Event name required. ';
+		} 
+
+		if (imageUrl && !imageUrlValid) {
+			missingRequirement += 'Image URL format invalid. ';
+		}
+
+		if (!imageUrlValid && !selectedFile) {
+			missingRequirement += 'Souvenir image required. ';
+		}
+
+		if (!startDate) {
+			missingRequirement += 'Start date required. ';
+		}
+
+		if (!endDate) {
+			missingRequirement += 'End date required. ';
+		}
+
+		if (startDate && endDate && startDate > endDate) {
+			missingRequirement += 'Start date must be before end date. ';
+		}
+
+		if (endDate && !endDateValid) {
+			missingRequirement += 'End date must be in the future. ';
+		}
+		
+		if (!attendeesValid) {
+			missingRequirement += 'Number of attendees must be greater than 0. ';
+		}
+
+		if (mintCondition == 'private' && !secret) {
+			missingRequirement += 'Private minting require secret word. ';
+		}
+
+		if (attendees > 15 && totalBalance < 100 * (10**18)) {
+			missingRequirement += 'You need to hold at least 100 SLN for 15+ attendees. ';
+		}
+	}
+	$: {
+		startDateValid = !endDate || startDate <= endDate
+		endDateValid = endDate >= new Date().toISOString().split("T")[0]
+		attendeesValid = attendees > 0
+		imageUrlValid = !imageUrl || uriPattern.test(imageUrl)
+		
+	}
+	function getSLNTotalBalance() {
+		if (!env.SLN_CHAIN_LIST) {
+			return 0;
+		}
+		const chainList = env.SLN_CHAIN_LIST.split(',');
+		console.log('chainList', chainList)
+		const totalBalance = chainList.reduce((acc, chain) => {
+			const slnBalance = token[`SLN_${chain.toUpperCase()}_Balance`];
+			if (slnBalance) {
+				return acc + BigInt(slnBalance);
+			}
+			return acc;
+		}, 0n);
+		return totalBalance;
 	}
 	export async function getTlink() {
 		const msgToSign = JSON.stringify({
@@ -79,7 +152,7 @@
 		formData.append('signature', signature);
 		fileInput && fileInput.files?.length && formData.append('file', fileInput.files[0]);
 
-		const res = await fetch(API_URL + `/create`, {
+		const res = await fetch(tokenscript.env.API_BASE_URL + `/create`, {
 			method: 'POST',
 			body: formData
 		});
@@ -93,11 +166,12 @@
 
 		return data['tlinkUrl'] || '';
 	}
+
 </script>
 
 <div class="inset-0 bg-black/50-off flex items-center justify-center">
 	<div class="bg-white rounded-lg w-full max-w-2xl p-6 relative">
-		<h1 class="text-2xl font-bold mb-6">Sovenier NFT</h1>
+		<h1 class="text-2xl font-bold mb-6">Souvenir NFT</h1>
 
 		<div class="flex justify-center mb-6">
 			<img
@@ -178,15 +252,15 @@
 							d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
 						/>
 					</svg>
-					Sovenier Image
+					Souvenir Image
 				</label>
 				<input
 					type="text"
 					bind:value={imageUrl}
-					class="w-full p-3 border rounded-lg mb-2"
-					placeholder="Enter image URL" required
+					class="w-full p-3 border rounded-lg mb-2 {imageUrlValid ? "" : "text-red-700"}"
+					placeholder="Enter image URL"
 				/>
-				<div class="flex gap-4 items-center inactive">
+				<div class="flex gap-4 items-center">
 					<label class="flex items-center gap-2 text-orange-400 cursor-pointer" for="file-upload">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -219,19 +293,20 @@
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 				<div>
 					<label class="block text-purple-600 mb-2 mt-4">Event start date *</label>
-					<input type="date" bind:value={startDate} class="w-full p-3 border rounded-lg" required/>
+					<input type="date" bind:value={startDate} class="w-full p-3 border rounded-lg {startDateValid ? "" : "text-red-700"}" required/>
 				</div>
 				<div>
 					<label class="block text-purple-600 mb-2 mt-4">Event end date *</label>
-					<input type="date" bind:value={endDate} class="w-full p-3 border rounded-lg" required/>
+					<input type="date" bind:value={endDate} min={new Date().toISOString().split('T')[0]} class="w-full p-3 border rounded-lg {!endDate || endDateValid ? "" : "text-red-700"}" required/>
 				</div>
 				<div>
 					<label class="block text-purple-600 mb-2 mt-4">Amount of attendees</label>
 					<input
 						type="number"
 						bind:value={attendees}
-						class="w-full p-3 border rounded-lg"
+						class="w-full p-3 border rounded-lg {attendeesValid ? "" : "text-red-700"}"
 						placeholder="000" required
+						min="1"
 					/>
 				</div>
 			</div>
@@ -258,12 +333,16 @@
 				</div>
 			</div>
 
+			{#if missingRequirement}
+				<div class="pt-4 text-red-500 text-center">{missingRequirement}</div>
+			{/if}
+
 			<button
 				type="submit"
-				class="w-full py-4 mt-2 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors {formIsFilled
+				class="w-full py-4 mt-2 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors {!missingRequirement
 					? 'active'
 					: 'inactive'}"
-				disabled={!formIsFilled}
+				disabled={missingRequirement}
 			>
 				Create Souvenir NFT
 			</button>

@@ -80,6 +80,7 @@ async function main() {
   if (!NFT_CONTRACT_ADDRESS) {
     nft = (await upgrades.deployProxy(Poap)) as unknown as Poap;
     await nft.waitForDeployment();
+    console.log(`NFT contract deployed to ${nft.target}`);
 
     if (
       chainId === '1001' ||
@@ -88,11 +89,14 @@ async function main() {
       chainId === '80002'
     ) {
       // testnets
-      const tx = await nft.connect(deployer).setMintTimeRange(1n, Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30);
-      await nft.connect(deployer).setMinterRole(deployer.address);
+      let tx = await nft.connect(deployer).setMintTimeRange(1n, Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30);
+      await tx.wait()
+      console.log(`Mint range set to 30days`);
+      tx = await nft.connect(deployer).setMinterRole(deployer.address);
+      await tx.wait()
+      console.log(`Minter role added to: ${deployer.address}`);
     }
     
-    console.log(`NFT contract deployed to ${nft.target}`);
   } else {
     nft = await Poap.attach(NFT_CONTRACT_ADDRESS);
     console.log(`NFT contract attached to ${nft.target}`);
