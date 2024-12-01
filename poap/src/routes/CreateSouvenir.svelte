@@ -58,7 +58,6 @@
 
 	$: {
 		totalBalance = getSLNTotalBalance()
-		console.log('totalBalance', totalBalance)
 
 		missingRequirement = ''
 		if (!eventName) {
@@ -97,8 +96,8 @@
 			missingRequirement += 'Private minting require secret word. ';
 		}
 
-		if (attendees > 15 && totalBalance < 100 * (10**18)) {
-			missingRequirement += 'You need to hold at least 100 SLN for 15+ attendees. ';
+		if (attendees >= 25  && totalBalance < 100n * 10n**18n) {
+			missingRequirement += 'You need to hold at least 100 SLN to create souvenir with 25+ attendees. ';
 		}
 	}
 	$: {
@@ -113,7 +112,6 @@
 			return 0;
 		}
 		const chainList = env.SLN_CHAIN_LIST.split(',');
-		console.log('chainList', chainList)
 		const totalBalance = chainList.reduce((acc, chain) => {
 			const slnBalance = token[`SLN_${chain.toUpperCase()}_Balance`];
 			if (slnBalance) {
@@ -157,13 +155,15 @@
 			body: formData
 		});
 
-		if (!res.ok) {
-			throw new Error('Network response was not ok');
-		}
 		const data = await res.json();
-		tokenscript.action.hideLoader();
-		// TODO validate responce
 
+		if (!res.ok) {
+			// missingRequirement = `Failed to create souvenir.` + data?.error ? `Error: ${data.error}` : '';
+			tokenscript.action.showMessageToast('error', 'Failed to create souvenir', data?.error || '');
+		} else {
+
+		}
+		tokenscript.action.hideLoader();
 		return data['tlinkUrl'] || '';
 	}
 
