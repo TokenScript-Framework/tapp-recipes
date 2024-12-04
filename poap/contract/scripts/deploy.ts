@@ -3,7 +3,7 @@ import {ethers, network, upgrades} from 'hardhat';
 import {getFee, hasPending} from './lib';
 import hre from 'hardhat';
 require('dotenv/config');
-import {Poap} from '../typechain-types';
+import {Souvenir} from '../typechain-types';
 
 let NFT_CONTRACT_ADDRESS = '';
 
@@ -72,13 +72,14 @@ async function main() {
     }
     console.log({fee});
   }
+  // return;
 
-  const Poap = (await ethers.getContractFactory('Poap')).connect(deployer);
+  const Souvenir_ = (await ethers.getContractFactory('Souvenir')).connect(deployer);
 
   // return;
   let nft;
   if (!NFT_CONTRACT_ADDRESS) {
-    nft = (await upgrades.deployProxy(Poap)) as unknown as Poap;
+    nft = (await upgrades.deployProxy(Souvenir_)) as unknown as Souvenir;
     await nft.waitForDeployment();
     console.log(`NFT contract deployed to ${nft.target}`);
 
@@ -88,17 +89,18 @@ async function main() {
       chainId === '1687' ||
       chainId === '80002'
     ) {
+      let tx
       // testnets
-      let tx = await nft.connect(deployer).setMintTimeRange(1n, Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30);
-      await tx.wait()
-      console.log(`Mint range set to 30days`);
+      // let tx = await nft.connect(deployer).setMintTimeRange(1n, Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30);
+      // await tx.wait()
+      // console.log(`Mint range set to 30days`);
       tx = await nft.connect(deployer).setMinterRole(deployer.address);
       await tx.wait()
       console.log(`Minter role added to: ${deployer.address}`);
     }
     
   } else {
-    nft = await Poap.attach(NFT_CONTRACT_ADDRESS);
+    nft = await Souvenir_.attach(NFT_CONTRACT_ADDRESS);
     console.log(`NFT contract attached to ${nft.target}`);
   }
 

@@ -4,7 +4,7 @@ import {
 } from '@nomicfoundation/hardhat-toolbox/network-helpers';
 import {expect} from 'chai';
 import {ethers, upgrades} from 'hardhat';
-import {Poap, IERC721Errors__factory} from '../typechain-types';
+import {Souvenir, IERC721Errors__factory} from '../typechain-types';
 import {Signer} from 'ethers';
 
 // async function signStage(
@@ -40,7 +40,7 @@ async function signMint(
 
 }
 
-describe('Poap', () => {
+describe('Souvenir', () => {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setup once, snapshot that state,
   // and reset Hardhat Network to that snapshot in every test.
@@ -55,8 +55,8 @@ describe('Poap', () => {
       sutEOAfunding,
     ] = await ethers.getSigners();
 
-    const Poap = await ethers.getContractFactory('Poap');
-    const nft = (await upgrades.deployProxy(Poap)) as unknown as Poap;
+    const Souvenir_ = await ethers.getContractFactory('Souvenir');
+    const nft = (await upgrades.deployProxy(Souvenir_)) as unknown as Souvenir;
     await nft.waitForDeployment();
 
     return {
@@ -73,7 +73,7 @@ describe('Poap', () => {
     it('full flow', async () => {
       const {owner, otherAccount, otherAccount2, trusted, nft} =
         await loadFixture(deployInitialFixture);
-      await nft.setMintTimeRange(1n, Math.floor(Date.now() / 1000) + 1000);
+      // await nft.setMintTimeRange(1n, Math.floor(Date.now() / 1000) + 1000);
       await nft.setMinterRole(trusted.address);
       let signature = await signMint(
         nft.target as string,
@@ -93,6 +93,22 @@ describe('Poap', () => {
       expect(await nft.isTokenSouvenir(0,1)).to.eq(true);
       expect(await nft.getSouvenirByIndex(0,0)).to.eq(1n);
       expect(await nft.getAllSouvenirs(0)).to.deep.eq([1n]);
+
+      signature = await signMint(
+        nft.target as string,
+        otherAccount.address,
+        0n, // poap
+        20n, // tokenId
+        trusted
+      );
+
+      await nft.connect(otherAccount).mint(0, 20, signature);
+      
+      expect(await nft.balanceOf(otherAccount.address)).to.eq(2n);
+      expect(await nft.getSouvenirAmount(0)).to.eq(2n);
+      expect(await nft.isTokenSouvenir(0,20)).to.eq(true);
+      expect(await nft.getSouvenirByIndex(0,1)).to.eq(20n);
+      expect(await nft.getAllSouvenirs(0)).to.deep.eq([1n, 20n]);
     });
   });
   /*
@@ -715,7 +731,7 @@ describe('Poap', () => {
       const {owner, otherAccount, otherAccount2, trusted, nft} =
         await loadFixture(deployInitialFixture);
 
-      await nft.setMintTimeRange(1n, Math.floor(Date.now() / 1000) + 1000);
+      // await nft.setMintTimeRange(1n, Math.floor(Date.now() / 1000) + 1000);
       await nft.setMinterRole(trusted.address);
       let signature = await signMint(
         nft.target as string,

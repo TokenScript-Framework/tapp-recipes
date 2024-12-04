@@ -69,6 +69,19 @@ const config: HardhatUserConfig = {
           : '',
       ],
     },
+    baseSepolia: {
+      //     "https://base-sepolia-rpc.publicnode.com",
+      url: 'https://sepolia.base.org',
+      accounts: [process.env.PRIVATE_KEY_SIGNER ?? ""]
+    },
+    base: {
+      // "https://mainnet.base.org/",
+      // "https://developer-access-mainnet.base.org/",
+      // "https://base.gateway.tenderly.co",
+      // "https://base-rpc.publicnode.com",
+      url: 'https://mainnet.base.org/',
+      accounts: [process.env.PRIVATE_KEY_PROD ?? "", process.env.PRIVATE_KEY_SIGNER ?? ""]
+    },
   },
   gasReporter: {
     enabled: false,
@@ -85,6 +98,8 @@ const config: HardhatUserConfig = {
       polygon: process.env.POLYGON_API_KEY || '',
       polygonAmoy: process.env.POLYGON_API_KEY || '',
       sepolia: process.env.ETHERSCAN_API_KEY || '',
+      baseSepolia: process.env.BASESCAN_API_KEY || '',
+      base: process.env.BASESCAN_API_KEY || '',
     },
   },
 };
