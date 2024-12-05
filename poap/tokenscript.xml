@@ -14,9 +14,12 @@
 	<ts:meta>
 		<ts:description xml:lang="en">Souvenir NFT TLink/Tapp</ts:description>
 		<ts:aboutUrl xml:lang="en">Let users mint Souvenir NFTs</ts:aboutUrl>
-		<ts:iconUrl xml:lang="en">https://tokens.antopolbus.rv.ua/images/souvenir_nft6.jpeg</ts:iconUrl>
+		<ts:iconUrl xml:lang="en">https://resources.smartlayer.network/smart-token-store/images/souvenir_icon.jpg</ts:iconUrl>
 		<ts:env name="API_BASE_URL">$tst{API_BASE_URL}</ts:env>
 		<ts:env name="SLN_CHAIN_LIST">$tst{SLN_CHAIN_LIST}</ts:env>
+		<ts:env name="CONTRACT_ADDRESS">$tst{CONTRACT_ADDRESS}</ts:env>
+		<ts:env name="CONTRACT_CHAIN">$tst{CONTRACT_CHAIN}</ts:env>
+		<ts:env name="SCRIPT_ID">$tst{SCRIPT_ID}</ts:env>
 	</ts:meta>
 	<ts:contract interface="erc721" name="Token">
 		<ts:address network="$tst{CONTRACT_CHAIN}">$tst{CONTRACT_ADDRESS}</ts:address>

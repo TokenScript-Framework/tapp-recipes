@@ -10,15 +10,15 @@
 	let eventName = '';
 	let description = '';
 	let imageUrl = '';
-	let imageUrlValid = '';
+	let imageUrlValid = false;
 	let selectedFile = null;
 	let fileInput = null;
 	let startDate = '';
-	let startDateValid = '';
+	let startDateValid = false;
 	let endDate = '';
-	let endDateValid = '';
+	let endDateValid = false;
 	let attendees = '';
-	let attendeesValid = '';
+	let attendeesValid = false;
 	let mintCondition = 'public';
 	let secret = '';
 	let tlink = '';
@@ -41,19 +41,7 @@
 			return;
 		}
 		// Handle form submission
-		tlink = await getTlink(
-			{
-				name: eventName,
-				description,
-				imageUrl,
-				startDate,
-				endDate,
-				attendees,
-				mintCondition,
-				secret
-			},
-			selectedFile
-		);
+		tlink = await getTlink();
 	}
 
 	$: {
@@ -96,15 +84,15 @@
 			missingRequirement += 'Private minting require secret word. ';
 		}
 
-		if (attendees >= 25  && totalBalance < 100n * 10n**18n) {
+		if (parseInt(attendees || "0") >= 25  && totalBalance < 100n * 10n**18n) {
 			missingRequirement += 'You need to hold at least 100 SLN to create souvenir with 25+ attendees. ';
 		}
 	}
 	$: {
 		startDateValid = !endDate || startDate <= endDate
 		endDateValid = endDate >= new Date().toISOString().split("T")[0]
-		attendeesValid = attendees > 0
-		imageUrlValid = !imageUrl || uriPattern.test(imageUrl)
+		attendeesValid = parseInt(attendees || "0") > 0
+		imageUrlValid = imageUrl && uriPattern.test(imageUrl)
 		
 	}
 	function getSLNTotalBalance() {
@@ -134,7 +122,7 @@
 		const signature = (await tokenscript.personal.sign({ data: msgToSign })) as string;
 
 		// TODO fix coinBase smartwalletSignature
-		console.log({ msgToSign, signature });
+		// console.log({ msgToSign, signature });
 
 		tokenscript.action.showLoader();
 

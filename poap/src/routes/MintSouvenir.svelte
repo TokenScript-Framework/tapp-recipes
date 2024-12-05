@@ -93,7 +93,6 @@
 	}
 
 	async function handleSouvenirChange() {
-		console.log('...handleSouvenirChange');
 		try {
 			let status = await getPoapStatus(poapId);
 			console.log({ status });
@@ -112,8 +111,6 @@
 			tokenscript.action.showMessageToast('error', 'Failed to prepare Minting', error.message);
 		}
 	}
-
-	// TODO update link for "Make My Own"
 </script>
 
 <div
@@ -210,7 +207,7 @@
 		<div class="text-white/80 hover:text-white text-sm transition-colors mt-2">
 			<a
 				target="_blank"
-				href="https://viewer-staging.tokenscript.org/?chain=11155111&contract=0xcddcdc3231d062de953c94f59a335b1a4911ffdc&scriptId=7738_49#card=CreateSouvenir"
+				href={`https://viewer${env.CONTRACT_CHAIN == "11155111" ? "-staging" : ""}.tokenscript.org/?chain=${env.CONTRACT_CHAIN}&contract=${env.CONTRACT_ADDRESS}&scriptId=7738_${env.SCRIPT_ID}#card=CreateSouvenir`}
 				>Make My Own</a
 			>
 		</div>

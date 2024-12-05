@@ -3,7 +3,6 @@
 	import context from './lib/context';
 	import NotFound from './routes/NotFound.svelte';
 	import MintSouvenir from './routes/MintSouvenir.svelte';
-	import TLinkRequired from './routes/TLinkRequired.svelte';
 	import CreateSouvenir from './routes/CreateSouvenir.svelte';
 	import './styles.css';
 
