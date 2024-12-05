@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract TokenBridgeV3 is OwnableUpgradeable {
     IV3SwapRouter public swapRouter;
-    uint24 public constant poolFee = 10000; // 1% fee tier
+
     uint256 public constant FEE_PERCENTAGE = 1;
     uint256 public constant MAX_SENDERS = 20;
     uint256 public constant CONTRACT_REWARD_PERCENTAGE = 20;
@@ -50,8 +50,11 @@ contract TokenBridgeV3 is OwnableUpgradeable {
         uint256 swapId,
         address tokenIn,
         address tokenOut,
+        uint24 poolFee,
+        address recipient,
         uint256 amountIn,
-        uint256 amountOutMinimum
+        uint256 amountOutMinimum,
+        uint160 sqrtPriceLimitX96
     ) external returns (uint256 amountOut) {
         require(amountIn > 0, "Amount must be greater than 0");
 
@@ -61,6 +64,11 @@ contract TokenBridgeV3 is OwnableUpgradeable {
         // Calculate and deduct the fee
         uint256 fee = (amountIn * FEE_PERCENTAGE) / 100;
         uint256 amountToSwap = amountIn - fee;
+
+        // Decrease amountOutMin based on fee percent
+        if (amountOutMinimum > 0){
+            amountOutMinimum -= (amountOutMinimum * FEE_PERCENTAGE) / 100;
+        }
 
         // Approve the router to spend the token
         IERC20(tokenIn).approve(address(swapRouter), amountToSwap);
@@ -72,10 +80,10 @@ contract TokenBridgeV3 is OwnableUpgradeable {
                 tokenIn: tokenIn,
                 tokenOut: tokenOut,
                 fee: poolFee,
-                recipient: msg.sender,
+                recipient: recipient,
                 amountIn: amountToSwap,
                 amountOutMinimum: amountOutMinimum,
-                sqrtPriceLimitX96: 0
+                sqrtPriceLimitX96: sqrtPriceLimitX96
             });
         amountOut = swapRouter.exactInputSingle(params);
         

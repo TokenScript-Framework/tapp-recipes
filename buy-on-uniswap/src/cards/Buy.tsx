@@ -117,10 +117,6 @@ export const Buy: React.FC<BuyProps> = ({ token }) => {
 
 	}, [inToken, amountIn]);
 
-	window.onConfirm = async () => {
-		window.open("https://app.uniswap.org/swap?chain=base&inputCurrency=NATIVE&outputCurrency=0x532f27101965dd16442e59d40670faf5ebb142e4&value=1&field=output", "_blank");
-	};
-
 	function setInCurrency(tokenDetails: TokenDetails){
 		setCurrentQuote(null);
 		setCurrentBalance(null);
