@@ -4,7 +4,7 @@ import {Ether, Token} from '@uniswap/sdk-core';
 import {ADDRESS_ZERO, FeeAmount} from '@uniswap/v3-sdk';
 import {quote, QuoteResult, UniswapConfig} from "../libs/quote.ts";
 import {fromReadableAmount} from "../libs/conversion.ts";
-import {RPC_PROVIDER, SWAP_TOKEN_LIST, TokenDetails} from "../libs/constants.ts";
+import {RPC_PROVIDER, SWAP_ROUTER_FEE, SWAP_TOKEN_LIST, TokenDetails} from "../libs/constants.ts";
 import {getERC20Contract, swap} from "../libs/swap.ts";
 import Loader from "../components/loader/loader.tsx";
 
@@ -60,6 +60,10 @@ export const Buy: React.FC<BuyProps> = ({ token }) => {
 
 		try {
 			const res = await fetch(`https://api.token-discovery.tokenscript.org/get-token-price?chain=${token.chainId}&smartContract=${token.isNative ? ADDRESS_ZERO : token.wrapped.address}`);
+
+			if (res.status != 200)
+				throw new Error(res.statusText);
+
 			const data = await res.json();
 
 			console.log("USD price: ", data);
@@ -79,16 +83,20 @@ export const Buy: React.FC<BuyProps> = ({ token }) => {
 			if (inToken.isNative){
 				RPC_PROVIDER.getBalance(walletAddress).then((balance) => {
 					setCurrentBalance(balance);
+				}).catch((e) => {
+					console.error(e);
 				});
 			} else {
 				const contract = getERC20Contract(inToken.wrapped.address);
 				contract.getFunction("balanceOf").staticCall(walletAddress).then((balance) => {
 					setCurrentBalance(balance);
-				})
+				}).catch((e) => {
+					console.error(e);
+				});
 			}
 		}
 
-		if (outToken && amountIn > 0){
+		if (inToken && outToken && amountIn > 0){
 
 			const uniswapConfig: UniswapConfig = {
 				rpc: {
@@ -101,6 +109,8 @@ export const Buy: React.FC<BuyProps> = ({ token }) => {
 					poolFee,
 				}
 			}
+
+			console.log("Fetching quote...")
 
 			quote(uniswapConfig).then((newQuote) => {
 				setCurrentQuote(newQuote);
@@ -196,14 +206,20 @@ export const Buy: React.FC<BuyProps> = ({ token }) => {
 		return (impact * 1000).toFixed(2);
 	}
 
+	function getOutputInclFee(outputWei: bigint) {
+		return outputWei - (outputWei * SWAP_ROUTER_FEE) / 100n;
+	}
+
 	return token && (
 		<div className="swap-container">
 			<div className="swap-panel">
-				<img
-					style={{width: '200px', borderRadius: '50%'}}
-					src={token.image_preview_url}
-					alt="Token Logo"
-				/>
+				{ token.image &&
+					(<img
+						style={{width: '200px', borderRadius: '50%'}}
+						src={token.image_preview_url ?? ""}
+						alt="Token Logo"
+					/>)
+				}
 				<h3 style={{margin: '0 0 10px 0'}}>
 					Buy {token.name} on Uniswap
 				</h3>
@@ -247,7 +263,7 @@ export const Buy: React.FC<BuyProps> = ({ token }) => {
 						<>
 							<label>You get:</label>
 							<input className="amount-input"
-							       value={formatAmount(currentQuote.amountOut, outToken.decimals)}/>
+							       value={formatAmount(getOutputInclFee(currentQuote.amountOut), outToken.decimals)}/>
 							<div>
 								<span>{token.symbol}</span>
 								<span>{outTokenUSDPrice ? ` ($${(formatAmount(currentQuote.amountOut, outToken.decimals) * outTokenUSDPrice).toFixed(2)} USD)` : ''}</span>

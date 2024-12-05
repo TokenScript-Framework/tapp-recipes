@@ -53,15 +53,13 @@ export async function swap(config: UniswapConfig, amountOutMinimum: bigint){
 	}
 
 	tokenscript.action.setProps({
-		params: {
-			tokenIn: config.tokens.in.wrapped.address,
-			tokenOut: config.tokens.out.wrapped.address,
-			fee: config.tokens.poolFee,
-			recipient: walletAddress,
-			amountIn: amountInWei,
-			amountOutMinimum,
-			sqrtPriceLimitX96: 0 //poolInfo.sqrtPriceX96,
-		},
+		tokenIn: config.tokens.in.wrapped.address,
+		tokenOut: config.tokens.out.wrapped.address,
+		fee: config.tokens.poolFee,
+		recipient: walletAddress,
+		amountIn: amountInWei,
+		amountOutMinimum,
+		sqrtPriceLimitX96: 0, //poolInfo.sqrtPriceX96,
 		ethValue: config.tokens.in.isNative ? amountInWei : 0
 	})
 

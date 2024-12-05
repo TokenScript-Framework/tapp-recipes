@@ -747,11 +747,11 @@
 				<ts:uint256>1</ts:uint256>
 				<ts:address local-ref="tokenIn"/>
 				<ts:address local-ref="tokenOut"/>
-				<ts:uint256 local-ref="fee"/>
+				<ts:uint24 local-ref="fee"/>
 				<ts:address ref="walletAddress"/>
 				<ts:uint256 local-ref="amountIn"/>
 				<ts:uint256 local-ref="amountOutMinimum"/>
-				<ts:uint256 local-ref="sqrtPriceLimitX96"/>
+				<ts:uint160 local-ref="sqrtPriceLimitX96"/>
 			</ts:data>
 			<ethereum:value local-ref="ethValue"/>
 		</ethereum:transaction>

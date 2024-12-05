@@ -16,10 +16,11 @@
   },
   "dependencies": {
     "@uniswap/sdk-core": "^5.9.0",
+    "@uniswap/v3-core": "^1.0.1",
+    "@uniswap/v3-periphery": "^1.4.4",
     "@uniswap/v3-sdk": "^3.18.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.23.1"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@tokenscript/card-sdk": "^1.5.0",

@@ -47,13 +47,13 @@ const config: HardhatUserConfig = {
       url: `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       // url: 'https://polygon-rpc.com',
       // gasPrice: 200000000000,
-      accounts: [process.env.PRIVATE_KEY_PROD ?? ''],
+      accounts: [process.env.PRIVATE_KEY_HU ?? ''],
     },
     base: {
       url: `https://base-mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       // url: 'https://polygon-rpc.com',
       // gasPrice: 200000000000,
-      accounts: [process.env.PRIVATE_KEY_PROD ?? ''],
+      accounts: [process.env.PRIVATE_KEY_HU ?? ''],
     },
     // hardhat.config.ts
     polygonAmoy: {
@@ -68,15 +68,7 @@ const config: HardhatUserConfig = {
       //     "https://base-sepolia-rpc.publicnode.com",
       url: 'https://sepolia.base.org',
       accounts: [process.env.PRIVATE_KEY_HU ?? ""]
-    },
-    base: {
-      // "https://mainnet.base.org/",
-      // "https://developer-access-mainnet.base.org/",
-      // "https://base.gateway.tenderly.co",
-      // "https://base-rpc.publicnode.com",
-      url: 'https://mainnet.base.org/',
-      // accounts: [process.env.PRIVATE_KEY_PROD ?? "", process.env.PRIVATE_KEY_SIGNER ?? ""]
-    },
+    }
   },
   etherscan: {
     apiKey: {

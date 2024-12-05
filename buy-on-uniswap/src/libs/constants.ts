@@ -1,7 +1,10 @@
 import {FeeAmount} from "@uniswap/v3-sdk";
 
+// TODO: Add all uniswap addresses and select by chainID
 export const POOL_FACTORY_CONTRACT_ADDRESS = tokenscript.env.POOL_FACTORY_CONTRACT_ADDRESS ?? '0x33128a8fC17869897dcE68Ed026d694621f6FDfD'
 export const QUOTER_CONTRACT_ADDRESS = tokenscript.env.QUOTER_CONTRACT_ADDRESS ?? '0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a'
+
+export const SWAP_ROUTER_FEE = 1n;
 
 export interface TokenDetails {
 	name: string,

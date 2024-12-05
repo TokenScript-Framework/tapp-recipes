@@ -16,6 +16,7 @@ contract TokenBridgeV3 is OwnableUpgradeable {
     uint256 public constant FEE_PERCENTAGE = 1;
     uint256 public constant MAX_SENDERS = 20;
     uint256 public constant CONTRACT_REWARD_PERCENTAGE = 20;
+    address public constant WETH9_ADDRESS = 0x4200000000000000000000000000000000000006;
 
     mapping(uint256 => address[]) public swapIdToSenders;
     mapping(uint256 => uint256) public swapIdTxCounter;
@@ -55,11 +56,17 @@ contract TokenBridgeV3 is OwnableUpgradeable {
         uint256 amountIn,
         uint256 amountOutMinimum,
         uint160 sqrtPriceLimitX96
-    ) external returns (uint256 amountOut) {
+    ) external payable returns (uint256 amountOut) {
         require(amountIn > 0, "Amount must be greater than 0");
 
-        // Transfer tokens from sender to this contract
-        IERC20(tokenIn).transferFrom(msg.sender, address(this), amountIn);
+        // We need to differentiate between native swaps (that convert 'value' to WETH9 automatically, and direct swaps from WETH ERC-20)
+        address actualTokenIn = tokenIn == WETH9_ADDRESS && msg.value > 0 ? address(0) : tokenIn;
+        bool isNative = actualTokenIn == address(0);
+
+        if (!isNative){
+            // Transfer tokens from sender to this contract
+            IERC20(tokenIn).transferFrom(msg.sender, address(this), amountIn);
+        }
 
         // Calculate and deduct the fee
         uint256 fee = (amountIn * FEE_PERCENTAGE) / 100;
@@ -70,8 +77,10 @@ contract TokenBridgeV3 is OwnableUpgradeable {
             amountOutMinimum -= (amountOutMinimum * FEE_PERCENTAGE) / 100;
         }
 
-        // Approve the router to spend the token
-        IERC20(tokenIn).approve(address(swapRouter), amountToSwap);
+        if (!isNative){
+            // Approve the router to spend the token
+            IERC20(tokenIn).approve(address(swapRouter), amountToSwap);
+        }
 
         // Prepare the swap params
         // ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
@@ -85,11 +94,11 @@ contract TokenBridgeV3 is OwnableUpgradeable {
                 amountOutMinimum: amountOutMinimum,
                 sqrtPriceLimitX96: sqrtPriceLimitX96
             });
-        amountOut = swapRouter.exactInputSingle(params);
+        amountOut = swapRouter.exactInputSingle{value: (isNative ? amountToSwap : 0)}(params);
         
         // Update senders and distribute fee
-        _updateSendersAndDistributeFee(tokenIn, swapId, msg.sender, fee);
-        
+        _updateSendersAndDistributeFee(actualTokenIn, swapId, msg.sender, fee);
+
         emit SwapCompleted(swapId, msg.sender, amountIn, amountOut);
     }
 
@@ -133,7 +142,12 @@ contract TokenBridgeV3 is OwnableUpgradeable {
         senderFees[tokenAddress][msg.sender] = 0;
 
         // Transfer fee to sender
-        IERC20(tokenAddress).transfer(msg.sender, feeAmount);
+        if (tokenAddress == address(0)){
+            (bool success, ) = owner().call{value: feeAmount}("");
+            require(success, "Transfer failed");
+        } else {
+            IERC20(tokenAddress).transfer(msg.sender, feeAmount);
+        }
 
         emit FeeWithdrawn(msg.sender, tokenAddress, feeAmount);
     }
@@ -156,21 +170,20 @@ contract TokenBridgeV3 is OwnableUpgradeable {
 
     // Allow contract owner to withdraw any stuck Ether
     function withdrawContractBalance(address tokenAddress) external onlyOwner {
+
+        uint256 feeAmount = contractFees[tokenAddress];
+        require(feeAmount > 0, "No fee to withdraw");
+        // Reset fee balance before transfer to prevent reentrancy
+        contractFees[tokenAddress] = 0;
+
+        // Transfer fee to sender
         if (tokenAddress == address(0)){
-            // for emergency cases
-            uint256 balance = address(this).balance;
-            (bool success, ) = owner().call{value: balance}("");
+            (bool success, ) = owner().call{value: feeAmount}("");
             require(success, "Transfer failed");
         } else {
-            // only ERC20 transfers emit fee
-            uint256 feeAmount = contractFees[tokenAddress];
-            require(feeAmount > 0, "No fee to withdraw");
-            // Reset fee balance before transfer to prevent reentrancy
-            contractFees[tokenAddress] = 0;
-
-            // Transfer fee to sender
             IERC20(tokenAddress).transfer(msg.sender, feeAmount);
-            emit FeeWithdrawn(msg.sender, tokenAddress, feeAmount);
         }
+
+        emit FeeWithdrawn(msg.sender, tokenAddress, feeAmount);
     }
 }
