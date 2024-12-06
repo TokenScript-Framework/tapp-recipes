@@ -39,12 +39,6 @@ export const Buy: React.FC<BuyProps> = ({ token }) => {
 			token.symbol
 		));
 
-		/**
-		 * 18,
-		 * 'Degen',
-		 * 'DEGEN'
-		 */
-
 		setInCurrency(SWAP_TOKEN_LIST[0]);
 
 	}, [token]);

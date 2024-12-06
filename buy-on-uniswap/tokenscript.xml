@@ -4,14 +4,14 @@
 		  xsi:schemaLocation="http://tokenscript.org/2024/01/tokenscript https://www.tokenscript.org/schemas/2024-01/tokenscript.xsd"
 		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		  xmlns:ethereum="urn:ethereum:constantinople"
-		  name="DEGEN">
+		  name="$tst{TOKEN_NAME}">
 	<ts:label>
 		<ts:plurals xml:lang="en">
-			<ts:string quantity="one">🎩 Instant $DEGEN on Uniswap</ts:string>
+			<ts:string quantity="one">🎩 Instant $$tst{TOKEN_NAME} on Uniswap</ts:string>
 		</ts:plurals>
 	</ts:label>
 	<ts:meta>
-		<ts:description xml:lang="en">💎 The easiest way to ape into $DEGEN • Instant buy with 0.0001 ETH 🚀</ts:description>
+		<ts:description xml:lang="en">💎 The easiest way to ape into $$tst{TOKEN_NAME} • Instant buy with 0.0001 ETH 🚀</ts:description>
 		<ts:aboutUrl xml:lang="en">https://www.smartlayer.network/</ts:aboutUrl>
 	</ts:meta>
 	<ts:contract interface="erc20" name="Token">
@@ -732,7 +732,7 @@
 
 		<ts:card type="action" name="Buy">
 			<ts:label>
-				<ts:string xml:lang="en">Buy $DEGEN Now 🦍</ts:string>
+				<ts:string xml:lang="en">Buy $$tst{TOKEN_NAME} Now 🦍</ts:string>
 			</ts:label>
 			<ts:view xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" uiButton="false">
 				<ts:viewContent name="common"/>
