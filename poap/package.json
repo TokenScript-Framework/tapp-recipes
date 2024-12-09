@@ -39,6 +39,7 @@
 	"type": "module",
 	"dependencies": {
 		"postcss-scss": "^4.0.9",
-		"svelte-preprocess-sass": "^2.0.1"
+		"svelte-preprocess-sass": "^2.0.1",
+		"viem": "^2.21.54"
 	}
 }
